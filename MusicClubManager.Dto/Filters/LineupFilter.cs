@@ -8,5 +8,6 @@ namespace MusicClubManager.Dto.Filters
 {
     public class LineupFilter
     {
+        public string? Name { get; set; }
     }
 }

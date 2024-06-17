@@ -1,7 +1,7 @@
 ﻿using MusicClubManager.Dto.Filters;
 using MusicClubManager.Models;
 
-namespace MusicClubManager.Api.Extensions.Filters
+namespace MusicClubManager.Services.Extensions.Filters
 {
     public static class ArtistFilterExtensions
     {

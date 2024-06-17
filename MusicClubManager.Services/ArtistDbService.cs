@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MusicClubManager.Abstractions;
-using MusicClubManager.Api.Extensions.Filters;
+using MusicClubManager.Services.Extensions.Filters;
 using MusicClubManager.Core;
 using MusicClubManager.Dto.Filters;
 using MusicClubManager.Dto.Request;

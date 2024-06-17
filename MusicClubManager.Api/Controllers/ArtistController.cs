@@ -3,11 +3,13 @@ using MusicClubManager.Abstractions;
 using MusicClubManager.Dto.Filters;
 using MusicClubManager.Dto.Request;
 using MusicClubManager.Dto.Transfer;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MusicClubManager.Api.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize]
     public class ArtistController(IArtistService artistDbService) : ControllerBase
     {
         [HttpGet]
@@ -30,12 +32,22 @@ namespace MusicClubManager.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] ArtistRequest artistRequest)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             return Ok(await artistDbService.Create(artistRequest));
         }
 
         [HttpPut("{id:int}")]
         public async Task<IActionResult> Update([FromRoute] int id,  [FromBody] ArtistRequest artistRequest)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             return Ok(await artistDbService.Update(id, artistRequest));
         }
 

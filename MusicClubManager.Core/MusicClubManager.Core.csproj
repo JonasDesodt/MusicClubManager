@@ -20,8 +20,4 @@
     <ProjectReference Include="..\MusicClubManager.Models\MusicClubManager.Models.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Migrations\" />
-  </ItemGroup>
-
 </Project>

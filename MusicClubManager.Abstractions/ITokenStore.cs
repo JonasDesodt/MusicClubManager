@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MusicClubManager.Dto.Filters
+namespace MusicClubManager.Abstractions
 {
-    public class EventFilter
+    public interface ITokenStore
     {
-        public string? Name { get; set; }
+        Task<string> GetAccessToken();
     }
 }

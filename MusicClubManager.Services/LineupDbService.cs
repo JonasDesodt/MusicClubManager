@@ -6,6 +6,7 @@ using MusicClubManager.Dto.Request;
 using MusicClubManager.Dto.Result;
 using MusicClubManager.Dto.Transfer;
 using MusicClubManager.Models;
+using MusicClubManager.Services.Extensions.Filters;
 
 namespace MusicClubManager.Services
 {
@@ -125,11 +126,14 @@ namespace MusicClubManager.Services
 
         public async Task<PagedServiceResult<IList<LineupResult>>> GetAll(PaginationRequest paginationRequest, LineupFilter filter)
         {
-            var totalCount = await dbContext.Artists.CountAsync();
+            var totalCount = await dbContext.Lineups
+                .AddFilter(filter)
+                .CountAsync();
 
             var skip = (paginationRequest.Page - 1) * paginationRequest.PageSize;
 
             var lineupsResults = await dbContext.Lineups
+                .AddFilter(filter)
                 .Skip((int)skip)
                 .Take((int)paginationRequest.PageSize)
                 .Include(l => l.Event)

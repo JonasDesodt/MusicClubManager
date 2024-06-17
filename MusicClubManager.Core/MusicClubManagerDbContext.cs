@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using MusicClubManager.Core.Models;
 using MusicClubManager.Models;
-using System.Reflection.Emit;
-
+    
 namespace MusicClubManager.Core
 {
-    public class MusicClubManagerDbContext(DbContextOptions<MusicClubManagerDbContext> options) : IdentityDbContext(options)
+    public class MusicClubManagerDbContext(DbContextOptions<MusicClubManagerDbContext> options) : IdentityDbContext<ApplicationUser>(options)
     {
         public DbSet<Artist> Artists => Set<Artist>();
 
@@ -14,6 +14,8 @@ namespace MusicClubManager.Core
         public DbSet<Lineup> Lineups => Set<Lineup>();
 
         public DbSet<Performance> Performances => Set<Performance>();
+
+        //public DbSet<ApplicationUser> ApplicationUsers => Set<ApplicationUser>();
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

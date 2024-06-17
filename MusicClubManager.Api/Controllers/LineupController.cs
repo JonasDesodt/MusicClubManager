@@ -31,12 +31,22 @@ namespace MusicClubManager.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] LineupRequest lineupRequest)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             return Ok(await lineupDbService.Create(lineupRequest));
         }
 
         [HttpPut("{id:int}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] LineupRequest lineupRequest)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             return Ok(await lineupDbService.Update(id, lineupRequest));
         }
 

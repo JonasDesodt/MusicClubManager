@@ -31,12 +31,22 @@ namespace MusicClubManager.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] PerformanceRequest performanceRequest)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             return Ok(await performanceDbService.Create(performanceRequest));
         }
 
         [HttpPut("{id:int}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] PerformanceRequest performanceRequest)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             return Ok(await performanceDbService.Update(id, performanceRequest));
         }
 

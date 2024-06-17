@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MusicClubManager.Dto.Filters
+namespace MusicClubManager.Services.Extensions.Filters
 {
-    public class EventFilter
+    public static class PerformanceFilterExtensions
     {
-        public string? Name { get; set; }
     }
 }
