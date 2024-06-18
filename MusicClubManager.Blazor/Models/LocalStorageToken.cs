@@ -1,6 +1,6 @@
 ﻿namespace MusicClubManager.Blazor.Models
 {
-    public class LocalStorageToken
+    public class LocalStorageToken 
     {
         public required string TokenType { get; set; }
 

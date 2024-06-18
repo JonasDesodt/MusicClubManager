@@ -5,29 +5,35 @@
 @inject LocalStorageService LocalStorageService
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
-<h2>Sign in</h2>
+<section>
+    <h2>Sign in</h2>
 
-<EditForm Model="Model" OnValidSubmit="ValidSubmit">
-    <DataAnnotationsValidator></DataAnnotationsValidator>
-    <ValidationSummary></ValidationSummary>
+    <EditForm Model="Model" OnValidSubmit="ValidSubmit">
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+        <ValidationSummary></ValidationSummary>
 
-    @if (_signInFailed)
-    {
-        <p>Sign in failed</p>
-    }
+        @if (_signInFailed)
+        {
+            <p>Sign in failed</p>
+        }
 
-    <div>
-        <label for="Email">Email</label>
-        <InputText @bind-Value="Model.Email" type="email" id="Email" />
-    </div>
-    <div>
-        <label for="Password">Password</label>
-        <InputText @bind-Value="Model.Password" type="password" id="Password" />
-    </div>
-    <div>
-        <button type="submit">Sign in</button>
-    </div>
-</EditForm>
+        <div>
+            <label for="Email">Email</label>
+            <InputText @bind-Value="Model.Email" type="email" id="Email" />
+        </div>
+
+        <div>
+            <label for="Password">Password</label>
+            <InputText @bind-Value="Model.Password" type="password" id="Password" />
+        </div>
+
+        <div>
+            <button type="submit">Sign in</button>
+        </div>
+    </EditForm>
+</section>
+
+
 
 @code {
     [SupplyParameterFromQuery]

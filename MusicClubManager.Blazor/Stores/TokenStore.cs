@@ -19,5 +19,10 @@ namespace MusicClubManager.Blazor.Stores
             return ""; // temp hack, use refresh token
 
         }
+
+        public async Task RemoveToken()
+        {
+            await localStorageService.RemoveItem("Token");
+        }
     }
 }

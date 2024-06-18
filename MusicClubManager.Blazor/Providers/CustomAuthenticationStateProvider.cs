@@ -17,7 +17,11 @@ namespace MusicClubManager.Blazor.Providers
 
             if (tokens is null || !tokens.IsAccessTokenValid() || string.IsNullOrWhiteSpace(tokens.AccessToken))
             {
-                return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
+                var notAuthenticatedState = new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
+
+                NotifyAuthenticationStateChanged(Task.FromResult(notAuthenticatedState));
+
+                return notAuthenticatedState;      
             }
 
             var handler = new JwtSecurityTokenHandler();
@@ -25,46 +29,11 @@ namespace MusicClubManager.Blazor.Providers
 
             var claimsPrincipcal = new ClaimsPrincipal(new ClaimsIdentity(jwtToken.Claims, "Jwt"));
 
-            var state = new AuthenticationState(claimsPrincipcal);
+            var authenticatedState = new AuthenticationState(claimsPrincipcal);
 
-            NotifyAuthenticationStateChanged(Task.FromResult(state));
+            NotifyAuthenticationStateChanged(Task.FromResult(authenticatedState));
 
-            return state;
-        }
-
-        private IEnumerable<Claim> ParseClaimsFromJwt(string jwt)
-        {
-            var claims = new List<Claim>();
-            var payload = jwt.Split('.')[1];
-            var jsonBytes = ParseBase64WithoutPadding(payload);
-            var keyValuePairs = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonBytes);
-
-            foreach (var kvp in keyValuePairs)
-            {
-                if (kvp.Value is JsonElement jsonElement && jsonElement.ValueKind == JsonValueKind.Array)
-                {
-                    foreach (var element in jsonElement.EnumerateArray())
-                    {
-                        claims.Add(new Claim(kvp.Key, element.ToString()));
-                    }
-                }
-                else
-                {
-                    claims.Add(new Claim(kvp.Key, kvp.Value.ToString()));
-                }
-            }
-
-            return claims;
-        }
-
-        private byte[] ParseBase64WithoutPadding(string base64)
-        {
-            switch (base64.Length % 4)
-            {
-                case 2: base64 += "=="; break;
-                case 3: base64 += "="; break;
-            }
-            return Convert.FromBase64String(base64);
+            return authenticatedState;
         }
     }
 }
