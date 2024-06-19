@@ -11,7 +11,12 @@ namespace MusicClubManager.Sdk.Extensions
 
             if (!string.IsNullOrWhiteSpace(artistFilter.Name))
             {
-                builder.Append($"name={artistFilter.Name}");
+                builder.Append($"name={artistFilter.Name}&");
+            }
+
+            if (!string.IsNullOrWhiteSpace(artistFilter.SortProperty))
+            {
+                builder.Append($"sortProperty={artistFilter.SortProperty}&");
             }
 
             return builder.ToString();

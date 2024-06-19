@@ -15,6 +15,14 @@
         </div>
 
         <div>
+            <label for="SortProperty">Sort property</label>
+            <InputSelect @bind-Value="_artistFilter.SortProperty" id="SortProperty">
+                <option value="@nameof(ArtistResult.Id)">@nameof(ArtistResult.Id)</option>
+                <option value="@nameof(ArtistResult.Name)">@nameof(ArtistResult.Name)</option>
+            </InputSelect>
+        </div>
+
+        <div>
             <button type="submit">Filter</button>
         </div>
     </EditForm>

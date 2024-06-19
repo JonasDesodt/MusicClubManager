@@ -9,5 +9,7 @@ namespace MusicClubManager.Dto.Filters
     public class ArtistFilter
     {
         public string? Name { get; set; }          
+
+        public string? SortProperty { get; set; }
     }
 }
