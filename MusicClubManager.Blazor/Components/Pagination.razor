@@ -1,0 +1,73 @@
+﻿<div>
+    @if (TotalCount > 1)
+    {
+        <ul class="left">
+            @if (Page > 1)
+            {
+                <li class="first">
+                    <button @onclick="() => PageChanged.InvokeAsync(1)">
+                        First
+                    </button>
+                </li>
+                <li class="previous">
+                    <button @onclick="() => PageChanged.InvokeAsync(--Page)">
+                        Previous
+                    </button>
+                </li>
+            }
+        </ul>
+        <ul class="center">
+            @for (var pge = StartPage; pge <= EndPage; pge++)
+            {
+                var currentPage = pge;
+
+                <li>
+                    <button @onclick="() => PageChanged.InvokeAsync(currentPage)" class="@(currentPage == Page ? "active" : "")">
+                        @currentPage
+                    </button>
+                </li>
+            }
+
+        </ul>
+        <ul class="right">
+
+            @if (Page < TotalPages)
+            {
+                <li class="next">
+                    <button @onclick="() => PageChanged.InvokeAsync(++Page)">
+                        Next
+                    </button>
+                </li>
+                <li class="last">
+                    <button @onclick="() => PageChanged.InvokeAsync(TotalPages)">
+                        Last
+                    </button>
+                </li>
+            }
+        </ul>
+    }
+</div>
+
+
+
+
+
+@code {
+    [Parameter, EditorRequired]
+    public required int Page { get; set; }
+
+    [Parameter, EditorRequired]
+    public required int PageSize { get; set; }
+
+    [Parameter, EditorRequired]
+    public required int TotalCount { get; set; }
+
+    [Parameter]
+    public EventCallback<int> PageChanged { get; set; }
+
+    private int TotalPages => (int)Math.Ceiling(TotalCount / (decimal) PageSize);
+
+    private int StartPage => (Page - 2) <= 0 ? 1 : Page - 2;
+
+    private int EndPage => StartPage + 3 > TotalPages ? TotalPages : StartPage + 3;
+}

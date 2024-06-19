@@ -3,10 +3,12 @@ using MusicClubManager.Dto.Filters;
 using MusicClubManager.Dto.Request;
 using MusicClubManager.Dto.Result;
 using MusicClubManager.Dto.Transfer;
+using MusicClubManager.Sdk.Extensions;
+using System.Net.Http.Json;
 
 namespace MusicClubManager.Sdk
 {
-    public class ArtistApiService : IArtistService
+    public class ArtistApiService(IHttpClientFactory httpClientFactory) : IArtistService
     {
         public Task<ServiceResult<ArtistResult>> Create(ArtistRequest request)
         {
@@ -23,9 +25,24 @@ namespace MusicClubManager.Sdk
             throw new NotImplementedException();
         }
 
-        public Task<PagedServiceResult<IList<ArtistResult>>> GetAll(PaginationRequest paginationRequest, ArtistFilter filter)
+        public async Task<PagedServiceResult<IList<ArtistResult>>> GetAll(PaginationRequest paginationRequest, ArtistFilter artistFilter)
         {
-            throw new NotImplementedException();
+            var httpClient = httpClientFactory.CreateClient("MusicClubManagerApi");
+
+            var httpResponseMessage = await httpClient.GetAsync("Artist?" + paginationRequest.ToQueryString() + '&' + artistFilter.ToQueryString());
+
+            if (!httpResponseMessage.IsSuccessStatusCode || await httpResponseMessage.Content.ReadFromJsonAsync<PagedServiceResult<IList<ArtistResult>>>() is not { } result)
+            {
+                return new PagedServiceResult<IList<ArtistResult>> 
+                { 
+                    Messages = [new ServiceMessage { Message = "Failed to fetch the artists." }],
+                    Page = paginationRequest.Page,
+                    PageSize = paginationRequest.PageSize,
+                    TotalCount = 0                    
+                };
+            }
+
+            return result;
         }
 
         public Task<ServiceResult<ArtistResult>> Update(int id, ArtistRequest request)

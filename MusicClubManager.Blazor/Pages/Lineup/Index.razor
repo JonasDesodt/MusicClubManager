@@ -1,6 +1,6 @@
 ﻿@page "/lineups"
 
-@attribute [Authorize]
+@attribute [Authorize(Policy = "ValidTokenOnly")]
 
 <h2>Lineups</h2>
 

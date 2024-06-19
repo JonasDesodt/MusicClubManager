@@ -87,7 +87,7 @@ code {
 }
 
 body {
-    display:flex;
+    display: flex;
     flex-direction: column;
     min-height: 100vh;
 }
@@ -105,3 +105,32 @@ h1 {
 h2 {
     font-size: 1.75em;
 }
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+    form > div {
+        display: flex;
+        flex-direction: column;
+    }
+
+        form > div > label {
+            font-size: .9em;
+            font-weight: bold;
+        }
+
+        form > div > input {
+            padding: .25em;
+        }
+
+        form > div:last-of-type {
+            flex-direction: row;
+            justify-content: flex-end;
+        }
+
+            form > div:last-of-type > button {
+                padding: .25em;
+            }

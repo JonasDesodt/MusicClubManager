@@ -3,30 +3,3 @@
     flex-direction: column;
     gap: 2em;
 }
-
-section > ::deep form {
-    display: flex;
-    flex-direction: column;
-    gap: 1em;
-}
-    section > ::deep form > div {
-        display: flex;
-        flex-direction: column;
-    }
-        section > ::deep form > div > label {
-            font-size: .9em;
-            font-weight: bold;
-        }
-
-        section > ::deep form > div > input {
-            padding: .25em;
-        }
-
-    section > ::deep form > div:last-of-type {
-        flex-direction: row;
-        justify-content: flex-end;
-    }
-
-        section > ::deep form > div:last-of-type > button {
-            padding: .25em;
-        }

@@ -1,0 +1,12 @@
+﻿section {
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
+}
+
+section > ul {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    list-style-type: none;
+}

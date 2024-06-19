@@ -15,8 +15,10 @@ namespace MusicClubManager.Blazor.Providers
         {
             var tokens = await localStorageService.GetItem<LocalStorageToken>("Token");
 
-            if (tokens is null || !tokens.IsAccessTokenValid() || string.IsNullOrWhiteSpace(tokens.AccessToken))
+            if (tokens is null || !tokens.IsAccessTokenValid())
             {
+                await localStorageService.RemoveItem("Token"); // temp hack, don't remove if token is null
+
                 var notAuthenticatedState = new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
 
                 NotifyAuthenticationStateChanged(Task.FromResult(notAuthenticatedState));

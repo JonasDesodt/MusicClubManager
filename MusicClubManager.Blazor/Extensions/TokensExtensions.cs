@@ -17,7 +17,7 @@ namespace MusicClubManager.Blazor.Extensions
                 return false;
             }
 
-            if (localStorageToken.Received.AddSeconds(localStorageToken.ExpiresIn) <= DateTime.UtcNow.AddSeconds(-5))
+            if (localStorageToken.Received.AddSeconds(localStorageToken.ExpiresIn) <= DateTime.UtcNow.AddSeconds(localStorageToken.ExpiresIn / 2))
             {
                 return false;
             }

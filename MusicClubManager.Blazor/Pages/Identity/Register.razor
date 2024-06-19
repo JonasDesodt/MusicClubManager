@@ -1,6 +1,6 @@
 ﻿@page "/register"
 
-@attribute [Authorize(Roles = "Administrator")]
+@attribute [Authorize(Roles = "Administrator", Policy = "ValidTokenOnly")]
 
 @inject IIdentityService IdentityApiService
 @inject NavigationManager NavigationManager
