@@ -1,9 +1,9 @@
 ﻿@page "/artists"
 
-
 @attribute [Authorize(Policy = "ValidTokenOnly")]
 
 @inject IArtistService ArtistApiService
+@inject ArtistFilterStore ArtistFilterStore
 
 <section>
     <h2>Artists</h2>
@@ -11,11 +11,13 @@
     <EditForm Model="_artistFilter" OnValidSubmit="() => FetchArtists(_page)">
         <div>
             <label for="Name">Name</label>
+
             <InputText @bind-Value="_artistFilter.Name" type="text" id="Name" />
         </div>
 
         <div>
             <label for="SortProperty">Sort property</label>
+
             <InputSelect @bind-Value="_artistFilter.SortProperty" id="SortProperty">
                 <option value="@nameof(ArtistResult.Id)">@nameof(ArtistResult.Id)</option>
                 <option value="@nameof(ArtistResult.Name)">@nameof(ArtistResult.Name)</option>
@@ -23,7 +25,27 @@
         </div>
 
         <div>
+            <label>Sort direction</label>
+
+            <div>
+                <InputRadioGroup Name="SortDirection" @bind-Value="_artistFilter.SortDirection">
+                    <label>
+                        <InputRadio Name="SortDirection" Value="SortDirection.Ascending" />
+                        @SortDirection.Ascending.ToString()
+                    </label>
+
+                    <label>
+                        <InputRadio Name="SortDirection" Value="SortDirection.Descending" />
+                        @SortDirection.Descending.ToString()
+                    </label>
+                </InputRadioGroup>
+            </div>
+        </div>
+
+        <div>
             <button type="submit">Filter</button>
+
+            <button type="button" @onclick="ClearArtistFilter">Clear</button>
         </div>
     </EditForm>
 
@@ -32,23 +54,30 @@
         <ul>
             @foreach (var artistResult in _artistsResults)
             {
-                <li>@artistResult.Name</li>
+                var href = $"/artists/edit/{artistResult.Id}";
+
+                <li>
+                    <NavLink href="@href">
+                        <span>@artistResult.Id</span>
+                        <span>@artistResult.Name</span>
+                    </NavLink>
+                </li>
             }
         </ul>
     }
     else
     {
-        if(_artistsResults is null)
+        if (_artistsResults is null)
         {
             <p>Loading... </p>
-        } 
+        }
         else
         {
             <p>There are no artists</p>
         }
     }
 
-    <Pagination Page="_page" PageSize="_pageSize" TotalCount="_totalCount" PageChanged="FetchArtists"/>
+    <Pagination Page="_page" PageSize="_pageSize" TotalCount="_totalCount" PageChanged="FetchArtists" />
 </section>
 
 
@@ -63,6 +92,11 @@
 
     protected override async Task OnInitializedAsync()
     {
+        if (await ArtistFilterStore.Get() is { } artistFilter)
+        {
+            _artistFilter = artistFilter;
+        }
+
         await FetchArtists(_page);
 
         await base.OnInitializedAsync();
@@ -77,5 +111,16 @@
         _totalCount = (int)serviceResult.TotalCount;
 
         _artistsResults = serviceResult.Data;
+
+        await ArtistFilterStore.Set(_artistFilter);
+    }
+
+    private async Task ClearArtistFilter()
+    {
+        _artistFilter = new ArtistFilter { };
+
+        await ArtistFilterStore.Remove();
+
+        await FetchArtists(_page);
     }
 }

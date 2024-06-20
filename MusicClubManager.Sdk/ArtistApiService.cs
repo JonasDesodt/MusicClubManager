@@ -20,9 +20,21 @@ namespace MusicClubManager.Sdk
             throw new NotImplementedException();
         }
 
-        public Task<ServiceResult<ArtistResult>> Get(int id)
+        public async Task<ServiceResult<ArtistResult>> Get(int id)
         {
-            throw new NotImplementedException();
+            var httpClient = httpClientFactory.CreateClient("MusicClubManagerApi");
+
+            var httpResponseMessage = await httpClient.GetAsync("Artist/" + id);
+
+            if (!httpResponseMessage.IsSuccessStatusCode || await httpResponseMessage.Content.ReadFromJsonAsync<ServiceResult<ArtistResult>>() is not { } result)
+            {
+                return new ServiceResult<ArtistResult>
+                {
+                    Messages = [new ServiceMessage { Message = "Failed to fetch the artist." }],
+                };
+            }
+
+            return result;
         }
 
         public async Task<PagedServiceResult<IList<ArtistResult>>> GetAll(PaginationRequest paginationRequest, ArtistFilter artistFilter)
@@ -45,9 +57,21 @@ namespace MusicClubManager.Sdk
             return result;
         }
 
-        public Task<ServiceResult<ArtistResult>> Update(int id, ArtistRequest request)
+        public async Task<ServiceResult<ArtistResult>> Update(int id, ArtistRequest request)
         {
-            throw new NotImplementedException();
+            var httpClient = httpClientFactory.CreateClient("MusicClubManagerApi");
+
+            var httpResponseMessage = await httpClient.PutAsJsonAsync("Artist/" + id, request);
+
+            if (!httpResponseMessage.IsSuccessStatusCode || await httpResponseMessage.Content.ReadFromJsonAsync<ServiceResult<ArtistResult>>() is not { } result)
+            {
+                return new ServiceResult<ArtistResult>
+                {
+                    Messages = [new ServiceMessage { Message = "Failed to update the artist." }],
+                };
+            }
+
+            return result;
         }
     }
 }

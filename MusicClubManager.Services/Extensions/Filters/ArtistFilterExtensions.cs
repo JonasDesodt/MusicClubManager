@@ -1,6 +1,7 @@
 ﻿using MusicClubManager.Dto.Filters;
 using MusicClubManager.Models;
 using MusicClubManager.Dto.Result;
+using MusicClubManager.Dto.Enums;
 
 namespace MusicClubManager.Services.Extensions.Filters
 {
@@ -15,11 +16,22 @@ namespace MusicClubManager.Services.Extensions.Filters
 
             if (!string.IsNullOrWhiteSpace(filter.SortProperty))
             {
-                artists = filter.SortProperty switch
+                if (filter.SortDirection is SortDirection.Descending)
                 {
-                    nameof(ArtistResult.Name) => artists.OrderBy(a => a.Name),
-                    _ => artists.OrderBy(a => a.Id),
-                };
+                    artists = filter.SortProperty switch
+                    {
+                        nameof(ArtistResult.Name) => artists.OrderByDescending(a => a.Name),
+                        _ => artists.OrderByDescending(a => a.Id),
+                    };
+                }
+                else
+                {
+                    artists = filter.SortProperty switch
+                    {
+                        nameof(ArtistResult.Name) => artists.OrderBy(a => a.Name),
+                        _ => artists.OrderBy(a => a.Id),
+                    };
+                }
             }
 
             return artists;

@@ -1,6 +1,7 @@
 ﻿@inherits LayoutComponentBase
 
 @inject ITokenStore TokenStore
+@inject ArtistFilterStore ArtistFilterStore
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
 <div class="@(_isOverlayOpen ? "overlay-open" : "overlay-closed")" id="content">
@@ -48,6 +49,8 @@
     private async void SignOut()
     {
         await TokenStore.RemoveToken();
+
+        await ArtistFilterStore.Remove();
 
         await AuthenticationStateProvider.GetAuthenticationStateAsync();
 

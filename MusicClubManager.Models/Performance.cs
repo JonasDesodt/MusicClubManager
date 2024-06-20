@@ -4,6 +4,10 @@
     {
         public int Id { get; set; }
 
+        //todo: name => this should be the band name? a performance should then have 1 of more artists
+        //public required Name {get;set;}
+        //public string? Image {get;set;}
+
         public DateTime? Start { get; set; }
         public uint? Duration { get; set; }
         public string? Type { get; set; }

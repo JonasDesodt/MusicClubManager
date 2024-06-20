@@ -1,4 +1,5 @@
-﻿using MusicClubManager.Dto.Filters;
+﻿using MusicClubManager.Dto.Enums;
+using MusicClubManager.Dto.Filters;
 using System.Text;
 
 namespace MusicClubManager.Sdk.Extensions
@@ -17,6 +18,11 @@ namespace MusicClubManager.Sdk.Extensions
             if (!string.IsNullOrWhiteSpace(artistFilter.SortProperty))
             {
                 builder.Append($"sortProperty={artistFilter.SortProperty}&");
+
+                if (artistFilter.SortDirection is SortDirection.Descending)
+                {
+                    builder.Append($"sortDirection={artistFilter.SortDirection}&");
+                }
             }
 
             return builder.ToString();

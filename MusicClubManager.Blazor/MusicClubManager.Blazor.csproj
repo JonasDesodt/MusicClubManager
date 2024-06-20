@@ -17,5 +17,4 @@
   <ItemGroup>
     <ProjectReference Include="..\MusicClubManager.Sdk\MusicClubManager.Sdk.csproj" />
   </ItemGroup>
-
 </Project>

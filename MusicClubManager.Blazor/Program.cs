@@ -28,12 +28,13 @@ builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().Cre
 
 builder.Services.AddScoped<LocalStorageService>();
 builder.Services.AddScoped<ITokenStore, TokenStore>();
+builder.Services.AddScoped<ArtistFilterStore>();
 builder.Services.AddScoped<IIdentityService, IdentityApiService>();
 builder.Services.AddScoped<IArtistService, ArtistApiService>();
 
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
 
-builder.Services.AddAuthorizationCore( options =>
+builder.Services.AddAuthorizationCore(options =>
 {
     options.AddPolicy("ValidTokenOnly", policy => policy.Requirements.Add(new ValidTokenRequirement()));
 
