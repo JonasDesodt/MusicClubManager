@@ -1,0 +1,54 @@
+﻿@* https://github.com/snickler/Samples/tree/master/BlazorWizard/Components﻿ *@
+
+<CascadingValue Value="this">
+    <div>
+        <div id="@Id">
+            <ul>
+                @foreach (var step in Steps)
+                {
+                    <li id="step-@(StepsIndex(step) + 1)">
+                        <button type="button"
+                                class="nav-link @((ActiveStep == step) ? "active" : "")"
+                                @onclick="@(e=> SetActive(step))">
+                            Step @(StepsIndex(step) + 1) - @step.Name
+                        </button>
+                    </li>
+                }
+            </ul>
+
+            <div>
+                @ChildContent
+            </div>
+        </div>
+
+        <ul>
+            <li>
+                <button type="button"
+                        disabled="@(ActiveStepIx == 0)" @onclick="GoBack">
+                    Previous
+                </button>
+            </li>
+
+
+            @if (IsLastStep)
+            {
+                <li>
+                    <button type="submit" form="MainForm" disabled="@(Context.IsValid ? false : true)">
+                        Submit
+                    </button>
+                </li>
+
+            }
+            else
+            {
+                <li>
+                    <button type="button" @onclick="GoNext">
+                        Next
+                    </button>
+                </li>
+
+            }
+        </ul>
+    </div>
+</CascadingValue>
+

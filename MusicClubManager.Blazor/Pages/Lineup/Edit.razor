@@ -1,34 +1,34 @@
-﻿@page "/artists/edit/{id:int}"
+﻿@page "/lineups/edit/{id:int}"
 
 @attribute [Authorize(Policy = "ValidTokenOnly")]
 
-@inject IArtistService ArtistApiService
+@inject ILineupService LineupApiService
 @inject NavigationManager NavigationManager
 
-@if (_artistRequest is not null)
+@if (_lineupRequest is not null)
 {
-    <h2>@_artistRequest.Name</h2>
+    <h2>@_lineupRequest.Name</h2>
 
-    <EditForm Model="_artistRequest" OnValidSubmit="Post">
+    <EditForm Model="_lineupRequest" OnValidSubmit="Post">
         <DataAnnotationsValidator></DataAnnotationsValidator>
         <ValidationSummary></ValidationSummary>
 
         <div>
             <label for="Name">Name</label>
 
-            <InputText @bind-Value="_artistRequest.Name" id="Name" />
+            <InputText @bind-Value="_lineupRequest.Name" id="Name" />
         </div>
 
         <div>
-            <label for="Description">Description</label>
+            <label for="Doors">Doors</label>
 
-            <InputTextArea @bind-Value="_artistRequest.Description" id="Description" />
+            <InputDate Type="InputDateType.DateTimeLocal" @bind-Value="_lineupRequest.Doors" id="Doors" />
         </div>
 
         <div>
             @if (_hasDeleteRequest)
             {
-                <p>Are you sure you want to delete @_artistRequest.Name (id: @Id)?</p>
+                <p>Are you sure you want to delete @_lineupRequest.Name (id: @Id)?</p>
 
                 <button type="button" @onclick="() => _hasDeleteRequest = false">No</button>
 
@@ -44,64 +44,69 @@
             }
         </div>
     </EditForm>
+
+    <h2>Performances</h2>
+
+    <NavLink href="@href">Add performance</NavLink>
 }
 else
 {
     <p>Loading...</p>
 }
-<h2>Edit</h2>
 
 @code {
-    private ArtistRequest? _artistRequest;
+    private LineupRequest? _lineupRequest;
 
     private bool _hasDeleteRequest;
 
     [Parameter]
     public int Id { get; set; }
 
+    private string href => $"/lineups/edit/{Id}/performances/create";
+
     protected override async Task OnInitializedAsync()
     {
-        await FetchArtist();
+        await FetchLineup();
 
         await base.OnInitializedAsync();
     }
 
-    private async Task FetchArtist()
+    private async Task FetchLineup()
     {
-        if ((await ArtistApiService.Get(Id)).Data is not { } result)
+        if ((await LineupApiService.Get(Id)).Data is not { } result)
         {
             return;
         }
 
         Id = result.Id;
 
-        _artistRequest = new ArtistRequest
+        _lineupRequest = new LineupRequest
             {
                 Name = result.Name,
-                Description = result.Description
+                Doors = result.Doors
             };
     }
 
     private async Task Post()
     {
-        if (_artistRequest is null)
+        if (_lineupRequest is null)
         {
             return;
         }
 
-        var serviceResult = await ArtistApiService.Update(Id, _artistRequest);
+        var serviceResult = await LineupApiService.Update(Id, _lineupRequest);
         if (serviceResult.Messages is null)
         {
-            NavigationManager.NavigateTo("/artists");
+            NavigationManager.NavigateTo("/lineups");
         }
     }
 
     private async Task Delete()
     {
-        var serviceResult = await ArtistApiService.Delete(Id);
+        var serviceResult = await LineupApiService.Delete(Id);
         if (serviceResult.Messages is null)
         {
-            NavigationManager.NavigateTo("/artists");
+            NavigationManager.NavigateTo("/lineups");
         }
     }
 }

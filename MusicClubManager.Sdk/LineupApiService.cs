@@ -3,14 +3,29 @@ using MusicClubManager.Dto.Filters;
 using MusicClubManager.Dto.Request;
 using MusicClubManager.Dto.Result;
 using MusicClubManager.Dto.Transfer;
+using System.Net.Http.Json;
+using System.Net.Http;
+using MusicClubManager.Sdk.Extensions;
 
 namespace MusicClubManager.Sdk
 {
-    public class LineupApiService : ILineupService
+    public class LineupApiService(IHttpClientFactory httpClientFactory) : ILineupService
     {
-        public Task<ServiceResult<LineupResult>> Create(LineupRequest request)
+        public async Task<ServiceResult<LineupResult>> Create(LineupRequest request)
         {
-            throw new NotImplementedException();
+            var httpClient = httpClientFactory.CreateClient("MusicClubManagerApi");
+
+            var httpResponseMessage = await httpClient.PostAsJsonAsync("Lineup", request);
+
+            if (!httpResponseMessage.IsSuccessStatusCode || await httpResponseMessage.Content.ReadFromJsonAsync<ServiceResult<LineupResult>>() is not { } result)
+            {
+                return new ServiceResult<LineupResult>
+                {
+                    Messages = [new ServiceMessage { Message = "Failed to create the lineup." }],
+                };
+            }
+
+            return result;
         }
 
         public Task<ServiceResult<LineupResult>> Delete(int id)
@@ -18,19 +33,58 @@ namespace MusicClubManager.Sdk
             throw new NotImplementedException();
         }
 
-        public Task<ServiceResult<LineupResult>> Get(int id)
+        public async Task<ServiceResult<LineupResult>> Get(int id)
         {
-            throw new NotImplementedException();
+            var httpClient = httpClientFactory.CreateClient("MusicClubManagerApi");
+
+            var httpResponseMessage = await httpClient.GetAsync("Lineup/" + id);
+
+            if (!httpResponseMessage.IsSuccessStatusCode || await httpResponseMessage.Content.ReadFromJsonAsync<ServiceResult<LineupResult>>() is not { } result)
+            {
+                return new ServiceResult<LineupResult>
+                {
+                    Messages = [new ServiceMessage { Message = "Failed to fetch the lineup." }],
+                };
+            }
+
+            return result;
         }
 
-        public Task<PagedServiceResult<IList<LineupResult>>> GetAll(PaginationRequest paginationRequest, LineupFilter filter)
+        public async Task<PagedServiceResult<IList<LineupResult>>> GetAll(PaginationRequest paginationRequest, LineupFilter lineupFilter)
         {
-            throw new NotImplementedException();
+            var httpClient = httpClientFactory.CreateClient("MusicClubManagerApi");
+
+            var httpResponseMessage = await httpClient.GetAsync("Lineup?" + paginationRequest.ToQueryString() + '&' + lineupFilter.ToQueryString());
+
+            if (!httpResponseMessage.IsSuccessStatusCode || await httpResponseMessage.Content.ReadFromJsonAsync<PagedServiceResult<IList<LineupResult>>>() is not { } result)
+            {
+                return new PagedServiceResult<IList<LineupResult>>
+                {
+                    Messages = [new ServiceMessage { Message = "Failed to fetch the lineups." }],
+                    Page = paginationRequest.Page,
+                    PageSize = paginationRequest.PageSize,
+                    TotalCount = 0
+                };
+            }
+
+            return result;
         }
 
-        public Task<ServiceResult<LineupResult>> Update(int id, LineupRequest request)
+        public async Task<ServiceResult<LineupResult>> Update(int id, LineupRequest request)
         {
-            throw new NotImplementedException();
+            var httpClient = httpClientFactory.CreateClient("MusicClubManagerApi");
+
+            var httpResponseMessage = await httpClient.PutAsJsonAsync("Lineup/" + id, request);
+
+            if (!httpResponseMessage.IsSuccessStatusCode || await httpResponseMessage.Content.ReadFromJsonAsync<ServiceResult<LineupResult>>() is not { } result)
+            {
+                return new ServiceResult<LineupResult>
+                {
+                    Messages = [new ServiceMessage { Message = "Failed to update the lineup." }],
+                };
+            }
+
+            return result;
         }
     }
 }

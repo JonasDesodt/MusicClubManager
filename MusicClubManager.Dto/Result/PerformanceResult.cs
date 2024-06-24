@@ -5,11 +5,11 @@
         public required int Id { get; set; }
 
         public DateTime? Start { get; set; }
-        public uint? Duration { get; set; }
+        public int? Duration { get; set; }
         public string? Type { get; set; }
 
-        public ArtistResult? Artist { get; set; }
+        public required ArtistResult ArtistResult { get; set; }
 
-        public LineupResult? Lineup { get; set; }
+        public required PerformanceLineupResult LineupResult { get; set; }
     }
 }

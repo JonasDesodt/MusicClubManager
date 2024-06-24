@@ -10,14 +10,38 @@ namespace MusicClubManager.Sdk
 {
     public class ArtistApiService(IHttpClientFactory httpClientFactory) : IArtistService
     {
-        public Task<ServiceResult<ArtistResult>> Create(ArtistRequest request)
+        public async Task<ServiceResult<ArtistResult>> Create(ArtistRequest request)
         {
-            throw new NotImplementedException();
+            var httpClient = httpClientFactory.CreateClient("MusicClubManagerApi");
+
+            var httpResponseMessage = await httpClient.PostAsJsonAsync("Artist", request);
+
+            if (!httpResponseMessage.IsSuccessStatusCode || await httpResponseMessage.Content.ReadFromJsonAsync<ServiceResult<ArtistResult>>() is not { } result)
+            {
+                return new ServiceResult<ArtistResult>
+                {
+                    Messages = [new ServiceMessage { Message = "Failed to create the artist." }],
+                };
+            }
+
+            return result;
         }
 
-        public Task<ServiceResult<ArtistResult>> Delete(int id)
+        public async Task<ServiceResult<ArtistResult>> Delete(int id)
         {
-            throw new NotImplementedException();
+            var httpClient = httpClientFactory.CreateClient("MusicClubManagerApi");
+
+            var httpResponseMessage = await httpClient.DeleteAsync("Artist/" + id);
+
+            if (!httpResponseMessage.IsSuccessStatusCode || await httpResponseMessage.Content.ReadFromJsonAsync<ServiceResult<ArtistResult>>() is not { } result)
+            {
+                return new ServiceResult<ArtistResult>
+                {
+                    Messages = [new ServiceMessage { Message = "Failed to delete the artist." }],
+                };
+            }
+
+            return result;
         }
 
         public async Task<ServiceResult<ArtistResult>> Get(int id)

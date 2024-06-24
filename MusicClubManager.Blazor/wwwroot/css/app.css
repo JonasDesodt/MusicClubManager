@@ -98,6 +98,17 @@ body {
         flex-grow: 1;
     }
 
+button {
+    background-color: rgb(67, 161, 107);
+    border: none;
+    color: rgb(255,255,255);
+    cursor: pointer;
+    font-size: .8em;
+    font-weight: bold;
+    padding: .5em;
+    text-transform: uppercase;
+}
+
 h1 {
     font-size: 2em;
 }
@@ -141,11 +152,8 @@ form {
         form > div:last-of-type {
             flex-direction: row;
             justify-content: flex-end;
+            gap: 1em;
         }
-
-            form > div:last-of-type > button {
-                padding: .25em;
-            }
 
         form > div > div {
             border: 1px solid rgb(150,150,150);
@@ -153,4 +161,22 @@ form {
             flex-direction: row;
             gap: 1em;
             padding: .25em;
+        }
+    form > section {
+        display: flex;
+        flex-direction: column;
+        gap: 2em;
+    }
+
+    form > section > div {
+        display: flex;
+        flex-direction: column;
+        gap: 2em;
+    }
+
+        form > section > div > ul {
+            display: flex;
+            flex-direction: column;
+            gap: 1em;
+            list-style-type: none;
         }

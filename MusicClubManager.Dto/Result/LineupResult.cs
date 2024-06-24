@@ -1,5 +1,5 @@
-﻿namespace MusicClubManager.Dto.Result 
-{ 
+﻿namespace MusicClubManager.Dto.Result
+{
     public class LineupResult
     {
         public required int Id { get; set; }
@@ -9,5 +9,7 @@
         public bool IsSoldOut { get; set; }
 
         public EventResult? Event { get; set; }
+
+        public required PagedResult<IList<LineupPerformanceResult>> PagedLineupPerformanceResult { get; set; }
     }
 }

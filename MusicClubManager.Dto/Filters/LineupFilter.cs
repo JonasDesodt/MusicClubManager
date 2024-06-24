@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MusicClubManager.Dto.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,5 +10,9 @@ namespace MusicClubManager.Dto.Filters
     public class LineupFilter
     {
         public string? Name { get; set; }
+
+        public string? SortProperty { get; set; }
+
+        public SortDirection SortDirection { get; set; } = SortDirection.Ascending;
     }
 }

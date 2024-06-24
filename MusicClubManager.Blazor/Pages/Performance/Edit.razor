@@ -1,0 +1,354 @@
+﻿@page "/performances/edit/{id:int}"
+
+@attribute [Authorize(Policy = "ValidTokenOnly")]
+
+@inject IPerformanceService PerformanceApiService
+@inject NavigationManager NavigationManager
+@inject ILineupService LineupApiService
+@inject IArtistService ArtistApiService
+
+<section>
+    @if (_performanceRequest is not null)
+    {
+        <h2>Edit performance</h2>
+
+        <EditForm Model="_performanceRequest" OnValidSubmit="Post" class="@_currentTab">
+            <DataAnnotationsValidator></DataAnnotationsValidator>
+            <ValidationSummary></ValidationSummary>
+
+            <div>
+                <button type="button" @onclick="() => _currentTab = properties">Properties</button>
+                <button type="button" @onclick="() => _currentTab = lineup">Lineup</button>
+                <button type="button" @onclick="() => _currentTab = artist">Artist</button>
+            </div>
+
+            <section id="properties">
+                <h3>Properties</h3>
+
+                <div>
+                    <label for="Start">Start</label>
+
+                    <InputDate Type="InputDateType.DateTimeLocal" @bind-Value="_performanceRequest.Start" id="Start" />
+                </div>
+
+            </section>
+
+            <section id="lineup">
+                <h3>Lineup</h3>
+
+                <EditForm Model="_lineupFilter" OnValidSubmit="() => FetchLineups(_lineupPage)" Context="LineupFilterContext">
+                    <div>
+                        <label for="Name">Name</label>
+
+                        <InputText @bind-Value="_lineupFilter.Name" type="text" id="Name" />
+                    </div>
+
+                    <div>
+                        <label for="SortProperty">Sort property</label>
+
+                        <InputSelect @bind-Value="_lineupFilter.SortProperty" id="SortProperty">
+                            <option value="@nameof(ArtistResult.Id)">@nameof(ArtistResult.Id)</option>
+                            <option value="@nameof(ArtistResult.Name)">@nameof(ArtistResult.Name)</option>
+                        </InputSelect>
+                    </div>
+
+                    <div>
+                        <label>Sort direction</label>
+
+                        <div>
+                            <InputRadioGroup Name="SortDirection" @bind-Value="_lineupFilter.SortDirection">
+                                <label>
+                                    <InputRadio Name="SortDirection" Value="SortDirection.Ascending" />
+                                    @SortDirection.Ascending.ToString()
+                                </label>
+
+                                <label>
+                                    <InputRadio Name="SortDirection" Value="SortDirection.Descending" />
+                                    @SortDirection.Descending.ToString()
+                                </label>
+                            </InputRadioGroup>
+                        </div>
+                    </div>
+
+                    <div>
+                        <button type="submit">Filter</button>
+
+                        <button type="button" @onclick="ClearLineupFilter">Clear</button>
+                    </div>
+                </EditForm>
+
+                @if (_lineupResults is not null && _lineupResults.Count > 0)
+                {
+                    <div>
+                        <h4>@_lineupTotalCount results</h4>
+
+                        <ul>
+                            <InputRadioGroup Name="@nameof(PerformanceRequest.LineupId)" @bind-Value="_performanceRequest.LineupId">
+                                @foreach (var lineupResult in _lineupResults)
+                                {
+                                    <li>
+                                        <label>
+                                            <InputRadio Name="@nameof(PerformanceRequest.LineupId)" Value="lineupResult.Id" />
+                                            <NavLink href="@href">
+                                                <span>Id: @lineupResult.Id</span>
+                                                <span><b>Name: @lineupResult.Name</b></span>
+                                                <span>Doors: @lineupResult.Doors</span>
+                                            </NavLink>
+                                        </label>
+                                    </li>
+
+                                }
+                            </InputRadioGroup>
+                        </ul>
+                    </div>
+                }
+                else
+                {
+                    if (_lineupResults is null)
+                    {
+                        <p>Loading... </p>
+                    }
+                    else
+                    {
+                        <p>There are no artists</p>
+                    }
+                }
+
+                <Pagination Page="_lineupPage" PageSize="_lineupPageSize" TotalCount="_lineupTotalCount" PageChanged="FetchLineups" />
+            </section>
+
+            <section id="artist">
+                <h3>Artist</h3>
+
+                <EditForm Model="_artistFilter" OnValidSubmit="() => FetchArtists(_artistPage)" Context="ArtistFilterContext">
+                    <div>
+                        <label for="Name">Name</label>
+
+                        <InputText @bind-Value="_artistFilter.Name" type="text" id="Name" />
+                    </div>
+
+                    <div>
+                        <label for="SortProperty">Sort property</label>
+
+                        <InputSelect @bind-Value="_artistFilter.SortProperty" id="SortProperty">
+                            <option value="@nameof(ArtistResult.Id)">@nameof(ArtistResult.Id)</option>
+                            <option value="@nameof(ArtistResult.Name)">@nameof(ArtistResult.Name)</option>
+                        </InputSelect>
+                    </div>
+
+                    <div>
+                        <label>Sort direction</label>
+
+                        <div>
+                            <InputRadioGroup Name="SortDirection" @bind-Value="_artistFilter.SortDirection">
+                                <label>
+                                    <InputRadio Name="SortDirection" Value="SortDirection.Ascending" />
+                                    @SortDirection.Ascending.ToString()
+                                </label>
+
+                                <label>
+                                    <InputRadio Name="SortDirection" Value="SortDirection.Descending" />
+                                    @SortDirection.Descending.ToString()
+                                </label>
+                            </InputRadioGroup>
+                        </div>
+                    </div>
+
+                    <div>
+                        <button type="submit">Filter</button>
+
+                        <button type="button" @onclick="ClearArtistFilter">Clear</button>
+                    </div>
+                </EditForm>
+
+                @if (_artistResults is not null && _artistResults.Count > 0)
+                {
+                    <div>
+                        <h4>@_artistTotalCount results</h4>
+
+                        <ul>
+                            <InputRadioGroup Name="@nameof(PerformanceRequest.ArtistId)" @bind-Value="_performanceRequest.ArtistId">
+                                @foreach (var artistResult in _artistResults)
+                                {
+                                    <li>
+                                        <label>
+                                            <InputRadio Name="@nameof(_performanceRequest.ArtistId)" Value="artistResult.Id" />
+                                            @artistResult.Name
+                                        </label>
+                                    </li>
+ 
+                                }
+                            </InputRadioGroup>
+                        </ul>
+                    </div>
+
+                }
+                else
+                {
+                    if (_artistResults is null)
+                    {
+                        <p>Loading... </p>
+                    }
+                    else
+                    {
+                        <p>There are no artists</p>
+                    }
+                }
+
+                <Pagination Page="_artistPage" PageSize="_artistPageSize" TotalCount="_artistTotalCount" PageChanged="FetchArtists" />
+            </section>
+
+
+            <div>
+                @if (_hasDeleteRequest)
+                {
+                    <p>Are you sure you want to delete @Id?</p>
+
+                    <button type="button" @onclick="() => _hasDeleteRequest = false">No</button>
+
+                    <button type="button" @onclick="Delete">Yes</button>
+                }
+                else
+                {
+                    <button type="submit">Save</button>
+
+                    <button type="button">Undo changes</button>
+
+                    <button type="button" @onclick="() => _hasDeleteRequest = true">Delete</button>
+                }
+            </div>
+
+        </EditForm>
+    }
+    else
+    {
+        <p>Loading...</p>
+    }
+</section>
+@code {
+    private PerformanceRequest? _performanceRequest;
+
+    private bool _hasDeleteRequest;
+
+    [Parameter]
+    public int Id { get; set; }
+
+    private string href => $"performances/create";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await FetchPerformance();
+        await FetchLineups(_lineupPage);
+        await FetchArtists(_artistPage);
+
+        await base.OnInitializedAsync();
+    }
+
+    private const string properties = "properties";
+    private const string lineup = "lineup";
+    private const string artist = "artist";
+
+    private string _currentTab = properties;
+
+    private LineupFilter _lineupFilter = new LineupFilter { };
+
+    private int _lineupPage = 1;
+    private int _lineupPageSize = 24;
+    private int _lineupTotalCount;
+
+    private IList<LineupResult>? _lineupResults;
+
+    private async Task FetchLineups(int page)
+    {
+        var serviceResult = await LineupApiService.GetAll(new PaginationRequest { Page = (uint)page, PageSize = (uint)_lineupPageSize }, _lineupFilter);
+
+        _lineupPage = (int)serviceResult.Page;
+        _lineupPageSize = (int)serviceResult.PageSize;
+        _lineupTotalCount = (int)serviceResult.TotalCount;
+
+        _lineupResults = serviceResult.Data;
+    }
+
+    private async Task ClearLineupFilter()
+    {
+        _lineupFilter = new LineupFilter { };
+
+        await FetchLineups(_lineupPage);
+    }
+
+
+
+    private ArtistFilter _artistFilter = new ArtistFilter { };
+
+    private int _artistPage = 1;
+    private int _artistPageSize = 24;
+    private int _artistTotalCount;
+
+    private IList<ArtistResult>? _artistResults;
+
+    private async Task FetchArtists(int page)
+    {
+        var serviceResult = await ArtistApiService.GetAll(new PaginationRequest { Page = (uint)page, PageSize = (uint)_artistPageSize }, _artistFilter);
+
+        _artistPage = (int)serviceResult.Page;
+        _artistPageSize = (int)serviceResult.PageSize;
+        _artistTotalCount = (int)serviceResult.TotalCount;
+
+        _artistResults = serviceResult.Data;
+    }
+
+    private async Task ClearArtistFilter()
+    {
+        _artistFilter = new ArtistFilter { };
+
+        await FetchArtists(_artistPage);
+    }
+
+    private async Task FetchPerformance()
+    {
+        if ((await PerformanceApiService.Get(Id)).Data is not { } result)
+        {
+            return;
+        }
+
+        Id = result.Id;
+
+        _performanceRequest = new PerformanceRequest
+            {
+                Start = result.Start,
+                ArtistId = result.ArtistResult.Id,
+                LineupId = result.LineupResult.Id,
+                Duration = result.Duration,
+                Type = result.Type
+            };
+    }
+
+    private async Task Post()
+    {
+        if (_performanceRequest is null)
+        {
+            return;
+        }
+
+        var serviceResult = await PerformanceApiService.Update(Id, _performanceRequest);
+        if (serviceResult.Messages is null)
+        {
+            NavigationManager.NavigateTo("/performances");
+        }
+    }
+
+    private async Task Delete()
+    {
+        var serviceResult = await PerformanceApiService.Delete(Id);
+        if (serviceResult.Messages is null)
+        {
+            NavigationManager.NavigateTo("/lineups");
+        }
+    }
+
+
+
+
+
+  
+}

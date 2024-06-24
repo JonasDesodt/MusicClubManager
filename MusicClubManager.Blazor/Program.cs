@@ -29,8 +29,12 @@ builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().Cre
 builder.Services.AddScoped<LocalStorageService>();
 builder.Services.AddScoped<ITokenStore, TokenStore>();
 builder.Services.AddScoped<ArtistFilterStore>();
+builder.Services.AddScoped<LineupFilterStore>();
+builder.Services.AddScoped<PerformanceFilterStore>();
 builder.Services.AddScoped<IIdentityService, IdentityApiService>();
 builder.Services.AddScoped<IArtistService, ArtistApiService>();
+builder.Services.AddScoped<ILineupService, LineupApiService>();
+builder.Services.AddScoped<IPerformanceService, PerformanceApiService>();
 
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
 

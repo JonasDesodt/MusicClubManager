@@ -6,6 +6,8 @@ using MusicClubManager.Dto.Request;
 using MusicClubManager.Dto.Result;
 using MusicClubManager.Dto.Transfer;
 using MusicClubManager.Models;
+using MusicClubManager.Services.Extensions.Filters;
+using System.Linq;
 
 namespace MusicClubManager.Services
 {
@@ -67,14 +69,14 @@ namespace MusicClubManager.Services
                     Duration = performance.Duration,
                     Start = performance.Start,
                     Type = performance.Type,
-                    Artist = new ArtistResult
+                    ArtistResult = new ArtistResult
                     {
                         Id = artist.Id,
                         Description = artist.Description,
                         Name = artist.Name,
                         Image = artist.Image
                     },
-                    Lineup = new LineupResult
+                    LineupResult = new PerformanceLineupResult
                     {
                         Id = lineup.Id,
                         Doors = lineup.Doors,
@@ -145,14 +147,14 @@ namespace MusicClubManager.Services
                     Id = performance.Id,
                     Duration = performance.Duration,
                     Start = performance.Start,
-                    Artist = new ArtistResult
+                    ArtistResult = new ArtistResult
                     {
                         Id = performance.Artist.Id,
                         Name = performance.Artist.Name,
                         Description = performance.Artist.Description,
                         Image = performance.Artist.Image
                     },
-                    Lineup = new LineupResult
+                    LineupResult = new PerformanceLineupResult
                     {
                         Id = performance.Lineup.Id,
                         Doors = performance.Lineup.Doors,
@@ -173,50 +175,89 @@ namespace MusicClubManager.Services
 
         public async Task<PagedServiceResult<IList<PerformanceResult>>> GetAll(PaginationRequest paginationRequest, PerformanceFilter filter)
         {
-            var totalCount = await dbContext.Artists.CountAsync();
+            //var totalCount = await dbContext.Performances
+            //    .AddFilter(filter)
+            //    .CountAsync();
 
             var skip = (paginationRequest.Page - 1) * paginationRequest.PageSize;
 
-            var performanceResults = await dbContext.Performances
-                .Include(p => p.Artist)
-                .Include(p => p.Lineup)
-                .ThenInclude(l => l != null ? l.Event : null)
+            var query = from performance in dbContext.Performances
+                        join artist in dbContext.Artists on performance.ArtistId equals artist.Id
+                        join lineup in dbContext.Lineups on performance.LineupId equals lineup.Id
+                        select new PerformanceResult
+                        {
+                            Id = performance.Id,
+                            Start = performance.Start,
+                            //Duration = performance.Duration, => bugged: bigint in db 
+                            Type = performance.Type,
+                            ArtistResult = new ArtistResult
+                            {
+                                Id = artist.Id,
+                                Name = artist.Name,
+                                Description = artist.Description,
+                                Image = artist.Image
+                            },
+                            LineupResult = new PerformanceLineupResult
+                            {
+                                Id = lineup.Id,
+                                Name = lineup.Name,
+                                Doors = lineup.Doors,
+                                IsSoldOut = lineup.IsSoldOut,
+                                Event = null //temp 
+                            }
+                        };
+
+            var totalCount = await query
+                .AddFilter(filter)
+                .CountAsync();
+
+            var performanceResults = await query
+                .AddFilter(filter)
                 .Skip((int)skip)
                 .Take((int)paginationRequest.PageSize)
-                .Select(p => 
-                new PerformanceResult
-                {
-                    Id = p.Id,
-                    Type = p.Type,
-                    Duration = p.Duration,
-                    Start = p.Start,
-                    Artist = p.Artist != null
-                    ? new ArtistResult
-                    {
-                        Id = p.Artist.Id,
-                        Name = p.Artist.Name,
-                        Image = p.Artist.Image,
-                        Description = p.Artist.Description
-                    }
-                    : null,
-                    Lineup = p.Lineup != null
-                    ? new LineupResult
-                    {
-                        Id = p.Lineup.Id,
-                        Doors = p.Lineup.Doors,
-                        IsSoldOut = p.Lineup.IsSoldOut,
-                        Name = p.Lineup.Name,
-                        Event = p.Lineup.Event != null
-                        ? new EventResult
-                        {
-                            Id = p.Lineup.Event.Id,
-                            Name = p.Lineup.Event.Name,
-                        }
-                        : null
-                    }
-                    : null
-                })
                 .ToListAsync();
+
+            //var performanceResults = await dbContext.Performances
+            //    .Include(p => p.Artist)
+            //    .Include(p => p.Lineup)
+            //    .ThenInclude(l => l != null ? l.Event : null)
+            //    .AddFilter(filter)
+            //    .Skip((int)skip)
+            //    .Take((int)paginationRequest.PageSize)
+            //    .Select(p =>
+            //    new PerformanceResult
+            //    {
+            //        Id = p.Id,
+            //        Type = p.Type,
+            //        Duration = p.Duration,
+            //        Start = p.Start,
+            //        ArtistResult = p.Artist != null
+            //        ? new ArtistResult
+            //        {
+            //            Id = p.Artist.Id,
+            //            Name = p.Artist.Name,
+            //            Image = p.Artist.Image,
+            //            Description = p.Artist.Description
+            //        }
+            //        : null,
+            //        LineupResult = p.Lineup != null
+            //        ? new PerformanceLineupResult
+            //        {
+            //            Id = p.Lineup.Id,
+            //            Doors = p.Lineup.Doors,
+            //            IsSoldOut = p.Lineup.IsSoldOut,
+            //            Name = p.Lineup.Name,
+            //            Event = p.Lineup.Event != null
+            //            ? new EventResult
+            //            {
+            //                Id = p.Lineup.Event.Id,
+            //                Name = p.Lineup.Event.Name,
+            //            }
+            //            : null
+            //        }
+            //        : null
+            //    })
+            //    .ToListAsync();
 
             return new PagedServiceResult<IList<PerformanceResult>>
             {
@@ -242,7 +283,7 @@ namespace MusicClubManager.Services
                 };
             }
 
-            if (await dbContext.Artists.FindAsync(request.ArtistId) is not { } artist) 
+            if (await dbContext.Artists.FindAsync(request.ArtistId) is not { } artist)
             {
                 return new ServiceResult<PerformanceResult>
                 {
@@ -291,14 +332,14 @@ namespace MusicClubManager.Services
                     Id = lineup.Id,
                     Duration = performance.Duration,
                     Start = performance.Start,
-                    Artist = new ArtistResult
+                    ArtistResult = new ArtistResult
                     {
                         Id = artist.Id,
                         Name = artist.Name,
                         Description = artist.Description,
                         Image = artist.Image,
                     },
-                    Lineup = new LineupResult
+                    LineupResult = new PerformanceLineupResult
                     {
                         Id = lineup.Id,
                         Doors = lineup.Doors,
@@ -311,7 +352,7 @@ namespace MusicClubManager.Services
                             Name = lineup.Event.Name
                         }
                         : null
-                    }          
+                    }
                 }
             };
         }

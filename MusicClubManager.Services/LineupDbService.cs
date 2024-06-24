@@ -53,6 +53,14 @@ namespace MusicClubManager.Services
                     {
                         Id = lineup.Event.Id,
                         Name = lineup.Event.Name,
+                    },
+                    IsSoldOut = lineup.IsSoldOut,
+                    PagedLineupPerformanceResult = new PagedResult<IList<LineupPerformanceResult>>
+                    {
+                        Data = [],
+                        Page = 1,
+                        PageSize = 24,
+                        TotalCount = 0
                     }
                 }
             };
@@ -95,6 +103,7 @@ namespace MusicClubManager.Services
         {
             var lineup = await dbContext.Lineups
                 .Include(l => l.Event)
+                .Include(l => (l.Performances.AsQueryable().Skip(0).Take(5).Include(p => p.Artist)))
                 .FirstOrDefaultAsync(l => l.Id == id);
 
             if (lineup is null)
@@ -119,6 +128,25 @@ namespace MusicClubManager.Services
                     {
                         Id = lineup.Event.Id,
                         Name = lineup.Event.Name,
+                    },
+                    PagedLineupPerformanceResult = new PagedResult<IList<LineupPerformanceResult>>
+                    {
+                        Data = lineup.Performances.Select(p => new LineupPerformanceResult
+                        {
+                            Id = p.Id,
+                            Artist = p.Artist != null
+                            ? new ArtistResult
+                            {
+                                Id = p.Artist.Id,
+                                Name = p.Artist.Name,
+                                Description = p.Artist.Description,
+                                Image = p.Artist.Image
+                            }
+                            : null
+                        }).ToList(),
+                        Page = 1,
+                        PageSize = 5,
+                        TotalCount = (uint)lineup.Performances.Count // does this counts the performances after the skip/take or does it return the totalCount?
                     }
                 }
             };
@@ -132,30 +160,112 @@ namespace MusicClubManager.Services
 
             var skip = (paginationRequest.Page - 1) * paginationRequest.PageSize;
 
-            var lineupsResults = await dbContext.Lineups
+            // Retrieve the filtered, paginated lineups first
+            var lineups = await dbContext.Lineups
                 .AddFilter(filter)
                 .Skip((int)skip)
                 .Take((int)paginationRequest.PageSize)
                 .Include(l => l.Event)
-                .Select(l => new LineupResult
-                {
-                    Id = l.Id,
-                    Doors = l.Doors,
-                    Name = l.Name,
-                    IsSoldOut = l.IsSoldOut,
-                    Event = l.Event != null
+                .ToListAsync();
+
+            // Prepare the result list
+            var lineupResults = lineups.Select(l => new LineupResult
+            {
+                Id = l.Id,
+                Doors = l.Doors,
+                Name = l.Name,
+                IsSoldOut = l.IsSoldOut,
+                Event = l.Event != null
                     ? new EventResult
                     {
                         Id = l.Event.Id,
                         Name = l.Event.Name,
                     }
-                    : null
-                })
-                .ToListAsync();
+                    : null,
+                PagedLineupPerformanceResult = new PagedResult<IList<LineupPerformanceResult>>
+                {
+                    Data = [],
+                    Page = paginationRequest.Page,
+                    PageSize = paginationRequest.PageSize,
+                    TotalCount = 100
+                }
+            }).ToList();
+
+            // Load performances separately for each lineup
+            foreach (var lineup in lineupResults)
+            {
+                var performances = await dbContext.Performances
+                    .Where(p => p.LineupId == lineup.Id)
+                    .Include(p => p.Artist)
+                    .Take(5)
+                    .ToListAsync();
+
+                lineup.PagedLineupPerformanceResult = new PagedResult<IList<LineupPerformanceResult>>
+                {
+                    Data = performances.Select(p => new LineupPerformanceResult
+                    {
+                        Id = p.Id,
+                        Artist = p.Artist != null
+                            ? new ArtistResult
+                            {
+                                Id = p.Artist.Id,
+                                Name = p.Artist.Name,
+                                Description = p.Artist.Description,
+                                Image = p.Artist.Image
+                            }
+                            : null
+                    }).ToList(),
+                    Page = 1,
+                    PageSize = 5,
+                    TotalCount = 100//performances.Count // This will now count the performances correctly
+                };
+            }
+
+
+            //var lineupsResults = await dbContext.Lineups
+            //    .AddFilter(filter)
+            //    .Skip((int)skip)
+            //    .Take((int)paginationRequest.PageSize)
+            //    .Include(l => l.Event)
+            //    .Include(l => (l.Performances.AsQueryable().Skip(0).Take(5).Include(p => p.Artist)))
+            //    .Select(l => new LineupResult
+            //    {
+            //        Id = l.Id,
+            //        Doors = l.Doors,
+            //        Name = l.Name,
+            //        IsSoldOut = l.IsSoldOut,
+            //        Event = l.Event != null
+            //        ? new EventResult
+            //        {
+            //            Id = l.Event.Id,
+            //            Name = l.Event.Name,
+            //        }
+            //        : null,
+            //        LineupPerformanceResults = new PagedResult<IList<LineupPerformanceResult>>
+            //        {
+            //            Data = l.Performances.Select(p => new LineupPerformanceResult
+            //            {
+            //                Id = p.Id,
+            //                Artist = p.Artist != null
+            //                ? new ArtistResult
+            //                {
+            //                    Id = p.Artist.Id,
+            //                    Name = p.Artist.Name,
+            //                    Description = p.Artist.Description,
+            //                    Image = p.Artist.Image
+            //                }
+            //                : null
+            //            }).ToList(),
+            //            Page = 1,
+            //            PageSize = 5,
+            //            TotalCount = (uint)l.Performances.Count // does this counts the performances after the skip/take or does it return the totalCount?
+            //        }
+            //    })
+            //    .ToListAsync();
 
             return new PagedServiceResult<IList<LineupResult>>()
             {
-                Data = lineupsResults,
+                Data = lineupResults,
                 TotalCount = (uint)totalCount,
                 PageSize = paginationRequest.PageSize,
                 Page = paginationRequest.Page,
@@ -164,7 +274,9 @@ namespace MusicClubManager.Services
 
         public async Task<ServiceResult<LineupResult>> Update(int id, LineupRequest request)
         {
-            var lineup = await dbContext.Lineups.FindAsync(id);
+            var lineup = await dbContext.Lineups
+                .Include(l => (l.Performances.AsQueryable().Skip(0).Take(5).Include(p => p.Artist)))
+                .FirstOrDefaultAsync(l => l.Id == id);
 
             if (lineup is null)
             {
@@ -176,8 +288,8 @@ namespace MusicClubManager.Services
                     ]
                 };
             }
-            
-            if(request.EventId is not null)
+
+            if (request.EventId is not null)
             {
                 lineup.Event = await dbContext.Events.FindAsync(request.EventId);
 
@@ -216,7 +328,26 @@ namespace MusicClubManager.Services
                         Id = lineup.Event.Id,
                         Name = lineup.Event.Name
                     }
-                    : null
+                    : null,
+                    PagedLineupPerformanceResult = new PagedResult<IList<LineupPerformanceResult>>
+                    {
+                        Data = lineup.Performances.Select(p => new LineupPerformanceResult
+                        {
+                            Id = p.Id,
+                            Artist = p.Artist != null
+                            ? new ArtistResult
+                            {
+                                Id = p.Artist.Id,
+                                Name = p.Artist.Name,
+                                Description = p.Artist.Description,
+                                Image = p.Artist.Image
+                            }
+                            : null
+                        }).ToList(),
+                        Page = 1,
+                        PageSize = 5,
+                        TotalCount = (uint)lineup.Performances.Count // does this counts the performances after the skip/take or does it return the totalCount?
+                    }
                 }
             };
         }
