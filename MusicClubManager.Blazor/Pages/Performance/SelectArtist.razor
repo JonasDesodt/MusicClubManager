@@ -7,13 +7,23 @@
 <section id="artist">
     <h3>Artist</h3>
 
-    @if (Context.ArtistResults?.FirstOrDefault(a => a.Id == Context.ArtistId) is { } artist)
+@*     @if (Context.ArtistResults?.FirstOrDefault(a => a.Id == Context.ArtistId) is { } artist)
     {
         <p>@artist.Name</p>
 
         <input value="@artist.Id" id="@nameof(PerformanceRequest.ArtistId)" disabled />
     }
     else
+    {
+        <p>No artist selected</p>
+    }
+ *@
+
+    
+    @if(Context.ArtistResult is not null)
+    {
+        <p>@Context.ArtistResult.Name (id: @Context.ArtistResult.Id)</p>
+    } else
     {
         <p>No artist selected</p>
     }
@@ -42,18 +52,32 @@
                 <h4>@Context.ArtistPaginationContext.TotalCount results</h4>
 
                 <ul>
-                    <InputRadioGroup Name="@nameof(PerformanceContext.ArtistId)" @bind-Value="Context.ArtistId">
+                    <InputRadioGroup Name="@nameof(PerformanceContext.ArtistId)" @bind-Value:get="_artistResultId" @bind-Value:set="SetArtistResult" >
                         @foreach (var artistResult in _artistResults)
                         {
                             <li>
                                 <label>
-                                    <InputRadio Name="@nameof(PerformanceRequest.ArtistId)" Value="artistResult.Id" />
+                                    <InputRadio Name="@nameof(PerformanceRequest.ArtistId)" Value="artistResult.Id" Obkjec />
                                     @artistResult.Name
                                 </label>
                             </li>
 
                         }
                     </InputRadioGroup>
+
+
+@*                     <InputRadioGroup Name="@nameof(PerformanceContext.ArtistId)" @bind-Value="Context.ArtistId">
+                        @foreach (var artistResult in _artistResults)
+                        {
+                            <li>
+                                <label>
+                                    <InputRadio Name="@nameof(PerformanceRequest.ArtistId)" Value="artistResult.Id" Obkjec/>
+                                    @artistResult.Name
+                                </label>
+                            </li>
+
+                        }
+                    </InputRadioGroup> *@
                 </ul>
             </div>
 
@@ -91,6 +115,15 @@
         await FetchArtists(Context.ArtistPaginationContext, Context.ArtistFilter);
 
         await base.OnInitializedAsync();
+    }
+
+    private int _artistResultId;
+
+    private void SetArtistResult(int value)
+    {
+        _artistResultId = value;
+
+        Context.ArtistResult = _artistResults?.FirstOrDefault(a => a.Id == value);
     }
 
     private async Task HandleOnArtistPosted(ArtistResult artistResult)
