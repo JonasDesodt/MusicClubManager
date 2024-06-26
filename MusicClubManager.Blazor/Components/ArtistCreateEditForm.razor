@@ -1,0 +1,55 @@
+﻿@attribute [Authorize(Policy = "ValidTokenOnly")]
+
+@inject IArtistService ArtistApiService
+
+<h2>@(Model.Name != null ? $"Edit {Model.Name}" : "Create artist")</h2>
+
+<EditForm Model="Model" OnValidSubmit="Post">
+    <DataAnnotationsValidator></DataAnnotationsValidator>
+    <ValidationSummary></ValidationSummary>
+
+    <div>
+        <label for="Name">Name</label>
+
+        <InputText @bind-Value="Model.Name" id="Name" />
+    </div>
+
+    <div>
+        <label for="Description">Description</label>
+
+        <InputTextArea @bind-Value="Model.Description" id="Description" />
+    </div>
+
+    <div>
+        <button type="submit">Save</button>
+    </div>
+</EditForm>
+
+
+@code {
+    [Parameter, EditorRequired]
+    public required ArtistCreateEditFormModel Model { get; set; }
+
+    [Parameter, EditorRequired]
+    public required EventCallback<ArtistResult> OnPosted { get; set; }
+
+    private async Task Post()
+    {
+        if (Model is null)
+        {
+            return;
+        }
+
+        if (string.IsNullOrEmpty(Model.Name))
+        {
+            return;
+        }
+
+        var serviceResult = await ArtistApiService.Create(new ArtistRequest { Name = Model.Name, Description = Model.Description, Image = Model.Image });
+
+        if (serviceResult.Messages is null)
+        {
+            await OnPosted.InvokeAsync(serviceResult.Data);
+        }
+    }
+}

@@ -15,43 +15,72 @@
             <section id="artist">
                 <h3>Artist</h3>
 
-                <ArtistFilterForm Model="_performanceContext.ArtistFilter" OnFilter="(artistFilter) => FetchArtists(_performanceContext.ArtistPaginationContext, artistFilter)" />
-
-                @if (_performanceContext.ArtistResults is not null && _performanceContext.ArtistResults.Count > 0)
+                @if (_performanceContext.ArtistResults?.FirstOrDefault(a => a.Id == _performanceContext.ArtistId) is { } artist)
                 {
-                    <div>
-                        <h4>@_performanceContext.ArtistPaginationContext.TotalCount results</h4>
+                    <p>@artist.Name</p>
 
-                        <ul>
-                            <InputRadioGroup Name="@nameof(PerformanceContext.ArtistId)" @bind-Value="_performanceContext.ArtistId">
-                                @foreach (var artistResult in _performanceContext.ArtistResults)
-                                {
-                                    <li>
-                                        <label>
-                                            <InputRadio Name="@nameof(PerformanceRequest.ArtistId)" Value="artistResult.Id" />
-                                            @artistResult.Name
-                                        </label>
-                                    </li>
-
-                                }
-                            </InputRadioGroup>
-                        </ul>
-                    </div>
-
+                    <input value="@artist.Id" id="@nameof(PerformanceRequest.ArtistId)" disabled />
                 }
                 else
                 {
-                    if (_performanceContext.ArtistResults is null)
+                    <p>No artist selected</p>
+                }
+
+                <div>
+                    <button type="button" @onclick="() => _isNewArtistOpen = true">New</button>
+                    <button type="button" @onclick="() => _isSelectArtistOpen = true">Select</button>
+                </div>
+
+                @if (_isNewArtistOpen)
+                {
+                    <button type="button" @onclick="() => _isNewArtistOpen = false">Close new</button>
+
+                    <ArtistCreateEditForm Model="_performanceContext.ArtistFormModel" OnPosted="HandleOnArtistPosted" />
+                }
+
+                @if (_isSelectArtistOpen)
+                {
+                    <button type="button" @onclick="() => _isSelectArtistOpen = false">Close select</button>
+
+                    <ArtistFilterForm Model="_performanceContext.ArtistFilter" OnFilter="(artistFilter) => FetchArtists(_performanceContext.ArtistPaginationContext, artistFilter)" />
+
+                    @if (_performanceContext.ArtistResults is not null && _performanceContext.ArtistResults.Count > 0)
                     {
-                        <p>Loading... </p>
+                        <div>
+                            <h4>@_performanceContext.ArtistPaginationContext.TotalCount results</h4>
+
+                            <ul>
+                                <InputRadioGroup Name="@nameof(PerformanceContext.ArtistId)" @bind-Value="_performanceContext.ArtistId">
+                                    @foreach (var artistResult in _performanceContext.ArtistResults)
+                                    {
+                                        <li>
+                                            <label>
+                                                <InputRadio Name="@nameof(PerformanceRequest.ArtistId)" Value="artistResult.Id" />
+                                                @artistResult.Name
+                                            </label>
+                                        </li>
+
+                                    }
+                                </InputRadioGroup>
+                            </ul>
+                        </div>
+
                     }
                     else
                     {
-                        <p>There are no artists</p>
+                        if (_performanceContext.ArtistResults is null)
+                        {
+                            <p>Loading... </p>
+                        }
+                        else
+                        {
+                            <p>There are no artists</p>
+                        }
                     }
+
+                    <Pagination Context="_performanceContext.ArtistPaginationContext" OnPageChanged="(paginationContext) => FetchArtists(paginationContext, _performanceContext.ArtistFilter)" />
                 }
 
-                <Pagination Context="_performanceContext.ArtistPaginationContext" OnPageChanged="(paginationContext) => FetchArtists(paginationContext, _performanceContext.ArtistFilter)" />
             </section>
         </WizardStep>
 
@@ -59,46 +88,75 @@
             <section id="lineup">
                 <h3>Lineup</h3>
 
-                <LineupFilterForm Model="_performanceContext.LineupFilter" OnFilter="(lineupFilter) => FetchLineups(_performanceContext.LineupPaginationContext, lineupFilter)" />
-
-                @if (_performanceContext.LineupResults is not null && _performanceContext.LineupResults.Count > 0)
+                @if (_performanceContext.LineupResults?.FirstOrDefault(a => a.Id == _performanceContext.LineupId) is { } lineup)
                 {
-                    <div>
-                        <h4>@_performanceContext.LineupPaginationContext.TotalCount results</h4>
+                    <p>@lineup.Name ?? @lineup.Id</p>
 
-                        <ul>
-                            <InputRadioGroup Name="@nameof(PerformanceContext.LineupId)" @bind-Value="_performanceContext.LineupId">
-                                @foreach (var lineupResult in _performanceContext.LineupResults)
-                                {
-                                    <li>
-                                        <label>
-                                            <InputRadio Name="@nameof(PerformanceContext.LineupId)" Value="lineupResult.Id" />
-                                            <NavLink href="/">
-                                                <span>Id: @lineupResult.Id</span>
-                                                <span><b>Name: @lineupResult.Name</b></span>
-                                                <span>Doors: @lineupResult.Doors</span>
-                                            </NavLink>
-                                        </label>
-                                    </li>
-
-                                }
-                            </InputRadioGroup>
-                        </ul>
-                    </div>
+                    <input value="@lineup.Id" id="@nameof(PerformanceRequest.LineupId)" disabled />
                 }
                 else
                 {
-                    if (_performanceContext.LineupResults is null)
+                    <p>No lineup selected</p>
+                }
+
+                <div>
+                    <button type="button" @onclick="() => _isNewLineupOpen = true">New</button>
+                    <button type="button" @onclick="() => _isSelectLineupOpen = true">Select</button>
+                </div>
+
+                @if (_isNewLineupOpen)
+                {
+                    <button type="button" @onclick="() => _isNewLineupOpen = false">Close new</button>
+
+                    <LineupCreateEditForm Model="_performanceContext.LineupFormModel" OnPosted="HandleOnLineupPosted" />
+                }
+
+                @if (_isSelectLineupOpen)
+                {
+                    <button type="button" @onclick="() => _isSelectLineupOpen = false">Close select</button>
+
+                    <LineupFilterForm Model="_performanceContext.LineupFilter" OnFilter="(lineupFilter) => FetchLineups(_performanceContext.LineupPaginationContext, lineupFilter)" />
+
+                    @if (_performanceContext.LineupResults is not null && _performanceContext.LineupResults.Count > 0)
                     {
-                        <p>Loading... </p>
+                        <div>
+                            <h4>@_performanceContext.LineupPaginationContext.TotalCount results</h4>
+
+                            <ul>
+                                <InputRadioGroup Name="@nameof(PerformanceContext.LineupId)" @bind-Value="_performanceContext.LineupId">
+                                    @foreach (var lineupResult in _performanceContext.LineupResults)
+                                    {
+                                        <li>
+                                            <label>
+                                                <InputRadio Name="@nameof(PerformanceContext.LineupId)" Value="lineupResult.Id" />
+                                                <NavLink href="/">
+                                                    <span>Id: @lineupResult.Id</span>
+                                                    <span><b>Name: @lineupResult.Name</b></span>
+                                                    <span>Doors: @lineupResult.Doors</span>
+                                                </NavLink>
+                                            </label>
+                                        </li>
+
+                                    }
+                                </InputRadioGroup>
+                            </ul>
+                        </div>
                     }
                     else
                     {
-                        <p>There are no artists</p>
+                        if (_performanceContext.LineupResults is null)
+                        {
+                            <p>Loading... </p>
+                        }
+                        else
+                        {
+                            <p>There are no artists</p>
+                        }
                     }
+
+                    <Pagination Context="_performanceContext.LineupPaginationContext" OnPageChanged="(paginationContext) => FetchLineups(paginationContext, _performanceContext.LineupFilter)" />
                 }
 
-                <Pagination Context="_performanceContext.LineupPaginationContext" OnPageChanged="(paginationContext) => FetchLineups(paginationContext, _performanceContext.LineupFilter)" />
             </section>
         </WizardStep>
 
@@ -166,6 +224,12 @@
 
     private PerformanceRequest? _performanceRequest;
 
+    private bool _isNewArtistOpen = false;
+    private bool _isSelectArtistOpen = false;
+
+    private bool _isNewLineupOpen = false;
+    private bool _isSelectLineupOpen = false;
+
     protected override async Task OnInitializedAsync()
     {
         await FetchLineups(_performanceContext.LineupPaginationContext, _performanceContext.LineupFilter);
@@ -211,8 +275,6 @@
             };
     }
 
-
-
     private async Task FetchArtists(PaginationContext paginationContext, ArtistFilter artistFilter)
     {
         var serviceResult = await ArtistApiService.GetAll(new PaginationRequest { Page = (uint)paginationContext.Page, PageSize = (uint)paginationContext.PageSize }, artistFilter);
@@ -230,5 +292,23 @@
 
         _performanceContext.LineupResults = serviceResult.Data;
 
+    }
+
+    private async Task HandleOnArtistPosted(ArtistResult artistResult)
+    {
+        _performanceContext.ArtistFormModel = new ArtistCreateEditFormModel();
+
+        _performanceContext.ArtistId = artistResult.Id;
+
+        await FetchArtists(_performanceContext.ArtistPaginationContext, _performanceContext.ArtistFilter);
+    }
+
+    private async Task HandleOnLineupPosted(LineupResult lineupResult)
+    {
+        _performanceContext.LineupFormModel = new LineupCreateEditFormModel();
+
+        _performanceContext.LineupId = lineupResult.Id;
+
+        await FetchLineups(_performanceContext.LineupPaginationContext, _performanceContext.LineupFilter);
     }
 }           

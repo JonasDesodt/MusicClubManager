@@ -98,7 +98,7 @@ body {
         flex-grow: 1;
     }
 
-button {
+/*button {
     background-color: rgb(67, 161, 107);
     border: none;
     color: rgb(255,255,255);
@@ -108,7 +108,7 @@ button {
     padding: .5em;
     text-transform: uppercase;
 }
-
+*/
 h1 {
     font-size: 2em;
 }
@@ -180,3 +180,24 @@ form {
             gap: 1em;
             list-style-type: none;
         }
+
+div.buttons {
+    display: flex;
+    flex-direction: column;
+}
+div.buttons > * {
+    background-color: rgb(67, 161, 107);
+    border: none;
+    color: rgb(255,255,255);
+ /*   cursor: pointer;*/
+    font-size: .8em;
+    font-weight: bold;
+    padding: .5em;
+    text-transform: uppercase;
+}
+
+div.buttons > p {
+    cursor: default;
+    opacity: .5;
+    
+}
