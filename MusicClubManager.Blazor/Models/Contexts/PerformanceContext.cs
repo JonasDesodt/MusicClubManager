@@ -11,8 +11,8 @@ namespace MusicClubManager.Blazor.Models.Contexts
         public int? Duration { get; set; }
         public string? Type { get; set; }
 
+
         public int? ArtistId { get; set; }
-        public ArtistResult? ArtistResult { get; set; }
 
         public PaginationContext ArtistPaginationContext { get; set; } = new() { Page = 1, PageSize = 24, TotalCount = 0 };
 
