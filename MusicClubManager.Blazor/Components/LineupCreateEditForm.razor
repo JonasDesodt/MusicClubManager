@@ -73,7 +73,7 @@
             return;
         }
 
-        var serviceResult = await LineupApiService.Update(Id, new LineupRequest { Doors = Model.Doors.Value, EventId = Model.EventId, IsSoldOut = Model.IsSoldOut, Name = Model.Name });
+        var serviceResult = await LineupApiService.Create(new LineupRequest { Doors = Model.Doors.Value, EventId = Model.EventId, IsSoldOut = Model.IsSoldOut, Name = Model.Name });
         if (serviceResult.Messages is null)
         {
             await OnPosted.InvokeAsync(serviceResult.Data);

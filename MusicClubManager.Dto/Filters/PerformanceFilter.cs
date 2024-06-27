@@ -9,6 +9,8 @@ namespace MusicClubManager.Dto.Filters
 {
     public class PerformanceFilter
     {
+        public int? Id { get; set; }
+
         public string? SortProperty { get; set; }
 
         public SortDirection SortDirection { get; set; } = SortDirection.Ascending;

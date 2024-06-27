@@ -7,6 +7,8 @@ using MusicClubManager.Dto.Result;
 using MusicClubManager.Dto.Transfer;
 using MusicClubManager.Models;
 using MusicClubManager.Services.Extensions.Filters;
+using System.Text.RegularExpressions;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace MusicClubManager.Services
 {
@@ -101,6 +103,8 @@ namespace MusicClubManager.Services
 
         public async Task<ServiceResult<LineupResult>> Get(int id)
         {
+            var performancesTotalCount = await dbContext.Performances.CountAsync(p => p.LineupId == id);
+
             var lineup = await dbContext.Lineups
                 .Include(l => l.Event)
                 .Include(l => (l.Performances.AsQueryable().Skip(0).Take(5).Include(p => p.Artist)))
@@ -146,9 +150,72 @@ namespace MusicClubManager.Services
                         }).ToList(),
                         Page = 1,
                         PageSize = 5,
-                        TotalCount = (uint)lineup.Performances.Count // does this counts the performances after the skip/take or does it return the totalCount?
+                        TotalCount = (uint)performancesTotalCount // does this counts the performances after the skip/take or does it return the totalCount?
                     }
                 }
+            };
+        }
+
+
+
+        public async Task<ServiceResult<LineupResult>> Get(int id, PaginationRequest paginationRequest)
+        {
+            var performancesTotalCount = await dbContext.Performances.CountAsync(p => p.LineupId == id);
+
+            uint skip = (paginationRequest.Page - 1) * paginationRequest.PageSize; ;
+            int take = 5;
+
+            var lineupResult = await dbContext.Lineups
+                .Include(l => l.Event)
+                .Select(l => new LineupResult
+                {
+                    Doors = l.Doors,
+                    Event = l.Event != null ? new EventResult { Id = l.Event.Id, Name = l.Event.Name } : null,
+                    Id = l.Id,
+                    Name = l.Name,
+                    IsSoldOut = l.IsSoldOut,
+                    PagedLineupPerformanceResult = new PagedResult<IList<LineupPerformanceResult>>
+                    {
+                        Page = paginationRequest.Page,
+                        PageSize = paginationRequest.PageSize,
+                        TotalCount = (uint)performancesTotalCount
+
+                    }
+                })
+            .FirstOrDefaultAsync(l => l.Id == id);
+
+            if (lineupResult is null)
+            {
+                return new ServiceResult<LineupResult>
+                {
+                    Messages =
+                    [
+                        new () { Message = "The lineup could not be found." }
+                    ]
+                };
+            }
+
+            lineupResult.PagedLineupPerformanceResult.Data = await dbContext.Performances
+                            .Include(p => p.Artist)
+                            .Where(p => p.LineupId == id)
+                            .Skip((int)skip)
+                            .Take(take)
+                            .Select(p => new LineupPerformanceResult
+                            {
+                                Id = p.Id,
+                                Artist = p.Artist != null ?
+                                            new ArtistResult
+                                            { Id = p.Artist.Id, 
+                                                Description = p.Artist.Description,
+                                                Image = p.Artist.Image, 
+                                                Name = p.Artist.Name }
+                                            : null
+                            })
+                            .ToListAsync();
+
+            return new ServiceResult<LineupResult>
+            {
+                Data = lineupResult
             };
         }
 
@@ -194,6 +261,8 @@ namespace MusicClubManager.Services
             // Load performances separately for each lineup
             foreach (var lineup in lineupResults)
             {
+                var performancesTotalCount = await dbContext.Performances.CountAsync(p => p.LineupId == lineup.Id);
+
                 var performances = await dbContext.Performances
                     .Where(p => p.LineupId == lineup.Id)
                     .Include(p => p.Artist)
@@ -217,51 +286,9 @@ namespace MusicClubManager.Services
                     }).ToList(),
                     Page = 1,
                     PageSize = 5,
-                    TotalCount = 100//performances.Count // This will now count the performances correctly
+                    TotalCount = (uint)performancesTotalCount
                 };
             }
-
-
-            //var lineupsResults = await dbContext.Lineups
-            //    .AddFilter(filter)
-            //    .Skip((int)skip)
-            //    .Take((int)paginationRequest.PageSize)
-            //    .Include(l => l.Event)
-            //    .Include(l => (l.Performances.AsQueryable().Skip(0).Take(5).Include(p => p.Artist)))
-            //    .Select(l => new LineupResult
-            //    {
-            //        Id = l.Id,
-            //        Doors = l.Doors,
-            //        Name = l.Name,
-            //        IsSoldOut = l.IsSoldOut,
-            //        Event = l.Event != null
-            //        ? new EventResult
-            //        {
-            //            Id = l.Event.Id,
-            //            Name = l.Event.Name,
-            //        }
-            //        : null,
-            //        LineupPerformanceResults = new PagedResult<IList<LineupPerformanceResult>>
-            //        {
-            //            Data = l.Performances.Select(p => new LineupPerformanceResult
-            //            {
-            //                Id = p.Id,
-            //                Artist = p.Artist != null
-            //                ? new ArtistResult
-            //                {
-            //                    Id = p.Artist.Id,
-            //                    Name = p.Artist.Name,
-            //                    Description = p.Artist.Description,
-            //                    Image = p.Artist.Image
-            //                }
-            //                : null
-            //            }).ToList(),
-            //            Page = 1,
-            //            PageSize = 5,
-            //            TotalCount = (uint)l.Performances.Count // does this counts the performances after the skip/take or does it return the totalCount?
-            //        }
-            //    })
-            //    .ToListAsync();
 
             return new PagedServiceResult<IList<LineupResult>>()
             {

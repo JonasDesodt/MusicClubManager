@@ -10,10 +10,10 @@ namespace MusicClubManager.Sdk.Extensions
         {
             var builder = new StringBuilder();
 
-            //if (!string.IsNullOrWhiteSpace(performanceFilter.Name))
-            //{
-            //    builder.Append($"name={performanceFilter.Name}&");
-            //}
+            if (performanceFilter.Id is not null || performanceFilter.Id > 0)
+            {
+                builder.Append($"id={performanceFilter.Id}&");
+            }
 
             if (!string.IsNullOrWhiteSpace(performanceFilter.SortProperty))
             {

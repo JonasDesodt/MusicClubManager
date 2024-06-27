@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="Components\LineupCreateEditForm.razor" />
     <Content Remove="Pages\Performance\Edit.razor" />
   </ItemGroup>
 
@@ -25,17 +24,5 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MusicClubManager.Sdk\MusicClubManager.Sdk.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <UpToDateCheckInput Remove="Components\LineupCreateEditForm.razor" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <_ContentIncludedByDefault Remove="Components\LineupCreateEditForm.razor" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="Components\LineupCreateEditForm.razor" />
   </ItemGroup>
 </Project>
