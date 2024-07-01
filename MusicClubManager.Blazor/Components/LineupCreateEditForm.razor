@@ -2,8 +2,8 @@
 
 @inject ILineupService LineupApiService
 
-<h2>@(Model.Name != null ? $"Edit lineup {Model.Name}" : "Create lineup")</h2>
-
+@* <h2>@(Model.Name != null ? $"Edit lineup {Model.Name}" : "Create lineup")</h2>
+ *@
 <EditForm Model="Model" OnValidSubmit="Post">
     <DataAnnotationsValidator></DataAnnotationsValidator>
     <ValidationSummary></ValidationSummary>

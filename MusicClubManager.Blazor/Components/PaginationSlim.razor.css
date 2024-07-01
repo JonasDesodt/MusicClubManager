@@ -1,0 +1,19 @@
+﻿ul {
+    display: flex;
+    flex-direction: row;
+    list-style-type: none;
+}
+
+    ul > li > button {
+        align-items: center;
+        background-color: rgb(67, 161, 107);
+        border: none;
+        display: flex;
+        color: rgb(255,255,255);
+        font-size: .8em;
+        font-weight: bold;
+        justify-content: center;
+        padding: 1em;
+        text-transform: uppercase;
+        cursor: pointer;
+    }

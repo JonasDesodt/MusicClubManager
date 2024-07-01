@@ -2,6 +2,7 @@
 using MusicClubManager.Dto.Filters;
 using MusicClubManager.Dto.Result;
 using MusicClubManager.Blazor.Models.FormModels;
+using Microsoft.AspNetCore.Components;
 
 namespace MusicClubManager.Blazor.Models.Contexts
 {
@@ -34,31 +35,20 @@ namespace MusicClubManager.Blazor.Models.Contexts
         public IList<LineupResult>? LineupResults { get; set; }
 
 
+        public event EventHandler? OnPropertyChanged;
+
+        private bool _isValid;
         public bool IsValid
         {
             get
             {
-                if (ArtistId is null)
-                {
-                    return false;
-                }
+                return _isValid;
+            }
+            set
+            {
+                _isValid = value;
 
-                if (ArtistId <= 0)
-                {
-                    return false;
-                }
-
-                if (LineupId is null)
-                {
-                    return false;
-                }
-
-                if (LineupId <= 0)
-                {
-                    return false;
-                }
-
-                return true;
+                OnPropertyChanged?.Invoke(this, EventArgs.Empty);
             }
         }
     }

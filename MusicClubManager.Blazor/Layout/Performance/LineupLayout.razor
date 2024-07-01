@@ -1,0 +1,48 @@
+﻿@inherits LayoutComponentBase
+
+@layout PerformanceLayout
+
+@inject ILineupService LineupApiService
+@inject NavigationManager NavigationManager
+
+<CascadingValue Value="Context">
+    <ul>
+        <li>
+            @if (_currentPage == "performances/create/lineup/select")
+            {
+                <h3>Select lineup</h3>
+            }
+            else
+            {
+                <NavLink href="/performances/create/lineup/select">
+                    Select lineup
+                </NavLink>
+            }
+        </li>
+
+        <li>
+            @if (_currentPage == "performances/create/lineup/create")
+            {
+                <h3>Create lineup</h3>
+            }
+            else
+            {
+                <NavLink href="/performances/create/lineup/create">
+                    Create lineup
+                </NavLink>
+            }
+        </li>
+    </ul>
+
+    @Body
+
+</CascadingValue>
+
+@code {
+    [CascadingParameter]
+    public required PerformanceContext Context { get; set; }
+
+    private IList<LineupResult>? _lineupResults;
+
+    private string _currentPage => NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
+}

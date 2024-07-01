@@ -1,16 +1,15 @@
 ﻿@page "/performances/create/artist"
 
-@layout MusicClubManager.Blazor.Layout.PerformanceCreateLayout
+@layout MusicClubManager.Blazor.Layout.PerformanceLayout
 
 @inject IArtistService ArtistApiService
 
 <section id="artist">
-    <h3>Artist</h3>
-       
-    @if(_artistResult is not null)
+    @if (_artistResult is not null)
     {
         <p>@_artistResult.Name (id: @_artistResult.Id)</p>
-    } else
+    }
+    else
     {
         <p>No artist selected</p>
     }
@@ -39,13 +38,16 @@
                 <h4>@Context.ArtistPaginationContext.TotalCount results</h4>
 
                 <ul>
-                    <InputRadioGroup Name="@nameof(PerformanceContext.ArtistId)" @bind-Value:get="Context.ArtistId" @bind-Value:set="SetArtistResult" >
+                    <InputRadioGroup Name="@nameof(PerformanceContext.ArtistId)" @bind-Value:get="Context.ArtistId" @bind-Value:set="SetArtistResult">
                         @foreach (var artistResult in _artistResults)
                         {
                             <li>
-                                <label>
-                                    <InputRadio Name="@nameof(PerformanceRequest.ArtistId)" Value="artistResult.Id" />
+                                <label class="radio-button-container">
                                     @artistResult.Name
+
+                                    <InputRadio Name="@nameof(PerformanceRequest.ArtistId)" Value="artistResult.Id" />
+
+                                    <span class="radio-button-checkmark"></span>
                                 </label>
                             </li>
                         }
@@ -86,7 +88,7 @@
     {
         await FetchArtists(Context.ArtistPaginationContext, Context.ArtistFilter);
 
-        if(Context.ArtistId is not null || Context.ArtistId > 0)
+        if (Context.ArtistId is not null || Context.ArtistId > 0)
         {
             _artistResult = _artistResults?.FirstOrDefault(a => a.Id == Context.ArtistId);
             if (_artistResult is null)
@@ -104,6 +106,11 @@
         Context.ArtistId = value;
 
         _artistResult = _artistResults?.FirstOrDefault(a => a.Id == value);
+
+        if (Context.LineupId is not null && Context.ArtistId is not null)
+        {
+            Context.IsValid = true;
+        }
     }
 
     private async Task FetchArtist(int id)
@@ -113,7 +120,7 @@
         _artistResult = serviceResult.Data;
     }
 
-     private async Task HandleOnArtistPosted(ArtistResult artistResult)
+    private async Task HandleOnArtistPosted(ArtistResult artistResult)
     {
         Context.ArtistFormModel = new ArtistCreateEditFormModel();
 

@@ -135,7 +135,7 @@ form {
 
         form > div > input {
             border: 1px solid rgb(150,150,150);
-            padding: .25em;
+            padding: .5em;
         }
 
         form > div > select {
@@ -162,42 +162,108 @@ form {
             gap: 1em;
             padding: .25em;
         }
+
     form > section {
         display: flex;
         flex-direction: column;
         gap: 2em;
     }
 
-    form > section > div {
-        display: flex;
-        flex-direction: column;
-        gap: 2em;
-    }
-
-        form > section > div > ul {
+        form > section > div {
             display: flex;
             flex-direction: column;
-            gap: 1em;
-            list-style-type: none;
+            gap: 2em;
         }
+
+            form > section > div > ul {
+                display: flex;
+                flex-direction: column;
+                gap: 1em;
+                list-style-type: none;
+            }
 
 div.buttons {
     display: flex;
     flex-direction: column;
-}
-div.buttons > * {
-    background-color: rgb(67, 161, 107);
-    border: none;
-    color: rgb(255,255,255);
- /*   cursor: pointer;*/
-    font-size: .8em;
-    font-weight: bold;
-    padding: .5em;
-    text-transform: uppercase;
+    gap: .25em;
 }
 
-div.buttons > p {
-    cursor: default;
-    opacity: .5;
-    
+    div.buttons > *, a.button {
+        align-items: center;
+        background-color: rgb(67, 161, 107);
+        border: none;
+        display: flex;
+        color: rgb(255,255,255);
+        font-size: .8em;
+        font-weight: bold;
+        justify-content: center;
+        padding: 1em;
+        text-transform: uppercase;
+    }
+
+
+
+    div.buttons > a:hover, div.buttons > button:hover {
+        background-color: rgb(57, 151, 97);
+    }
+
+    div.buttons > a {
+        text-decoration: none;
+    }
+
+    div.buttons > a, div.buttons > button {
+        cursor: pointer;
+    }
+
+    div.buttons > p {
+        background-color: rgb(175,175,175);
+    }
+
+
+label.radio-button-container {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 1em;
 }
+
+    label.radio-button-container > input {
+        background: pink;
+        border-radius: 50%;
+        min-height: 2em;
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+        min-width: 2em;
+    }
+
+        label.radio-button-container > input:hover ~ span.radio-button-checkmark {
+            border: 2px solid rgb(57, 151, 97);
+        }
+
+        label.radio-button-container > span.radio-button-checkmark {
+            align-items: center;
+            display: flex;
+            justify-content: center;
+            border: 2px solid rgb(67, 161, 107);
+            border-radius: 50%;
+            min-height: 2em;
+            min-width: 2em;
+        }
+
+    label.radio-button-container > input:checked ~ span.radio-button-checkmark {
+        border: 2px solid rgb(67, 107, 161);
+    }
+
+    label.radio-button-container > input:checked ~ span.radio-button-checkmark > span {
+        background: rgb(67, 107, 161);
+        border-radius: 50%;
+        height: 1.5em;
+        width: 1.5em;
+    }
+
+    label.radio-button-container > input:checked {
+        cursor: default;
+    }
+

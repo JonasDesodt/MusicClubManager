@@ -1,98 +1,112 @@
-﻿@page "/performances/create/lineup"
+﻿@page "/performances/create/lineup/select"
 
-@layout MusicClubManager.Blazor.Layout.PerformanceCreateLayout
+@layout PerformanceLayout
 
 @inject ILineupService LineupApiService
 
-<section id="lineup">
-    <h3>Lineup</h3>
-
-    @if (_lineupResult is not null)
+<section>
+    @if (_serviceResult?.Data is { } lineupResults)
     {
-        <p>@_lineupResult.Name (id: @_lineupResult.Id)</p>
-    }
-    else
-    {
-        <p>Lineup selected</p>
-    }
-
-    <div>
-        <button type="button" @onclick="() => _isNewLineupOpen = true">New</button>
-        <button type="button" @onclick="() => _isSelectLineupOpen = true">Select</button>
-    </div>
-
-    @if (_isNewLineupOpen)
-    {
-        <button type="button" @onclick="() => _isNewLineupOpen = false">Close new</button>
-
-        <LineupCreateEditForm Model="Context.LineupFormModel" OnPosted="HandleOnLineupPosted" />
-    }
-
-    @if (_isSelectLineupOpen)
-    {
-        <button type="button" @onclick="() => _isSelectLineupOpen = false">Close select</button>
-
-        <LineupFilterForm Model="Context.LineupFilter" OnFilter="(lineupFilter) => FetchLineups(Context.LineupPaginationContext, lineupFilter)" />
-
-        @if (_lineupResults is not null && _lineupResults.Count > 0)
+        @if (_areFiltersOpen)
         {
-            <div>
-                <h4>@Context.LineupPaginationContext.TotalCount results</h4>
+            <ul>
+                <li>
+                    <h4>Filters</h4>
+                </li>
 
-                <ul>
-                    <InputRadioGroup Name="@nameof(PerformanceContext.LineupId)" @bind-Value:get="Context.LineupId" @bind-Value:set="SetLineupResult">
-                        @foreach (var lineupResult in _lineupResults)
-                        {
-                            <li>
-                                <label>
-                                    <InputRadio Name="@nameof(PerformanceContext.LineupId)" Value="lineupResult.Id" />
-                                    <NavLink href="/">
-                                        <span>Id: @lineupResult.Id</span>
-                                        <span><b>Name: @lineupResult.Name</b></span>
-                                        <span>Doors: @lineupResult.Doors</span>
-                                    </NavLink>
-                                </label>
+                <li>
+                    <button @onclick="() => _areFiltersOpen = false">Results (@_serviceResult?.TotalCount found)</button>
+                </li>
+            </ul>
 
-                                <ul>
-                                    @foreach (var performance in lineupResult.PagedLineupPerformanceResult.Data)
-                                    {
-                                        <li>@performance.Artist?.Name</li>
-                                    }
-                                </ul>
-
-                                <PaginationSlim Context="new PaginationContext { Page = (int)lineupResult.PagedLineupPerformanceResult.Page, PageSize = (int)lineupResult.PagedLineupPerformanceResult.PageSize, TotalCount = (int)lineupResult.PagedLineupPerformanceResult.TotalCount}"
-                                                OnPageChanged="(context) => FetchLineup(lineupResult.Id, context)" />
-                            </li>
-                        }
-                    </InputRadioGroup>
-                </ul>
-            </div>
+            <LineupFilterForm Model="Context.LineupFilter" OnFilter="(lineupFilter) => FetchLineups(Context.LineupPaginationContext, lineupFilter)" />
         }
         else
         {
-            if (Context.LineupResults is null)
+            <ul>
+                <li>
+                    <button @onclick="() => _areFiltersOpen = true">Filters </button>
+                </li>
+
+                <li>
+                    <h4>Results (@_serviceResult?.TotalCount found)</h4>
+                </li>
+            </ul>
+
+            @if (lineupResults.Count > 0)
             {
-                <p>Loading... </p>
+                <div>
+                    <ul>
+                        <InputRadioGroup Name="@nameof(PerformanceContext.LineupId)" @bind-Value:get="Context.LineupId" @bind-Value:set="SetLineupResult">
+                            @foreach (var lineupResult in lineupResults)
+                            {
+                                <li class="@(Context.LineupId == lineupResult.Id ? "selected" : "")">
+
+                                    <div>
+                                        <label class="radio-button-container">
+                                            <InputRadio Name="@nameof(PerformanceContext.LineupId)" Value="lineupResult.Id" />
+
+                                            <span class="radio-button-checkmark">
+                                                <span></span>
+                                            </span>
+
+                                            <h5>
+                                                @lineupResult.Doors.ToLongDateString(), at @lineupResult.Doors.ToShortTimeString()
+                                            </h5>
+                                        </label>
+
+                                        <NavLink class="button">Edit</NavLink>
+                                    </div>
+
+                                    <ul>
+                                        <li>Doors: @lineupResult.Doors.ToShortTimeString()</li>
+                                        <li>Name: @(lineupResult.Name ?? "/")</li>
+                                        <li>Sold out: @lineupResult.IsSoldOut</li>
+                                    </ul>
+
+                                    <div>
+                                        <ul>
+                                            @foreach (var performance in lineupResult.PagedLineupPerformanceResult.Data)
+                                            {
+                                                <li>
+                                                    <span>@(performance.Start?.ToShortTimeString() ?? "--:--")</span>
+                                                    <span> @performance.Artist?.Name</span>
+                                                </li>
+                                            }
+                                        </ul>
+
+                                        <PaginationSlim Context="new PaginationContext { Page = (int)lineupResult.PagedLineupPerformanceResult.Page, PageSize = (int)lineupResult.PagedLineupPerformanceResult.PageSize, TotalCount = (int)lineupResult.PagedLineupPerformanceResult.TotalCount}"
+                                                        OnPageChanged="(context) => FetchLineup(lineupResult.Id, context)" />
+                                    </div>
+
+
+                                </li>
+                            }
+                        </InputRadioGroup>
+                    </ul>
+
+                    <Pagination Context="Context.LineupPaginationContext" OnPageChanged="(paginationContext) => FetchLineups(paginationContext, Context.LineupFilter)" />
+                </div>
             }
             else
             {
-                <p>There are no lineups</p>
+                <p>No results found</p>
             }
         }
 
-        <Pagination Context="Context.LineupPaginationContext" OnPageChanged="(paginationContext) => FetchLineups(paginationContext, Context.LineupFilter)" />
     }
-
 </section>
 
 @code {
     [CascadingParameter]
     public required PerformanceContext Context { get; set; }
 
-    private IList<LineupResult>? _lineupResults;
+    [CascadingParameter]
+    public bool IsValid { get; set; }
 
-    private bool _isNewLineupOpen = false;
-    private bool _isSelectLineupOpen = false;
+    private PagedServiceResult<IList<LineupResult>>? _serviceResult;
+
+    private bool _areFiltersOpen = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -100,7 +114,7 @@
 
         if (Context.LineupId is not null || Context.LineupId > 0)
         {
-            _lineupResult = _lineupResults?.FirstOrDefault(a => a.Id == Context.LineupId);
+            _lineupResult = _serviceResult?.Data?.FirstOrDefault(a => a.Id == Context.LineupId);
             if (_lineupResult is null)
             {
                 await FetchLineup((int)Context.LineupId);
@@ -115,7 +129,12 @@
     {
         Context.LineupId = value;
 
-        _lineupResult = _lineupResults?.FirstOrDefault(a => a.Id == value);
+        _lineupResult = _serviceResult?.Data?.FirstOrDefault(a => a.Id == value);
+
+        if (Context.LineupId is not null && Context.ArtistId is not null)
+        {
+            Context.IsValid = true;
+        }
     }
 
     private async Task FetchLineup(int id)
@@ -125,39 +144,29 @@
         _lineupResult = serviceResult.Data;
     }
 
-    private async Task HandleOnLineupPosted(LineupResult lineupResult)
-    {
-        Context.LineupFormModel = new LineupCreateEditFormModel();
-
-        Context.LineupId = lineupResult.Id;
-        _lineupResult = lineupResult;
-
-        await FetchLineups(Context.LineupPaginationContext, Context.LineupFilter);
-    }
-
     private async Task FetchLineups(PaginationContext paginationContext, LineupFilter lineupFilter)
     {
         var serviceResult = await LineupApiService.GetAll(new PaginationRequest { Page = (uint)paginationContext.Page, PageSize = (uint)paginationContext.PageSize }, lineupFilter);
 
         Context.LineupPaginationContext = new PaginationContext { Page = (int)serviceResult.Page, PageSize = (int)serviceResult.PageSize, TotalCount = (int)serviceResult.TotalCount };
 
-        _lineupResults = serviceResult.Data;
+        _serviceResult = serviceResult;
     }
 
     private async Task FetchLineup(int id, PaginationContext paginationContext)
     {
-        if (_lineupResults is null)
+        if (_serviceResult?.Data is not { } lineupResults)
         {
             return;
         }
 
         var serviceResult = await LineupApiService.Get(id, new PaginationRequest { Page = (uint)paginationContext.Page, PageSize = (uint)paginationContext.PageSize });
 
-        if(serviceResult.Data is not { } lineupResult)
+        if (serviceResult.Data is not { } lineupResult)
         {
             return;
         }
 
-        _lineupResults[_lineupResults.ToList().FindIndex(l => l.Id == serviceResult.Data?.Id)] = lineupResult;
+        lineupResults[lineupResults.ToList().FindIndex(l => l.Id == serviceResult.Data?.Id)] = lineupResult;
     }
 }
