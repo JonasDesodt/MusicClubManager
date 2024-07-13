@@ -1,0 +1,52 @@
+﻿@page "/lineups/create/performances/create-performance/select-artist"
+
+@layout MusicClubManager.Cms.Blazor.Layout.Lineup.CreateLayout
+
+@inject IArtistService ArtistApiService
+@inject NavigationManager NavigationManager
+
+<h3>Select artist</h3>
+
+@if (_serviceResult?.Data is { } artistResults)
+{
+    <ul>
+        @foreach (var artistResult in artistResults)
+        {
+            <li>
+                <button @onclick="() => Select(artistResult)">@artistResult.Name</button>
+            </li>
+        }
+    </ul>
+
+}
+else
+{
+    <p>Loading...</p>
+}
+
+<NavLink href="lineups/create/performances/create-performance">Return</NavLink>
+
+@code {
+    [CascadingParameter]
+    public CreateLineupContext? CreateLineupContext { get; set; }
+
+    private ServiceResult<IList<ArtistResult>>? _serviceResult;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _serviceResult = await ArtistApiService.GetAll(new PaginationRequest { Page = 1, PageSize = 12 }, new ArtistFilter { });
+
+        await base.OnInitializedAsync();
+    }
+
+    private void Select(ArtistResult artistResult)
+    {
+        if(CreateLineupContext is not null)
+        {
+            CreateLineupContext.CreateEditPerformanceFormModel.ArtistId = artistResult.Id;
+            CreateLineupContext.CreateEditPerformanceFormModel.ArtistName = artistResult.Name;
+
+            NavigationManager.NavigateTo("lineups/create/performances/create-performance");
+        }
+    }
+}

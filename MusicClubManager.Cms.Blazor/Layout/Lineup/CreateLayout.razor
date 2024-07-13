@@ -1,0 +1,42 @@
+﻿@inherits LayoutComponentBase
+
+@layout MainLayout
+
+@inject NavigationManager NavigationManager
+
+<h2>Create lineup</h2>
+
+<div class="@_currentStep">
+    <div><span></span><p>1</p><span></span></div>
+    <div><span></span></div>
+
+    <div><span></span><p>2</p><span></span></div>
+    <div><span></span></div>
+
+    <div><span></span><p>3</p><span></span></div>
+
+    <div><p>Properties</p></div>
+
+    <div><p>Performances</p></div>
+
+    <div><p>Summary</p></div>
+</div>
+
+<CascadingValue Value="CreateLineupContext">
+    @Body
+</CascadingValue>
+
+
+@code {
+    public CreateLineupContext CreateLineupContext { get; set; } = new();
+
+    private string _currentStep => NavigationManager.ToBaseRelativePath(NavigationManager.Uri).Split('/').Last() switch
+    {
+        "performances" => "performances",
+        "select-artist" => "performances",
+        "edit-performance" => "performances",
+        "create-performance" => "performances",
+        "summary" => "summary",
+        _ => "properties",
+    };
+}

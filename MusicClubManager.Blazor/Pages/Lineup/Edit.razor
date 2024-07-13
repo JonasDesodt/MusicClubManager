@@ -1,0 +1,113 @@
+﻿@page "/lineups/edit/{id:int}"
+
+@attribute [Authorize(Policy = "ValidTokenOnly")]
+
+@inject ILineupService LineupApiService
+@inject NavigationManager NavigationManager
+
+@if (_lineupRequest is not null)
+{
+    <h2>@_lineupRequest.Name</h2>
+
+    <EditForm Model="_lineupRequest" OnValidSubmit="Post">
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+        <ValidationSummary></ValidationSummary>
+
+        <div>
+            <label for="Name">Name</label>
+
+            <InputText @bind-Value="_lineupRequest.Name" id="Name" />
+        </div>
+
+        <div>
+            <label for="Doors">Doors</label>
+
+            <InputDate Type="InputDateType.DateTimeLocal" @bind-Value="_lineupRequest.Doors" id="Doors" />
+        </div>
+
+        <div>
+            @if (_hasDeleteRequest)
+            {
+                <p>Are you sure you want to delete @_lineupRequest.Name (id: @Id)?</p>
+
+                <button type="button" @onclick="() => _hasDeleteRequest = false">No</button>
+
+                <button type="button" @onclick="Delete">Yes</button>
+            }
+            else
+            {
+                <button type="submit">Save</button>
+
+                <button type="button">Undo changes</button>
+
+                <button type="button" @onclick="() => _hasDeleteRequest = true">Delete</button>
+            }
+        </div>
+    </EditForm>
+
+    <h2>Performances</h2>
+
+    <NavLink href="@href">Add performance</NavLink>
+}
+else
+{
+    <p>Loading...</p>
+}
+
+@code {
+    private LineupRequest? _lineupRequest;
+
+    private bool _hasDeleteRequest;
+
+    [Parameter]
+    public int Id { get; set; }
+
+    private string href => $"/lineups/edit/{Id}/performances/create";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await FetchLineup();
+
+        await base.OnInitializedAsync();
+    }
+
+    private async Task FetchLineup()
+    {
+        if ((await LineupApiService.Get(Id)).Data is not { } result)
+        {
+            return;
+        }
+
+        Id = result.Id;
+
+        _lineupRequest = new LineupRequest
+            {
+                Name = result.Name,
+                Doors = result.Doors
+            };
+    }
+
+    private async Task Post()
+    {
+        if (_lineupRequest is null)
+        {
+            return;
+        }
+
+        var serviceResult = await LineupApiService.Update(Id, _lineupRequest);
+        if (serviceResult.Messages is null)
+        {
+            NavigationManager.NavigateTo("/lineups");
+        }
+    }
+
+    private async Task Delete()
+    {
+        var serviceResult = await LineupApiService.Delete(Id);
+        if (serviceResult.Messages is null)
+        {
+            NavigationManager.NavigateTo("/lineups");
+        }
+    }
+}
+

@@ -1,0 +1,41 @@
+﻿@if (Model is not null && Model.PagedLineupPerformanceResult.Data is { } performanceResults)
+{
+    <h3>@(Model.Name ?? @Model.Doors.ToShortDateString())</h3>
+
+    <h4>Properties</h4>
+
+    <ul>
+        <li>
+            <p>Date: </p>
+            <p>@Model.Doors.ToShortDateString();</p>
+
+            <p>Doors: </p>
+            <p>@Model.Doors.ToShortTimeString();</p>
+
+            <p>Sold out: </p>
+            <p>@(Model.IsSoldOut ? "Yes" : "No") </p>
+        </li>
+    </ul>
+
+    <h4>Performances</h4>
+
+    <ul>       
+        @foreach(var performanceResult in performanceResults)
+        {
+            if(performanceResult.ArtistResult is not { } artistResult)
+            {
+                continue;
+            }
+
+            <li>@(performanceResult.Start?.ToShortTimeString() ?? "--:--") @artistResult.Name (id:@artistResult.Id)</li>
+        }
+    </ul>
+} else
+{
+    <p>Something went wrong.</p>
+}
+
+@code {
+    [Parameter, EditorRequired]
+    public LineupResult? Model { get; set; }
+}

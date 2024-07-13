@@ -1,0 +1,69 @@
+﻿@page "/lineups/create/properties"
+
+@layout MusicClubManager.Cms.Blazor.Layout.Lineup.CreateLayout
+
+@inject NavigationManager NavigationManager
+
+<h3>Properties</h3>
+
+@if (CreateLineupContext?.PropertiesFormModel is { } model)
+{
+    @*  <EditForm Model="model" OnValidSubmit="@(() => NavigationManager.NavigateTo("lineups/create/performances"))"> *@
+    <EditForm Model="model" OnValidSubmit="HandleOnValidSubmit" Context="context">
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+
+        <ValidationSummary></ValidationSummary>
+
+        <div>
+            <div>
+                <label for="name">Name</label>
+
+                <InputText @bind-Value="model.Name" id="name" />
+            </div>
+
+            <div>
+                <label for="doors">Doors <span>(required)</span></label>
+
+                <InputDate Type="InputDateType.DateTimeLocal" @bind-Value="model.Doors" id="doors" />
+            </div>
+        </div>
+
+        <ul>
+            <li><button type="submit">Create</button></li>
+        </ul>
+
+        <ul>
+            @if (context.IsValid(context.Field("Doors")))
+            {
+                <li><NavLink href="/lineups/create/performances">Next</NavLink></li>
+            }
+
+        </ul>
+    </EditForm>
+}
+else
+{
+    <p>Something went wrong.</p>
+}
+
+@code {
+    [CascadingParameter]
+    public CreateLineupContext? CreateLineupContext { get; set; }
+
+    private void HandleOnValidSubmit()
+    {
+        if (CreateLineupContext is not { } context)
+        {
+            return;
+        }
+
+        context.SavedPropertiesFormModel = new CreateLineupPropertiesFormModel
+            {
+                Doors = context.PropertiesFormModel.Doors,
+                IsSoldOut = context.PropertiesFormModel.IsSoldOut,
+                Name = context.PropertiesFormModel.Name
+            };
+
+        context.PropertiesFormModel = new();
+    }
+}

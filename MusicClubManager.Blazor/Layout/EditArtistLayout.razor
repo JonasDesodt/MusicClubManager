@@ -1,0 +1,43 @@
+﻿@inherits LayoutComponentBase
+
+@layout MainLayout
+
+@inject NavigationManager NavigationManager
+
+<section>
+    <h2>Artist</h2>
+
+    <ul>
+        <li>
+            @{
+                var propertiesHref = $"/artists/{Context.Id}/properties";
+            }
+
+            <NavLink href="@propertiesHref">Properties</NavLink>
+        </li>
+
+        <li>
+            @{
+                var lineupsHref = $"/artists/{Context.Id}/lineups";
+            }
+
+            <NavLink href="@lineupsHref">Lineups</NavLink>
+        </li>
+    </ul>
+
+    <CascadingValue Value="Context">
+        @Body
+    </CascadingValue>
+</section>
+
+@code {
+    public ArtistContext Context { get; set; } = new ArtistContext();
+
+    protected override void OnParametersSet()
+    {
+        if ((this.Body?.Target as RouteView)?.RouteData.RouteValues?.TryGetValue("id", out object? param) is true && param is int id)
+        {
+            Context.Id = id;
+        }
+    }
+}

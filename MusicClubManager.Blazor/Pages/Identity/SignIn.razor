@@ -1,0 +1,73 @@
+﻿@page "/sign-in"
+
+@inject IIdentityService IdentityApiService
+@inject NavigationManager NavigationManager
+@inject LocalStorageService LocalStorageService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<section>
+    <h2>Sign in</h2>
+
+    <EditForm Model="Model" OnValidSubmit="ValidSubmit">
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+        <ValidationSummary></ValidationSummary>
+
+        @if (_signInFailed)
+        {
+            <p>Sign in failed</p>
+        }
+
+        <div>
+            <label for="Email">Email</label>
+            <InputText @bind-Value="Model.Email" type="email" id="Email" />
+        </div>
+
+        <div>
+            <label for="Password">Password</label>
+            <InputText @bind-Value="Model.Password" type="password" id="Password" />
+        </div>
+
+        <div>
+            <button type="submit">Sign in</button>
+        </div>
+    </EditForm>
+</section>
+
+
+
+@code {
+    [SupplyParameterFromQuery]
+    private string? ReturnUrl { get; set; }
+
+    private bool _signInFailed = false;
+
+    public TokenRequest Model { get; set; } = new TokenRequest
+        {
+            Email = string.Empty,
+            Password = string.Empty
+        };
+
+    private async Task ValidSubmit()
+    {
+        var result = await IdentityApiService.GetToken(Model);
+        if (result.Messages?.Any() is true || string.IsNullOrWhiteSpace(result.Data?.AccessToken) is true)
+        {
+            _signInFailed = true;
+
+            return;
+        }
+
+        await LocalStorageService.SetItem<LocalStorageToken>("Token", new LocalStorageToken
+            {
+                AccessToken = result.Data.AccessToken,
+                ExpiresIn = result.Data.ExpiresIn,
+                TokenType = result.Data.TokenType,
+                Received = DateTime.UtcNow
+
+            });
+
+        var state = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+
+        NavigationManager.NavigateTo(ReturnUrl ?? "/");
+    }
+}

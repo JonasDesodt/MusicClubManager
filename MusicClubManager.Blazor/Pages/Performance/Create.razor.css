@@ -1,0 +1,22 @@
+﻿section {
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
+}
+
+section > ::deep form > div:first-of-type {
+    flex-direction: row;
+}
+
+section > ::deep form > div >  button.open {
+    background-color: rgb(0,150,0);
+    color: rgb(255,255,255);
+}
+
+section > ::deep form > section.open {
+    display: flex;
+}
+
+section > ::deep form > section.closed {
+    display: none;
+}

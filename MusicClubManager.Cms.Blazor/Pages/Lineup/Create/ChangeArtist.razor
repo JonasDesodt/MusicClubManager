@@ -1,0 +1,55 @@
+﻿@page "/lineups/create/performances/edit-performance/{index:int}/change-artist"
+
+@layout MusicClubManager.Cms.Blazor.Layout.Lineup.CreateLayout
+
+@inject IArtistService ArtistApiService
+@inject NavigationManager NavigationManager
+
+<h3>Change artist</h3>
+
+@if (_serviceResult?.Data is { } artistResults)
+{
+    <ul>
+        @foreach (var artistResult in artistResults)
+        {
+            <li>
+                <button @onclick="() => Change(artistResult)">@artistResult.Name</button>
+            </li>
+        }
+    </ul>
+
+}
+else
+{
+    <p>Loading...</p>
+}
+
+<NavLink href="lineups/create/performances/create-performance">Return</NavLink>
+
+@code {
+    [CascadingParameter]
+    public CreateLineupContext? CreateLineupContext { get; set; }
+
+    [Parameter]
+    public int Index { get; set; }
+
+    private ServiceResult<IList<ArtistResult>>? _serviceResult;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _serviceResult = await ArtistApiService.GetAll(new PaginationRequest { Page = 1, PageSize = 12 }, new ArtistFilter { });
+
+        await base.OnInitializedAsync();
+    }
+
+    private void Change(ArtistResult artistResult)
+    {
+        if (CreateLineupContext is not null && Index >= 0 && Index < CreateLineupContext.SavedPerformanceFormModels.Count)
+        {
+            CreateLineupContext.SavedPerformanceFormModels[Index].ArtistId = artistResult.Id;
+            CreateLineupContext.SavedPerformanceFormModels[Index].ArtistName = artistResult.Name;
+
+            NavigationManager.NavigateTo($"lineups/create/performances/edit-performance/{Index}");
+        }
+    }
+}

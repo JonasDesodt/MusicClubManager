@@ -1,0 +1,72 @@
+﻿nav {
+    background-color: rgb(201,107,147);
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+nav > div {
+    display: flex;
+    flex-direction: row;
+}
+
+    nav > div > * {
+        background-color: rgb(161,67,107);
+        color: rgb(255,255,255);
+        padding: 16px;
+        font-size: 1.2em;
+        text-transform: uppercase;
+    }
+
+    nav > div > button {
+        border: none;
+        cursor: pointer;
+    }
+
+        nav > div > button:hover {
+            background-color: rgb(141,47,87);
+        }
+
+        nav > div > h2 {
+            flex-grow: 1;
+        }
+
+nav > ul {
+    display: flex;
+    flex-direction: column;
+    list-style-type: none;
+}
+
+nav ul > li {
+    display: flex;
+    flex-direction: column;
+}
+
+nav > ul > li > ::deep * {
+    background-color: rgb(67, 161, 107);
+    color: rgb(255,255,255);
+    font-weight: bold;
+    padding: 16px;
+    text-transform: uppercase;
+}
+
+    nav > ul > li > ::deep *:hover {
+        background-color: rgb(47, 141, 87);
+    }
+
+nav > ul > li > ::deep a {
+    text-decoration: none;
+}
+
+nav > ul > li > button {
+    border: none;
+    cursor: pointer;
+    text-align: left;
+}
+
+nav > ul > li > ::deep a.active {
+    background-color: rgb(67, 107, 161);
+}
+
+    nav > ul > li > ::deep a.active:hover {
+        background-color: rgb(47, 87, 141);
+    }

@@ -1,0 +1,108 @@
+﻿@page "/artists/edit/{id:int}"
+
+@attribute [Authorize(Policy = "ValidTokenOnly")]
+
+@inject IArtistService ArtistApiService
+@inject NavigationManager NavigationManager
+
+@if (_artistRequest is not null)
+{
+    <h2>@_artistRequest.Name</h2>
+
+    <EditForm Model="_artistRequest" OnValidSubmit="Post">
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+        <ValidationSummary></ValidationSummary>
+
+        <div>
+            <label for="Name">Name</label>
+
+            <InputText @bind-Value="_artistRequest.Name" id="Name" />
+        </div>
+
+        <div>
+            <label for="Description">Description</label>
+
+            <InputTextArea @bind-Value="_artistRequest.Description" id="Description" />
+        </div>
+
+        <div>
+            @if (_hasDeleteRequest)
+            {
+                <p>Are you sure you want to delete @_artistRequest.Name (id: @Id)?</p>
+
+                <button type="button" @onclick="() => _hasDeleteRequest = false">No</button>
+
+                <button type="button" @onclick="Delete">Yes</button>
+            }
+            else
+            {
+                <button type="submit">Save</button>
+
+                <button type="button">Undo changes</button>
+
+                <button type="button" @onclick="() => _hasDeleteRequest = true">Delete</button>
+            }
+        </div>
+    </EditForm>    
+}
+else
+{
+    <p>Loading...</p>
+}
+<h2>Edit</h2>
+
+@code {
+    private ArtistRequest? _artistRequest;
+
+    private bool _hasDeleteRequest;
+
+    [Parameter]
+    public int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await FetchArtist();
+
+        await base.OnInitializedAsync();
+    }
+
+    private async Task FetchArtist()
+    {
+        if ((await ArtistApiService.Get(Id)).Data is not { } result)
+        {
+            return;
+        }
+
+        Id = result.Id;
+
+        _artistRequest = new ArtistRequest
+            {
+                Name = result.Name,
+                Description = result.Description
+            };
+    }
+
+    private async Task Post()
+    {
+        if (_artistRequest is null)
+        {
+            return;
+        }
+
+        var serviceResult = await ArtistApiService.Update(Id, _artistRequest);
+        if (serviceResult.Messages is null)
+        {
+            NavigationManager.NavigateTo("/artists");
+        }
+    }
+
+    private async Task Delete()
+    {
+        var serviceResult = await ArtistApiService.Delete(Id);
+        if (serviceResult.Messages is null)
+        {
+            NavigationManager.NavigateTo("/artists");
+        }
+    }
+}
+

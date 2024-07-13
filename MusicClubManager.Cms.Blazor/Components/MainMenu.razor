@@ -1,0 +1,53 @@
+﻿@inject NavigationManager NavigationManager
+
+<nav>
+    @if (_route.Equals(""))
+    {
+        <div>
+            <h2>Main menu</h2>
+        </div>
+
+        <ul>
+            <li>
+                <NavLink href="/" ActiveClass="active" Match="NavLinkMatch.All" @onclick="()=> OnNavigationStarted.InvokeAsync()">Home</NavLink>
+            </li>
+
+            <li>
+                <button @onclick="@(() => _route = "lineups")">Lineups</button>
+            </li>
+        </ul>
+    }
+
+    @if (_route.Contains("lineups"))
+    {
+        <div>
+            <button @onclick="@(() => _route = "")">&#8592</button>
+
+            <h2>Lineups</h2>
+        </div>
+
+        <ul>
+            <li>
+                <NavLink href="lineups/create" ActiveClass="active" @onclick="()=> OnNavigationStarted.InvokeAsync()" >Create</NavLink>
+            </li>
+
+            <li>
+                <NavLink href="lineups" ActiveClass="active" @onclick="()=> OnNavigationStarted.InvokeAsync()">Search</NavLink>
+            </li>
+        </ul>
+    }
+</nav>
+
+@code {
+    [Parameter]
+    public EventCallback OnNavigationStarted { get; set; }
+
+    private string _route = "";
+
+    protected override void OnParametersSet()
+    {
+        _route = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
+
+        base.OnParametersSet();
+    }
+}

@@ -1,0 +1,47 @@
+﻿<div>
+    @if (Context.TotalCount > 1)
+    {
+        <ul class="left buttons">
+            @if (Context.Page > 1)
+            {
+                <li class="previous">
+                    <button @onclick="() => HandleOnClick(--Context.Page)" type="button">
+                        Previous
+                    </button>
+                </li>
+            }
+        </ul>
+        <ul class="right buttons">
+
+            @if (Context.Page < TotalPages)
+            {
+                <li class="next">
+                    <button @onclick="() => HandleOnClick(++Context.Page)" type="button">
+                        Next
+                    </button>
+                </li>
+            }
+        </ul>
+    }
+</div>
+
+
+
+
+
+@code {
+    [Parameter, EditorRequired]
+    public required PaginationContext Context { get; set; }
+
+    [Parameter]
+    public EventCallback<PaginationContext> OnPageChanged { get; set; }
+
+    private int TotalPages => (int)Math.Ceiling(Context.TotalCount / (decimal)Context.PageSize);
+
+    private async Task HandleOnClick(int page)
+    {
+        Context.Page = page;
+
+        await OnPageChanged.InvokeAsync(Context);
+    }
+}

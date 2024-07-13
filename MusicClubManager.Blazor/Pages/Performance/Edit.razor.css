@@ -1,0 +1,17 @@
+﻿section > ::deep form > section#properties,
+section > ::deep form > section#lineup,
+section > ::deep form > section#artist {
+    display: none;
+}
+
+section > ::deep form.properties > section#properties,
+section > ::deep form.lineup > section#lineup,
+section > ::deep form.artist > section#artist {
+    display: flex;
+}
+
+section {
+    display: flex;
+    flex-direction: column;
+}
+

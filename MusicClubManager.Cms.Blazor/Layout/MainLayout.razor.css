@@ -1,0 +1,77 @@
+﻿header {
+    background-color: rgb(161,107,67);
+    display: flex;
+    flex-direction: column;
+}
+
+    header > div {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+        header > div > h1 {
+            display: flex;
+            flex-grow: 1;
+        }
+
+            header > div > h1 > ::deep a {
+                color: rgb(255,255,255);
+                display: flex;
+                flex-grow: 1;
+                padding: 16px;
+                text-decoration: none;
+            }
+
+                header > div > h1 > ::deep a:hover {
+                    background-color: rgb(141,87,47);
+                }
+
+        header > div > button {
+            background-color: transparent;
+            border: none;
+            color: rgb(255,255,255);
+            cursor: pointer;
+            padding: 16px;
+        }
+
+            header > div > button:hover {
+                background-color: rgb(141,87,47);
+            }
+
+    header > ::deep nav {
+        display: none;
+    }
+
+    header.menu-open {
+        flex-grow: 1;
+    }
+
+        header.menu-open > ::deep nav {
+            display: flex;
+        }
+
+        header.menu-open ~ main {
+            display: none;
+        }
+
+main {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    gap: 2em;
+    padding: 1em;
+}
+
+footer {
+    background-color: rgb(161,107,67);
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+}
+
+    footer > * {
+        color: rgb(255,255,255);
+        font-size: .8em;
+    }

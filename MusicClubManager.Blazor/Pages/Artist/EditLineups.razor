@@ -1,0 +1,170 @@
+﻿@page "/artists/{id:int}/lineups"
+
+@layout EditArtistLayout
+
+@attribute [Authorize(Policy = "ValidTokenOnly")]
+
+@inject ILineupService LineupApiService
+@inject IPerformanceService PerformanceApiService
+
+<section>
+    <h3>Lineups</h3>
+
+    <ul>
+        <li>
+            @if (Context.AreLineupFiltersOpen)
+            {
+                <h4>Filters</h4>
+
+                <button @onclick="() => Context.AreLineupFiltersOpen = false">Results</button>
+            }
+            else
+            {
+                <button @onclick="() => Context.AreLineupFiltersOpen = true">Filters</button>
+
+                <h4>Results</h4>
+            }
+
+        </li>
+    </ul>
+
+
+    @if (Context.AreLineupFiltersOpen)
+    {
+        <LineupFilterForm Model="Context.LineupFilter" OnFilter="(lineupFilter) => FetchAll(Context.LineupPaginationContext, lineupFilter)" />
+    }
+    else
+    {
+        @if (_serviceResult?.Data is { } lineupResults)
+        {
+            <div>
+                <ul>
+                    @foreach (var lineupResult in lineupResults)
+                    {
+                        <li>
+                            <h5>@lineupResult.Doors.ToLongDateString()</h5>
+
+                            <ul>
+                                <li>Name: @lineupResult.Name</li>
+                                <li>Doors:@lineupResult.Doors.ToShortTimeString()</li>
+                                <li>Soldout: @lineupResult.IsSoldOut</li>
+                            </ul>
+
+                            @if (lineupResult.PagedLineupPerformanceResult.Data is { } lineupPerformanceResults)
+                            {
+                                var paginationContext = new PaginationContext { Page = (int)lineupResult.PagedLineupPerformanceResult.Page, PageSize = (int)lineupResult.PagedLineupPerformanceResult.PageSize, TotalCount = (int)lineupResult.PagedLineupPerformanceResult.TotalCount };
+
+                                <div>
+                                    <ul>
+                                        @foreach (var lineupPerformanceResult in lineupPerformanceResults)
+                                        {
+
+                                            @if (lineupPerformanceResult.ArtistResult is { } artistResult)
+                                            {
+                                                @if (artistResult.Id == Id)
+                                                {
+                                                    <li>
+                                                        <NavLink>
+                                                            <span><b>@(lineupPerformanceResult.Start != null ? lineupPerformanceResult.Start.Value.ToShortTimeString() : "--:--")</b></span>
+
+                                                            <span><b>@artistResult.Name</b></span>
+                                                        </NavLink>
+
+                                                        <button @onclick="() => RemovePerformance(lineupPerformanceResult.Id, lineupResult.Id, paginationContext)">Remove</button>
+                                                    </li>
+                                                }
+                                                else
+                                                {
+                                                    <li>
+                                                        <NavLink>
+                                                            <span>@(lineupPerformanceResult.Start != null ? lineupPerformanceResult.Start.Value.ToShortTimeString() : "--:--")</span>
+
+                                                            <span>@artistResult.Name</span>
+                                                        </NavLink>
+                                                    </li>
+                                                }
+                                            }
+                                        }
+                                    </ul>
+
+
+                                    <button @onclick="() => AddPerformance(Id, lineupResult.Id, paginationContext)">Add</button>
+
+                                    <PaginationSlim Context="paginationContext"
+                                                    OnPageChanged="async (context) => {paginationContext = context; await Fetch(lineupResult.Id, context);}" />
+                                </div>
+                            }
+                        </li>
+                    }
+                </ul>
+
+                <Pagination Context="Context.LineupPaginationContext" OnPageChanged="(paginationContext) => FetchAll(paginationContext, Context.LineupFilter)" />
+            </div>
+        }
+    }
+</section>
+
+@code {
+    [CascadingParameter]
+    public required ArtistContext Context { get; set; }
+
+    [Parameter]
+    public int Id { get; set; }
+
+    private PagedServiceResult<IList<LineupResult>>? _serviceResult;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Context.LineupFilter.ArtistId = Id;
+
+        await FetchAll(Context.LineupPaginationContext, Context.LineupFilter);
+
+        await base.OnInitializedAsync();
+    }
+
+    private async Task Fetch(int id, PaginationContext paginationContext)
+    {
+        if (_serviceResult?.Data is not { } lineupResults)
+        {
+            return;
+        }
+
+        var serviceResult = await LineupApiService.Get(id, new PaginationRequest { Page = (uint)paginationContext.Page, PageSize = (uint)paginationContext.PageSize });
+
+        if (serviceResult.Data is not { } lineupResult)
+        {
+            return;
+        }
+
+        lineupResults[lineupResults.ToList().FindIndex(l => l.Id == serviceResult.Data?.Id)] = lineupResult;
+    }
+
+    private async Task FetchAll(PaginationContext paginationContext, LineupFilter lineupFilter)
+    {
+        var serviceResult = await LineupApiService.GetAll(new PaginationRequest { Page = (uint)paginationContext.Page, PageSize = (uint)paginationContext.PageSize }, lineupFilter);
+
+        Context.LineupPaginationContext = new PaginationContext { Page = (int)serviceResult.Page, PageSize = (int)serviceResult.PageSize, TotalCount = (int)serviceResult.TotalCount };
+
+        _serviceResult = serviceResult;
+    }
+
+    private async Task AddPerformance(int artistId, int lineupId, PaginationContext paginationContext)
+    {
+        var serviceResult = await PerformanceApiService.Create(new PerformanceRequest { ArtistId = artistId, LineupId = lineupId });
+
+        if (serviceResult?.Data is { } performanceResult)
+        {
+            await Fetch(lineupId, new PaginationContext { Page = paginationContext.Page, PageSize = paginationContext.PageSize, TotalCount = paginationContext.TotalCount });
+        }
+    }
+
+    private async Task RemovePerformance(int performanceId, int lineupId, PaginationContext paginationContext)
+    {
+        var serviceResult = await PerformanceApiService.Delete(performanceId);
+
+        if(serviceResult?.Messages is null)
+        {
+            await Fetch(lineupId, new PaginationContext { Page = paginationContext.Page, PageSize = paginationContext.PageSize, TotalCount = paginationContext.TotalCount });
+        }
+    }
+}

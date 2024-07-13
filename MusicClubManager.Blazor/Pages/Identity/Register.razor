@@ -1,0 +1,79 @@
+﻿@page "/register"
+
+@attribute [Authorize(Roles = "Administrator", Policy = "ValidTokenOnly")]
+
+@inject IIdentityService IdentityApiService
+@inject NavigationManager NavigationManager
+@inject LocalStorageService LocalStorageService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<h2>Register</h2>
+
+<EditForm Model="Model" OnValidSubmit="ValidSubmit">
+    <DataAnnotationsValidator></DataAnnotationsValidator>
+    <ValidationSummary></ValidationSummary>
+
+    @if (_registrationFailed)
+    {
+        <p>Registration failed</p>
+    }
+
+    <div>
+        <label for="Firstname">Firstname</label>
+        <InputText @bind-Value="Model.FirstName" type="text" id="Firstname" />
+    </div>
+
+    <div>
+        <label for="Lastname">Lastname</label>
+        <InputText @bind-Value="Model.LastName" type="text" id="Lastname" />
+    </div>
+
+    <div>
+        <label for="Username">Username</label>
+        <InputText @bind-Value="Model.Username" type="text" id="Username" />
+    </div>
+
+    <div>
+        <label for="Email">Email</label>
+        <InputText @bind-Value="Model.Email" type="email" id="Email" />
+    </div>
+
+    <div>
+        <label for="Password">Password</label>
+        <InputText @bind-Value="Model.Password" type="password" id="Password" />
+    </div>
+
+    <div>
+        <button type="submit">Register</button>
+    </div>
+</EditForm>
+
+@code {
+    [SupplyParameterFromQuery]
+    private string? ReturnUrl { get; set; }
+
+    private bool _registrationFailed = false;
+
+    public RegisterRequest Model { get; set; } = new RegisterRequest
+        {
+            Email = string.Empty,
+            Password = string.Empty,
+            FirstName = string.Empty,
+            LastName = string.Empty,
+            Username = string.Empty,
+        };
+
+    private async Task ValidSubmit()
+    {
+        var result = await IdentityApiService.Register(Model);
+
+        if (result.Messages?.Any() is true)
+        {
+            _registrationFailed = true;
+
+            return;
+        }
+
+        NavigationManager.NavigateTo(ReturnUrl ?? "/");
+    }
+}

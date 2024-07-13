@@ -1,0 +1,62 @@
+﻿@page "/lineups/{lineupId:int}/performances"
+
+@layout LineupLayout
+
+@inject ILineupService LineupApiService
+@inject IPerformanceService PerformanceApiService
+
+<h3>Performances</h3>
+
+@{
+    var href = $"/lineups/{LineupId}/select-artist";
+}
+<NavLink href="@href">Add</NavLink>
+
+@if (_lineupResult?.Data is { } lineupResult && _pagedServiceResult?.Data is { } performanceResults)
+{
+    <h4>Lineup: @(lineupResult.Name ?? @lineupResult.Doors.ToLongDateString())</h4>
+
+    <ul>
+        @foreach (var performanceResult in performanceResults)
+        {
+            <li>
+                @(performanceResult.Start?.ToShortTimeString() ?? "--:--") @performanceResult.ArtistResult.Name (id:@performanceResult.ArtistResult.Id)
+            </li>
+        }
+    </ul>
+
+    <PaginationBig Context="new Pagination { Page = (int)_pagedServiceResult.Page, PageSize = (int)_pagedServiceResult.PageSize, TotalCount = (int)_pagedServiceResult.TotalCount }"
+                   OnPageChanged="(context) => FetchPerformances(LineupId, new PaginationRequest { Page = (uint)context.Page, PageSize = (uint)context.PageSize })" />
+}
+else
+{
+    <p>Loading... </p>
+}
+
+@code {
+    [Parameter]
+    public int LineupId { get; set; }
+
+    private ServiceResult<LineupResult>? _lineupResult;
+
+    private PagedServiceResult<IList<LineupPerformanceResult>>? _pagedServiceResult;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _lineupResult = await LineupApiService.Get(LineupId, new PaginationRequest { Page = 1, PageSize = 5 });
+
+        _pagedServiceResult = await FetchPerformances(LineupId, new PaginationRequest { Page = 1, PageSize = 24 });
+
+        await base.OnParametersSetAsync();
+    }
+
+    private async Task<PagedServiceResult<IList<LineupPerformanceResult>>?> FetchPerformances(int id, PaginationRequest paginationRequest)
+    {
+        if (id > 0)
+        {
+            return _pagedServiceResult = await PerformanceApiService.GetAll(LineupId, paginationRequest, new PerformanceFilter { });
+        }
+
+        return null;
+    }
+}

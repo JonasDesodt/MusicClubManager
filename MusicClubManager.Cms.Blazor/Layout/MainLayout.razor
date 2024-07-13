@@ -1,0 +1,30 @@
+﻿@inherits LayoutComponentBase
+
+<header class="@(_isMenuOpen ? "menu-open" : "")">
+    <div>
+        <h1><NavLink href="/" @onclick="() => _isMenuOpen = false">Music Club Manager</NavLink></h1>
+
+        @if (_isMenuOpen)
+        {
+            <button @onclick="() => _isMenuOpen = false">Close menu</button>
+        }
+        else
+        {
+            <button @onclick="() => _isMenuOpen = true">Open menu</button>
+        }
+    </div>
+
+    <MainMenu OnNavigationStarted="() => _isMenuOpen = false"></MainMenu>
+</header>
+
+<main>
+    @Body
+</main>
+
+<footer>
+    <p>&copy 2024 Music Club Manager</p>
+</footer>
+
+@code {
+    private bool _isMenuOpen = false;
+}

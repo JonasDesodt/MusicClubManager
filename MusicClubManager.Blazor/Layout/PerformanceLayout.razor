@@ -1,0 +1,114 @@
+﻿@inherits LayoutComponentBase
+
+@layout MainLayout
+
+@inject NavigationManager NavigationManager
+
+<CascadingValue Value="_context">
+    <nav>
+        <ul>
+            <li>
+                <NavLink href="performances/create/artist" ActiveClass="active">
+                    <span>1</span>
+                    <span>Artist</span>
+                </NavLink>
+
+                <ul>
+                    <li><NavLink href="performances/create/artist/select" ActiveClass="active">Select</NavLink></li>
+                    <li><NavLink href="performances/create/artist/create" ActiveClass="active">Create</NavLink></li>
+                </ul>
+            </li>
+
+            <li>
+                <NavLink href="performances/create/lineup" ActiveClass="active">
+                    <span>2</span>
+                    <span>Lineup</span>
+                </NavLink>
+
+                <ul>
+                    <li><NavLink href="performances/create/lineup/select" ActiveClass="active">Select</NavLink></li>
+                    <li><NavLink href="performances/create/lineup/create" ActiveClass="active">Create</NavLink></li>
+                </ul>
+            </li>
+
+            <li>
+                <NavLink href="performances/create/properties" ActiveClass="active">
+                    <span>3</span>
+                    <span>Properties</span>
+                </NavLink>
+            </li>
+
+            <li>
+                <NavLink href="performances/create/summary" ActiveClass="active" disabled="@(_context.IsValid ? false : true)">
+                    <span>4</span>
+                    <span>Summary</span>
+                </NavLink>
+            </li>
+        </ul>
+    </nav>
+
+
+    @Body
+
+@*     <div class="buttons">
+        @if (_currentStep == "performances/create/artist")
+        {
+            <p>Previous step</p>
+        }
+        else
+        {
+            <a href="@_previousStep">Previous step</a>
+        }
+
+
+        @if (_currentStep == "performances/create/summary")
+        {
+            <p>Next step</p>
+        }
+        else
+        {
+            <a href="@_nextStep">Next step</a>
+        }
+    </div>
+
+    <div class="buttons">
+        @if (!_context.IsValid)
+        {
+            <p>Submit</p>
+        }
+        else
+        {
+            <button type="submit" for="create_performance">Submit</button>
+        }
+    </div> *@
+</CascadingValue>
+
+@code {
+    private PerformanceContext _context = new() { };
+
+    // private string _currentStep => NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
+
+    // private string _previousStep => _currentStep switch
+    // {
+    //     "summary" => "/properties",
+    //     "properties" => "/lineup/select",
+    //     "performances/create/lineup/select" => "/performances/create/artist",
+    //     "performances/create/lineup/create" => "/performances/create/artist",
+    //     _ => ""
+    // };
+
+    // private string _nextStep => _currentStep switch
+    // {
+    //     "performances/create/artist" => "/performances/create/lineup",
+    //     "lineup" => "/properties",
+    //     "properties" => "/summary",
+    //     _ => ""
+    // };
+
+    protected override void OnInitialized()
+    {
+        _context.OnPropertyChanged += (sender, args) => StateHasChanged(); //unsubscribe?
+
+        base.OnInitialized();
+    }
+}

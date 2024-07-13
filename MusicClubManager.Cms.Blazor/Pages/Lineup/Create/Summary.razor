@@ -1,0 +1,138 @@
+﻿@page "/lineups/create/summary"
+
+@layout MusicClubManager.Cms.Blazor.Layout.Lineup.CreateLayout
+
+@inject IArtistService ArtistApiService
+@inject ILineupService LineupApiService
+@inject IPerformanceService PerformanceApiService
+@inject NavigationManager NavigationManager
+
+<h3>Summary</h3>
+
+@if (_lineupResult is { } lineupDetails)
+{
+
+    <LineupDetails Model="lineupDetails"></LineupDetails>
+
+    <button @onclick="() => Submit()">Submit</button>
+
+    <NavLink href="lineups/create/performances">Previous</NavLink>
+}
+else
+{
+    <p>Loading...</p>
+}
+
+@code {
+    [CascadingParameter]
+    public CreateLineupContext? CreateLineupContext { get; set; }
+
+    private LineupResult? _lineupResult;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if(CreateLineupContext is null)
+        {
+            return;
+        }
+
+        _lineupResult = await FetchDetails(CreateLineupContext);
+
+        await base.OnParametersSetAsync();
+    }
+
+
+    private async Task<LineupResult?> FetchDetails(CreateLineupContext createLineupContext)
+    {
+        if (createLineupContext.PropertiesFormModel.Doors is not { } doors)
+        {
+            return null;
+        }
+
+        var lineupResult = new LineupResult
+            {
+                Doors = doors,
+                Id = 0, //temp hack
+                IsSoldOut = createLineupContext.PropertiesFormModel.IsSoldOut,
+                PagedLineupPerformanceResult = new PagedResult<IList<LineupPerformanceResult>>
+                {
+                    Data = [],
+                    Page = 1,
+                    PageSize = 5,
+                    TotalCount = (uint)createLineupContext.SavedPerformanceFormModels.Count
+                }
+
+            };
+
+        foreach (var performanceFormModel in createLineupContext.SavedPerformanceFormModels)
+        {
+            if (performanceFormModel.ArtistId is not { } artistId)
+            {
+                continue; // TODO: ERROR !!
+            }
+
+            if ((await ArtistApiService.Get(artistId)).Data is not { } artistResult)
+            {
+                continue; // TODO: ERROR !! it should not be possible to submit the lineup
+            }
+
+            lineupResult.PagedLineupPerformanceResult.Data.Add(new LineupPerformanceResult
+                {
+                    Id = 0, //temp hack
+                    Artist = artistResult,
+                    Duration = performanceFormModel.Duration,
+                    Start = performanceFormModel.Start,
+                    Type = performanceFormModel.Type
+                });
+        }
+
+        return lineupResult;
+    }
+
+    private async Task Submit()
+    {
+        if (CreateLineupContext is not { } context)
+        {
+            return;
+        }
+
+
+        if (context.PropertiesFormModel.Doors is not { } doors)
+        {
+            return;
+        }
+
+        var serviceResult = await LineupApiService.Create(new LineupRequest
+            {
+                Doors = doors,
+                IsSoldOut = context.PropertiesFormModel.IsSoldOut,
+                Name = context.PropertiesFormModel.Name
+
+            });
+
+        if (serviceResult.Messages is not null || serviceResult.Data is not { } lineupResult || lineupResult.Id <= 0)
+        {
+            return;
+        }
+
+        foreach (var performance in context.SavedPerformanceFormModels)
+        {
+            if (performance.ArtistId is not { } artistId || artistId <= 0)
+            {
+                continue;
+            }
+
+            await PerformanceApiService.Create(new PerformanceRequest
+                {
+                    ArtistId = artistId,
+                    LineupId = lineupResult.Id,
+                    Start = performance.Start,
+                    Duration = performance.Duration,
+                    Type = performance.Type
+                });
+        }
+
+
+        NavigationManager.NavigateTo("/");
+    }
+}

@@ -1,0 +1,66 @@
+﻿@page "/performances/create/lineup/"
+
+@layout PerformanceLayout
+
+@inject ILineupService LineupApiService
+
+<section>
+    <h3>Selected Lineup</h3>
+
+    @if(_lineupResult is not null)
+    {
+        <h4>@_lineupResult.Doors.ToLongDateString()</h4>
+        
+        <ul>
+            <li>Doors: @_lineupResult.Doors.ToShortTimeString()</li>
+            <li>Name: @(_lineupResult.Name ?? "/")</li>
+            <li>Sold out: @_lineupResult.IsSoldOut</li>
+        </ul>
+
+        <div>
+            <h5>Perfomances</h5>
+
+            <ul>
+                @foreach (var performance in _lineupResult.PagedLineupPerformanceResult.Data)
+                {
+                    <li>
+                        <span>@(performance.Start?.ToShortTimeString() ?? "--:--")</span>
+                        <span> @performance.ArtistResult?.Name</span>
+                    </li>
+                }
+            </ul>
+
+            <PaginationSlim Context="new PaginationContext { Page = (int)_lineupResult.PagedLineupPerformanceResult.Page, PageSize = (int)_lineupResult.PagedLineupPerformanceResult.PageSize, TotalCount = (int)_lineupResult.PagedLineupPerformanceResult.TotalCount}"
+                            OnPageChanged="(context) => FetchLineup(_lineupResult.Id, context)" />
+        </div>
+    } else
+    {
+        <h4>There is no lineup selected</h4>
+    }
+</section>
+
+
+
+@code {
+    [CascadingParameter]
+    public required PerformanceContext Context { get; set; }
+
+    private LineupResult? _lineupResult;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Context.LineupId is { } lineupId && lineupId > 0)
+        {
+            await FetchLineup(lineupId, new PaginationContext { Page = 1, PageSize = 5 });
+        }
+
+        await base.OnInitializedAsync();
+    }
+
+    private async Task FetchLineup(int id, PaginationContext paginationContext)
+    {
+        var serviceResult = await LineupApiService.Get(id, new PaginationRequest { Page = (uint)paginationContext.Page, PageSize = (uint)paginationContext.PageSize });
+
+        _lineupResult = serviceResult.Data;
+    }
+}

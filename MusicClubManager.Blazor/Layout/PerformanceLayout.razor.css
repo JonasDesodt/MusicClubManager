@@ -1,0 +1,161 @@
+﻿nav > ul {
+    display: flex;
+    flex-direction: column;
+/*    gap: 1em;*/
+    list-style-type: none;
+}
+
+    nav > ul > li {
+        display: flex;
+        flex-direction: column;
+/*        gap: .25em;*/
+    }
+
+        nav > ul > li > ::deep a {
+            align-items: center;
+            background-color: rgb(67,161,107 );
+            color: rgb(255,255,255);
+            display: flex;
+            flex-direction: row;
+            font-weight: bold;
+            gap: 1em;
+            padding: .5em;
+            text-decoration: none;
+            text-transform: uppercase;
+        }
+
+            nav > ul > li > ::deep a.active {
+                background-color: rgb(67,107,161);
+            }
+
+            nav > ul > li > ::deep a > span:first-of-type {
+                align-items: center;
+                background-color: rgb(255,255,255);
+                border-radius: 50%;
+                color: rgb(67, 161, 107);
+                display: flex;
+                height: 2em;
+                justify-content: center;
+                width: 2em;
+            }
+
+            nav > ul > li > ::deep a.active > span:first-of-type {
+                color: rgb(67,107,161);
+            }
+
+            nav > ul > li > ::deep a ~ ul {
+                display: none;
+                list-style-type: none;
+                flex-direction: column;
+        /*        gap: .25em;*/
+            }
+
+            nav > ul > li > ::deep a.active ~ ul {
+                display: flex;
+            }
+
+                /*            nav > ul > li > ::deep a ~ ul > li {
+      
+            }
+*/
+
+
+                    nav > ul > li > ::deep a.active ~ ul > li > a {
+                        background-color: rgba(67,161,107, .75);
+                        padding: 1em 54px;
+                        color: rgb(255,255,255);
+                        display: flex;
+                        font-size: .85em;
+                        font-weight: bold;
+                        text-decoration: none;
+                        text-transform: uppercase;
+                    }
+
+                    nav > ul > li > ::deep a.active ~ ul > li > a.active {
+                        background-color: rgba(67,107,161, .75);
+                    }
+
+            nav > ul > li > ::deep a[disabled] {
+                background-color: rgb(175,175,175);
+                cursor: default;
+            }
+
+                nav > ul > li > ::deep a[disabled] > span:first-of-type {
+                    color: rgb(175,175,175);
+
+                }
+/*    ul > li  {
+        background: rgb(175,175,175);
+    }
+
+    ul > li.enabled {
+        background: rgb(67, 161, 107);
+        display: flex;
+        flex-direction: column;
+    }
+
+        ul > li.enabled:hover {
+            background: rgb(57, 151, 97);
+        }
+
+        ul > li.enabled.active {
+            background: rgb(67, 107, 161)
+        }
+
+            ul > li.enabled.active:hover {
+                background: rgb(57, 97, 151);
+            }
+
+        ul > li.enabled:hover > ::deep a > span {
+            color: rgb(57, 151, 97);
+        }
+
+    ul > li.active.enabled:hover > ::deep a > span {
+        color: rgb(57, 97, 151);
+    }
+
+    ul > li.enabled > ::deep a, ul > li > div {
+        align-items: center;
+        display: flex;
+        flex-direction: row;
+        font-weight: bold;
+        gap: 1em;
+        padding: 1em;
+        text-decoration: none;
+        text-transform: uppercase;
+    }
+
+        ul > li.enabled > ::deep a > span, ul > li > div > span {
+            align-items: center;
+            background: rgb(255,255,255);
+        
+            border-radius: 50%;
+            display: flex;
+            height: 2em;
+            justify-content: center;
+            width: 2em;
+        }
+        ul > li.enabled > ::deep a > span {
+            color: rgb(67, 161, 107);
+        }
+
+        ul > li > div > span {
+            color: rgb(175,175,175);
+        }
+
+
+        ul > li.enabled.active > ::deep a > span {
+            color: rgb(57, 97, 151);
+        }
+
+    ul > li.enabled > ::deep a > h2, ul > li > div > h2 {
+        color: rgb(255,255,255);
+    }
+*/
+div.buttons:first-of-type {
+    flex-direction: row;
+}
+
+    div.buttons:first-of-type > * {
+        flex-basis: 50%;
+    }

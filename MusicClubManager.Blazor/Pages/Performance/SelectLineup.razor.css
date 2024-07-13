@@ -1,0 +1,247 @@
+﻿section {
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
+}
+
+    section > ul {
+        display: flex;
+        flex-direction: row;
+        gap: .5em;
+    }
+
+        section > ul > li {
+            align-items: stretch;
+            display: flex;
+            flex-grow: 1;
+            justify-content: center;
+        }
+
+            section > ul > li > * {
+                color: rgb(255,255,255);
+                flex-grow: 1;
+                font-weight: bold;
+                flex-wrap: wrap;
+                padding: 1em;
+                text-align: center;
+                text-transform: uppercase;
+            }
+
+            section > ul > li > button {
+                background-color: rgb(67, 161, 107);
+                border: none;
+                cursor: pointer;
+            }
+
+            section > ul > li > h4 {
+                background-color: rgb(67, 107, 161);
+            }
+
+    section > div {
+        display: flex;
+        flex-direction: column;
+        gap: 2em;
+
+    }
+
+        section > div > ul {
+            display: flex;
+            flex-direction: column;
+            list-style-type: none;
+        }
+
+            section > div > ul > li {
+                display: flex;
+                flex-direction: column;
+                gap: 1em;
+                padding: 1em 0;
+            }
+
+            section > div > ul > li > ul {
+                display: flex;
+                flex-direction: column;
+                gap: .5em;
+                list-style-type: none;
+            }
+
+                section > div > ul > li > div:first-of-type {
+                    display: flex;
+                    flex-direction: row;
+                    gap: 1em;
+                    justify-content: space-between;
+                }
+
+
+
+
+                section > div > ul > li > div:last-of-type {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 1em;
+                }
+
+                    section > div > ul > li > div:last-of-type > ul {
+                        display: flex;
+                        flex-direction: column;
+                        gap: .5em;
+                        list-style-type: none;
+                    }
+
+                        section > div > ul > li > div:last-of-type > ul > li {
+                            display: flex;
+                            flex-direction: row;
+                            gap: 1em;
+                        }
+
+                    section > div > ul > li > div:last-of-type > ::deep div {
+                        align-self: flex-end;
+                    }
+
+   section > div:last-of-type > ul > li:not(:last-of-type) {
+        border-bottom: 2px solid rgb(175,175,175);
+    }
+
+
+
+/*section {
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
+}
+
+    section > p {
+        font-weight: bold;
+    }
+
+    section > div:first-of-type {
+        display: flex;
+        flex-direction: row;
+        gap: .5em;
+    }
+
+        section > div:first-of-type > * {
+            align-items: center;
+            border: none;
+            display: flex;
+            color: rgb(255,255,255);
+            font-size: 1em;
+            font-weight: bold;
+            flex-basis: 50%;
+            justify-content: center;
+            padding: 1em;
+            text-transform: uppercase;
+        }
+
+        section > div:first-of-type > button {
+            background-color: rgb(67, 161, 107);
+            cursor: pointer;
+        }
+
+        section > div:first-of-type > h3 {
+            background-color: rgb(57, 107, 161);
+        }
+
+    section > section > ul {
+        display: flex;
+        flex-direction: column;
+        list-style-type: none;
+    }
+
+        section > section > ul > li {
+            display: flex;
+            flex-direction: column;*/
+/*       gap: 1em;*/
+/*padding: 1em 0;
+        }
+
+            section > section > ul > li > label > h5 > ::deep a {
+                color: rgb(67, 161, 107);
+                text-decoration: none;
+                font-weight: bold;
+                font-size: 1.2em;
+            }
+
+            section > section > ul > li.selected > label > h5 > ::deep a {
+                color: rgb(67, 107, 161);
+            }
+
+            section > section > ul > li:not(:last-of-type) {
+                border-bottom: 2px solid rgb(175,175,175);
+            }
+
+            section > section > ul > li > div > ul {
+                display: flex;
+                flex-direction: column;
+                gap: .5em;
+                list-style-type: none;
+            }
+
+                section > section > ul > li > div > ul > li {
+                    display: flex;
+                    flex-direction: row;
+                    gap: 1em;
+                }
+
+            section > section > ul > li > div {
+                display: flex;
+                flex-direction: column;
+                gap: 1em;
+                padding: 1em 0;
+            }
+
+                section > section > ul > li > div > ::deep div {
+                    align-self: flex-end;
+                }
+
+div#filters {
+    display: flex;
+    flex-direction: row;
+
+}
+
+div#filters > h4 {
+    align-items: center;
+    background-color: rgb(67, 107, 161);
+    border: none;
+    display: flex;
+    color: rgb(255,255,255);
+    font-size: .75em;
+    font-weight: bold;
+    justify-content: center;
+    padding: 1em;
+    text-transform: uppercase;
+    flex-grow: 1;
+}
+
+    div#filters > button {
+        align-items: center;
+        background-color: rgb(67, 161, 107);
+        border: none;
+        display: flex;
+        color: rgb(255,255,255);
+        font-size: .75em;
+        font-weight: bold;
+        justify-content: center;
+        padding: 1em;
+        text-transform: uppercase;
+        cursor: pointer;
+    }
+
+h4#filters {
+    display: flex;
+    flex-grow: 1;
+}
+h4#filters > button {
+    align-items: center;
+    background-color: rgb(67, 161, 107);
+    border: none;
+    display: flex;
+    color: rgb(255,255,255);
+    font-size: .75em;
+    font-weight: bold;
+    justify-content: center;
+    padding: 1em;
+    text-transform: uppercase;
+    flex-grow: 1;
+    cursor: pointer
+}*/

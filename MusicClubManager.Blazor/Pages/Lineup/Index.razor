@@ -1,0 +1,135 @@
+﻿@page "/lineups"
+
+@attribute [Authorize(Policy = "ValidTokenOnly")]
+
+@inject ILineupService LineupApiService
+@inject LineupFilterStore LineupFilterStore
+
+<section>
+    <h2>Lineups</h2>
+
+    <NavLink href="/lineups/create">Create</NavLink>
+
+    <EditForm Model="_lineupFilter" OnValidSubmit="() => FetchLineups(_paginationContext)">
+        <div>
+            <label for="Name">Name</label>
+
+            <InputText @bind-Value="_lineupFilter.Name" type="text" id="Name" />
+        </div>
+
+        <div>
+            <label for="SortProperty">Sort property</label>
+
+            <InputSelect @bind-Value="_lineupFilter.SortProperty" id="SortProperty">
+                <option value="@nameof(ArtistResult.Id)">@nameof(ArtistResult.Id)</option>
+                <option value="@nameof(ArtistResult.Name)">@nameof(ArtistResult.Name)</option>
+            </InputSelect>
+        </div>
+
+        <div>
+            <label>Sort direction</label>
+
+            <div>
+                <InputRadioGroup Name="SortDirection" @bind-Value="_lineupFilter.SortDirection">
+                    <label>
+                        <InputRadio Name="SortDirection" Value="SortDirection.Ascending" />
+                        @SortDirection.Ascending.ToString()
+                    </label>
+
+                    <label>
+                        <InputRadio Name="SortDirection" Value="SortDirection.Descending" />
+                        @SortDirection.Descending.ToString()
+                    </label>
+                </InputRadioGroup>
+            </div>
+        </div>
+
+        <div>
+            <button type="submit">Filter</button>
+
+            <button type="button" @onclick="ClearLineupFilter">Clear</button>
+        </div>
+    </EditForm>
+
+    @if (_lineupResults is not null && _lineupResults.Count > 0)
+    {
+        <ul>
+            @foreach (var lineupResult in _lineupResults)
+            {
+                var href = $"/lineups/edit/{lineupResult.Id}";
+
+                <li>
+                    <NavLink href="@href">
+                        <span>Id: @lineupResult.Id</span>
+                        <span><b>Name: @lineupResult.Name</b></span>
+                        <span>Doors: @lineupResult.Doors</span>
+
+                        @*                <ul>
+                @foreach (var lineupPerformanceResult in lineupResult.PagedLineupPerformanceResult.Data)
+                {
+                <li>@lineupPerformanceResult.Artist?.Name</li>
+                }
+                @if (lineupResult.PagedLineupPerformanceResult.TotalCount > lineupResult.PagedLineupPerformanceResult.Data.Count)
+                {
+                <li>+ @(lineupResult.PagedLineupPerformanceResult.TotalCount - lineupResult.PagedLineupPerformanceResult.Data.Count) more</li>
+                }
+                </ul> *@
+                    </NavLink>
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        if (_lineupResults is null)
+        {
+            <p>Loading... </p>
+        }
+        else
+        {
+            <p>There are no artists</p>
+        }
+    }
+
+    <Pagination Context="_paginationContext" OnPageChanged="FetchLineups" />
+</section>
+
+@code {
+    private LineupFilter _lineupFilter = new LineupFilter { };
+
+    private PaginationContext _paginationContext = new() { Page = 1, PageSize = 24, TotalCount = 0 };
+
+    private IList<LineupResult>? _lineupResults;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (await LineupFilterStore.Get() is { } lineupFilter)
+        {
+            _lineupFilter = lineupFilter;
+        }
+
+        await FetchLineups(_paginationContext);
+
+        await base.OnInitializedAsync();
+    }
+
+    private async Task FetchLineups(PaginationContext context)
+    {
+        var serviceResult = await LineupApiService.GetAll(new PaginationRequest { Page = (uint)context.Page, PageSize = (uint)context.PageSize }, _lineupFilter);
+
+        _paginationContext = new PaginationContext { Page = (int)serviceResult.Page, PageSize = (int)serviceResult.PageSize, TotalCount = (int)serviceResult.TotalCount };
+
+        _lineupResults = serviceResult.Data;
+
+        await LineupFilterStore.Set(_lineupFilter);
+    }
+
+    private async Task ClearLineupFilter()
+    {
+        _lineupFilter = new LineupFilter { };
+
+        await LineupFilterStore.Remove();
+
+        await FetchLineups(_paginationContext);
+    }
+}

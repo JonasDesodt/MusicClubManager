@@ -1,0 +1,127 @@
+﻿@page "/performances"
+
+@attribute [Authorize(Policy = "ValidTokenOnly")]
+
+@inject IPerformanceService PerformanceApiService
+@inject PerformanceFilterStore PerformanceFilterStore
+
+<section>
+    <h2>Performances</h2>
+
+    <NavLink href="/performances/create">Create</NavLink>
+
+    <EditForm Model="_performanceFilter" OnValidSubmit="() => FetchPerformances(_paginationContext)">
+@*         <div>
+            <label for="Name">Name</label>
+
+            <InputText @bind-Value="_performanceFilter.Name" type="text" id="Name" />
+        </div> *@
+
+        <div>
+            <label for="SortProperty">Sort property</label>
+
+            <InputSelect @bind-Value="_performanceFilter.SortProperty" id="SortProperty">
+                <option value="@nameof(PerformanceResult.Id)">Creation</option>
+                <option value="@nameof(PerformanceResult.LineupResult)">Lineup</option>
+                <option value="@nameof(PerformanceResult.ArtistResult)">Artist</option>
+@*                 <option value="@nameof(ArtistResult.Name)">@nameof(ArtistResult.Name)</option> *@
+            </InputSelect>
+        </div>
+
+        <div>
+            <label>Sort direction</label>
+
+            <div>
+                <InputRadioGroup Name="SortDirection" @bind-Value="_performanceFilter.SortDirection">
+                    <label>
+                        <InputRadio Name="SortDirection" Value="SortDirection.Ascending" />
+                        @SortDirection.Ascending.ToString()
+                    </label>
+
+                    <label>
+                        <InputRadio Name="SortDirection" Value="SortDirection.Descending" />
+                        @SortDirection.Descending.ToString()
+                    </label>
+                </InputRadioGroup>
+            </div>
+        </div>
+
+        <div>
+            <button type="submit">Filter</button>
+
+            <button type="button" @onclick="ClearPerformanceFilter">Clear</button>
+        </div>
+    </EditForm>
+
+    @if (_performanceResults is not null && _performanceResults.Count > 0)
+    {
+        <ul>
+            @foreach (var performanceResult in _performanceResults)
+            {
+                var href = $"/performances/edit/{performanceResult.Id}";
+
+                <li>
+                    <NavLink href="@href">
+                        <span>Id: @performanceResult.Id</span>
+                        <span>Lineup: @performanceResult.LineupResult?.Name</span>
+                        <span>Artist: @performanceResult.ArtistResult?.Name</span>
+                        <span>Start: @performanceResult.Start</span>
+                    </NavLink>
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        if (_performanceResults is null)
+        {
+            <p>Loading... </p>
+        }
+        else
+        {
+            <p>There are no performances</p>
+        }
+    }
+
+    <Pagination Context="_paginationContext" OnPageChanged="FetchPerformances" />
+</section>
+
+@code {
+    private PerformanceFilter _performanceFilter = new PerformanceFilter { };
+
+    private PaginationContext _paginationContext = new () { Page = 1, PageSize = 24, TotalCount = 0 };
+
+    private IList<PerformanceResult>? _performanceResults;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (await PerformanceFilterStore.Get() is { } performanceFilter)
+        {
+            _performanceFilter = performanceFilter;
+        }
+
+        await FetchPerformances(_paginationContext);
+
+        await base.OnInitializedAsync();
+    }
+
+    private async Task FetchPerformances(PaginationContext paginationContext)
+    {
+        var serviceResult = await PerformanceApiService.GetAll(new PaginationRequest { Page = (uint)paginationContext.Page, PageSize = (uint)paginationContext.PageSize }, _performanceFilter);
+
+        _paginationContext = new PaginationContext { Page = (int)serviceResult.Page, PageSize = (int)serviceResult.PageSize, TotalCount = (int)serviceResult.TotalCount };
+
+        _performanceResults = serviceResult.Data;
+
+        await PerformanceFilterStore.Set(_performanceFilter);
+    }
+
+    private async Task ClearPerformanceFilter()
+    {
+        _performanceFilter = new PerformanceFilter { };
+
+        await PerformanceFilterStore.Remove();
+
+        await FetchPerformances(_paginationContext);
+    }
+}

@@ -1,0 +1,22 @@
+﻿div > ul > li > button {
+    cursor: pointer;
+    padding: .25em;
+}
+
+div > ul > li > button.active {
+    background-color: rgb(0,150,0);
+    color: rgb(255,255,255);
+}
+
+div {
+    display: flex;
+    flex-direction: row;
+    gap: .5em;
+}
+
+div > ul {
+    display: flex;
+    flex-direction: row;
+    list-style-type: none;
+}
+

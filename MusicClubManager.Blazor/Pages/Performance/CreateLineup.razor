@@ -1,0 +1,28 @@
+﻿@page "/performances/create/lineup/create"
+
+@layout PerformanceLayout
+
+@inject NavigationManager NavigationManager
+
+<LineupCreateEditForm Model="Context.LineupFormModel" OnPosted="HandleOnLineupPosted" />
+
+@code {
+    [CascadingParameter]
+    public required PerformanceContext Context { get; set; }
+
+    private void HandleOnLineupPosted(LineupResult lineupResult)
+    {
+        Context.LineupFormModel = new LineupCreateEditFormModel();
+
+        Context.LineupId = lineupResult.Id;
+
+        Context.LineupFilter = new LineupFilter
+            {
+                Name = lineupResult.Name,
+                SortProperty = nameof(LineupResult.Id),
+                SortDirection = SortDirection.Descending
+            };
+
+        NavigationManager.NavigateTo("/performances/create/lineup/select");
+    }
+}

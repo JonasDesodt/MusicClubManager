@@ -1,0 +1,94 @@
+﻿@page "/artists/{id:int}/properties"
+
+@layout EditArtistLayout
+
+@attribute [Authorize(Policy = "ValidTokenOnly")]
+
+@inject IArtistService ArtistApiService
+@inject NavigationManager NavigationManager
+
+<section>
+    <h3>Properties</h3>
+
+    @if (_model is not null)
+    {
+        <EditForm Model="_model" OnValidSubmit="Post">
+            <DataAnnotationsValidator></DataAnnotationsValidator>
+            <ValidationSummary></ValidationSummary>
+
+            <div>
+                <label for="@nameof(ArtistRequest.Name)">Name</label>
+
+                <InputText @bind-Value="_model.Name" id="@nameof(ArtistRequest.Name)" />
+            </div>
+
+            <div>
+                <label for="@nameof(ArtistRequest.Description)">Description</label>
+
+                <InputTextArea @bind-Value="_model.Description" id="@nameof(ArtistRequest.Description)" />
+            </div>
+
+            <ul class="buttons">
+                <li>
+                    <button type="submit">Save</button>
+                </li>
+
+                <li>
+                    <button type="button">Undo Changes</button>
+                </li>
+
+                <li>
+                    <button type="button">Delete</button>
+                </li>
+            </ul>
+        </EditForm>
+    }
+</section>
+
+
+@code {
+    [CascadingParameter]
+    public required ArtistContext Context { get; set; }
+
+    [Parameter]
+    public int Id { get; set; }
+
+    private ArtistRequest? _model;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Fetch();
+
+        await base.OnInitializedAsync();
+    }
+
+    private async Task Fetch()
+    {
+        if ((await ArtistApiService.Get(Id)).Data is not { } result)
+        {
+            return;
+        }
+
+        Id = result.Id;
+
+        _model = new ArtistRequest
+            {
+                Name = result.Name,
+                Description = result.Description
+            };
+    }
+
+    private async Task Post()
+    {
+        if (_model is null)
+        {
+            return;
+        }
+
+        var serviceResult = await ArtistApiService.Update(Id, _model);
+        if (serviceResult.Messages is null)
+        {
+            NavigationManager.NavigateTo("/artists");
+        }
+    }
+}

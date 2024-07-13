@@ -1,0 +1,41 @@
+﻿@page "/lineups/create/performances/edit-performance/{index:int}"
+
+@layout MusicClubManager.Cms.Blazor.Layout.Lineup.CreateLayout
+
+@inject IArtistService ArtistApiService
+@inject NavigationManager NavigationManager
+
+@if (CreateLineupContext?.SavedPerformanceFormModels[Index] is { } model)
+{
+    <h3>Edit @model.ArtistName</h3>
+
+    <EditForm Model="model">
+        <CreateEditPerformance Model="model"></CreateEditPerformance>
+
+        <div>
+            <InputNumber @bind-Value="model.ArtistId" hidden />
+
+            @{
+                var href = $"lineups/create/performances/edit-performance/{Index}/change-artist";
+            }
+
+            <NavLink href="@href">Select artist</NavLink>
+
+            <p>@model.ArtistName (@model.ArtistId)</p>
+        </div>
+    </EditForm>
+
+    <NavLink href="lineups/create/performances">Return</NavLink>
+}
+else
+{
+    <p>Something went wrong.</p>
+}
+
+@code {
+    [CascadingParameter]
+    public CreateLineupContext? CreateLineupContext { get; set; }
+
+    [Parameter]
+    public int Index { get; set; }
+}

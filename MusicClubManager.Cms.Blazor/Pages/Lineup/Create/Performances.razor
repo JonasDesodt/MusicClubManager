@@ -1,0 +1,56 @@
+﻿@page "/lineups/create/performances"
+
+@layout MusicClubManager.Cms.Blazor.Layout.Lineup.CreateLayout
+
+<h3>Performances</h3>
+
+<NavLink href="lineups/create/performances/create-performance">Create</NavLink>
+
+@if (CreateLineupContext is { } context)
+{
+    <ul>
+        @foreach (var performance in context.SavedPerformanceFormModels)
+        {
+            <li>
+                <ul>
+                    <li>@(performance.Start?.ToShortTimeString() ?? "--:--")</li>
+
+                    <li>@performance.ArtistName</li>
+
+                    <li>(id: @performance.ArtistId)</li>
+                </ul>
+
+                <ul>
+                    <li>
+                        @{
+                            var href = $"lineups/create/performances/edit-performance/{context.SavedPerformanceFormModels.IndexOf(performance)}";
+                        }
+
+                        <NavLink @onclick="() => context.CreateEditPerformanceFormModel = performance" href="@href">Edit</NavLink>
+                    </li>
+
+                    <li>
+                        <button @onclick="() => context.SavedPerformanceFormModels.Remove(performance)">Remove</button>
+                    </li>
+                </ul>
+            </li>
+        }
+    </ul>
+
+    <ul>
+        <li><NavLink href="lineups/create/properties">Previous</NavLink></li>
+
+        <li><NavLink href="lineups/create/summary">Next</NavLink></li>
+    </ul>
+}
+else
+{
+    <p>Something went wrong.</p>
+}
+
+
+
+@code {
+    [CascadingParameter]
+    public CreateLineupContext? CreateLineupContext { get; set; }
+}

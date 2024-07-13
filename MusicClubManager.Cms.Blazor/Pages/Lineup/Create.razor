@@ -1,0 +1,55 @@
+﻿@page "/lineups/create"
+
+@layout LineupLayout
+
+@inject ILineupService LineupApiService
+@inject NavigationManager NavigationManager
+
+<h3>Create lineup</h3>
+
+<EditForm Model="_model" OnValidSubmit="() => Submit(_model)">
+    <DataAnnotationsValidator></DataAnnotationsValidator>
+
+    <ValidationSummary></ValidationSummary>
+
+    <div>
+        <div>
+            <label for="name">Name</label>
+
+            <InputText @bind-Value="_model.Name" id="name" />
+        </div>
+
+        <div>
+            <label for="doors">Doors <span>(required)</span></label>
+
+            <InputDate Type="InputDateType.DateTimeLocal" @bind-Value="_model.Doors" id="doors" />
+        </div>
+    </div>
+
+    <ul>
+        <li><button type="submit">Create</button></li>
+
+        <li><button type="reset">Reset</button></li>
+    </ul>
+</EditForm>
+
+@code {
+    private CreateLineupPropertiesFormModel _model = new();
+
+    private async Task Submit(CreateLineupPropertiesFormModel model)
+    {
+        if(model.Doors is not {} doors)
+        {
+            return;
+        }
+
+        var serviceResult = await LineupApiService.Create(new LineupRequest
+            {
+                Doors = doors,
+                IsSoldOut = model.IsSoldOut,
+                Name = model.Name,
+            });
+
+        NavigationManager.NavigateTo("lineups");
+    }
+}

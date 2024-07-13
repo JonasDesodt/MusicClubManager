@@ -1,0 +1,95 @@
+﻿div#content {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+    div#content.overlay-open > header {
+        flex-grow: 1;
+    }
+
+    div#content.overlay-closed > main {
+        flex-grow: 1;
+    }
+    div#content.overlay-open > main {
+        display: none;
+    }
+
+    div#content.overlay-open > footer {
+        display: none;
+    }
+
+    div#content > header {
+        display: flex;
+        flex-direction: column;
+        padding: 1em 1em 0em 1em;
+    }
+    div#content > main {
+        display: flex;
+        flex-direction: column;
+        gap: 2em;
+        padding: 2em 1em;
+    }
+
+    div#content > footer {
+        display: flex;
+        flex-direction: column;
+        padding: 1em;
+    }
+
+    div#content.overlay-closed > header > nav {
+        display: none;
+    }
+    div#content > header > div {
+        align-items: center;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    div#content > header > nav {
+        align-self: center;
+        display: flex;
+        flex-direction: column;
+        gap: 1em;
+        padding: 2em 0;
+    }
+
+        div#content > header > nav > ul {
+            display: flex;
+            flex-direction: column;
+            gap: .5em;
+            list-style-type: none;
+        }
+
+            div#content > header > nav > ul > li, div#content > header > nav > ul > li > * {
+                font-weight: bold;
+            }
+
+                div#content > header > nav > ul > li > button {
+                    background: none;
+                    border: none;
+                }
+
+                    div#content > header > nav > ul > li > button:hover {
+                        cursor: pointer;
+                    }
+
+                    div#content > header > nav > ul > li > button:hover, div#content > header > nav > ul > li > ::deep a:hover {
+                        color: rgb(0,150,0);
+                    }
+
+                div#content > header > nav > ul > li > ::deep a {
+                    color: rgb(0,0,0);
+                    text-decoration: none;
+                }
+
+                div#content > header > nav > ul > li.username {
+                    color: rgb(0,0,150);
+                }
+
+    div#content > main {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+    }

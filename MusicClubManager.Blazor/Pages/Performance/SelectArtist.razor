@@ -1,0 +1,141 @@
+﻿@page "/performances/create/artist"
+
+@layout MusicClubManager.Blazor.Layout.PerformanceLayout
+
+@inject IArtistService ArtistApiService
+
+<section id="artist">
+    @if (_artistResult is not null)
+    {
+        <p>@_artistResult.Name (id: @_artistResult.Id)</p>
+    }
+    else
+    {
+        <p>No artist selected</p>
+    }
+
+    <div>
+        <button type="button" @onclick="() => _isNewArtistOpen = true">New</button>
+        <button type="button" @onclick="() => _isSelectArtistOpen = true">Select</button>
+    </div>
+
+    @if (_isNewArtistOpen)
+    {
+        <button type="button" @onclick="() => _isNewArtistOpen = false">Close new</button>
+
+        <ArtistCreateEditForm Model="Context.ArtistFormModel" OnPosted="HandleOnArtistPosted" />
+    }
+
+    @if (_isSelectArtistOpen)
+    {
+        <button type="button" @onclick="() => _isSelectArtistOpen = false">Close select</button>
+
+        <ArtistFilterForm Model="Context.ArtistFilter" OnFilter="(artistFilter) => FetchArtists(Context.ArtistPaginationContext, artistFilter)" />
+
+        @if (_artistResults is not null && _artistResults.Count > 0)
+        {
+            <div>
+                <h4>@Context.ArtistPaginationContext.TotalCount results</h4>
+
+                <ul>
+                    <InputRadioGroup Name="@nameof(PerformanceContext.ArtistId)" @bind-Value:get="Context.ArtistId" @bind-Value:set="SetArtistResult">
+                        @foreach (var artistResult in _artistResults)
+                        {
+                            <li>
+                                <label class="radio-button-container">
+                                    @artistResult.Name
+
+                                    <InputRadio Name="@nameof(PerformanceRequest.ArtistId)" Value="artistResult.Id" />
+
+                                    <span class="radio-button-checkmark"></span>
+                                </label>
+                            </li>
+                        }
+                    </InputRadioGroup>
+                </ul>
+            </div>
+
+        }
+        else
+        {
+            if (_artistResults is null)
+            {
+                <p>Loading... </p>
+            }
+            else
+            {
+                <p>There are no artists</p>
+            }
+        }
+
+        <Pagination Context="Context.ArtistPaginationContext" OnPageChanged="(paginationContext) => FetchArtists(paginationContext, Context.ArtistFilter)" />
+    }
+
+
+
+</section>
+
+@code {
+    [CascadingParameter]
+    public required PerformanceContext Context { get; set; }
+
+    private IList<ArtistResult>? _artistResults;
+
+    private bool _isNewArtistOpen = false;
+    private bool _isSelectArtistOpen = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await FetchArtists(Context.ArtistPaginationContext, Context.ArtistFilter);
+
+        if (Context.ArtistId is not null || Context.ArtistId > 0)
+        {
+            _artistResult = _artistResults?.FirstOrDefault(a => a.Id == Context.ArtistId);
+            if (_artistResult is null)
+            {
+                await FetchArtist((int)Context.ArtistId);
+            }
+        }
+
+        await base.OnInitializedAsync();
+    }
+
+    private ArtistResult? _artistResult;
+    private void SetArtistResult(int? value)
+    {
+        Context.ArtistId = value;
+
+        _artistResult = _artistResults?.FirstOrDefault(a => a.Id == value);
+
+        if (Context.LineupId is not null && Context.ArtistId is not null)
+        {
+            Context.IsValid = true;
+        }
+    }
+
+    private async Task FetchArtist(int id)
+    {
+        var serviceResult = await ArtistApiService.Get(id);
+
+        _artistResult = serviceResult.Data;
+    }
+
+    private async Task HandleOnArtistPosted(ArtistResult artistResult)
+    {
+        Context.ArtistFormModel = new ArtistCreateEditFormModel();
+
+        Context.ArtistId = artistResult.Id;
+        _artistResult = artistResult;
+
+        await FetchArtists(Context.ArtistPaginationContext, Context.ArtistFilter);
+    }
+
+    private async Task FetchArtists(PaginationContext paginationContext, ArtistFilter artistFilter)
+    {
+        var serviceResult = await ArtistApiService.GetAll(new PaginationRequest { Page = (uint)paginationContext.Page, PageSize = (uint)paginationContext.PageSize }, artistFilter);
+
+        Context.ArtistPaginationContext = new PaginationContext { Page = (int)serviceResult.Page, PageSize = (int)serviceResult.PageSize, TotalCount = (int)serviceResult.TotalCount };
+
+        _artistResults = serviceResult.Data;
+    }
+}

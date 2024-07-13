@@ -1,0 +1,314 @@
+﻿@page "/performances/create"
+
+@attribute [Authorize(Policy = "ValidTokenOnly")]
+
+@inject IPerformanceService PerformanceApiService
+@inject NavigationManager NavigationManager
+@inject IArtistService ArtistApiService
+@inject ILineupService LineupApiService
+
+<section>
+    <h2>Create performance</h2>
+
+    <Wizard Id="performance_wizard" OnLastStep="CreatePerformanceRequest" Context="_performanceContext">
+        <WizardStep Name="Artist">
+            <section id="artist">
+                <h3>Artist</h3>
+
+                @if (_performanceContext.ArtistResults?.FirstOrDefault(a => a.Id == _performanceContext.ArtistId) is { } artist)
+                {
+                    <p>@artist.Name</p>
+
+                    <input value="@artist.Id" id="@nameof(PerformanceRequest.ArtistId)" disabled />
+                }
+                else
+                {
+                    <p>No artist selected</p>
+                }
+
+                <div>
+                    <button type="button" @onclick="() => _isNewArtistOpen = true">New</button>
+                    <button type="button" @onclick="() => _isSelectArtistOpen = true">Select</button>
+                </div>
+
+                @if (_isNewArtistOpen)
+                {
+                    <button type="button" @onclick="() => _isNewArtistOpen = false">Close new</button>
+
+                    <ArtistCreateEditForm Model="_performanceContext.ArtistFormModel" OnPosted="HandleOnArtistPosted" />
+                }
+
+                @if (_isSelectArtistOpen)
+                {
+                    <button type="button" @onclick="() => _isSelectArtistOpen = false">Close select</button>
+
+                    <ArtistFilterForm Model="_performanceContext.ArtistFilter" OnFilter="(artistFilter) => FetchArtists(_performanceContext.ArtistPaginationContext, artistFilter)" />
+
+                    @if (_performanceContext.ArtistResults is not null && _performanceContext.ArtistResults.Count > 0)
+                    {
+                        <div>
+                            <h4>@_performanceContext.ArtistPaginationContext.TotalCount results</h4>
+
+                            <ul>
+                                <InputRadioGroup Name="@nameof(PerformanceContext.ArtistId)" @bind-Value="_performanceContext.ArtistId">
+                                    @foreach (var artistResult in _performanceContext.ArtistResults)
+                                    {
+                                        <li>
+                                            <label>
+                                                <InputRadio Name="@nameof(PerformanceRequest.ArtistId)" Value="artistResult.Id" />
+                                                @artistResult.Name
+                                            </label>
+                                        </li>
+
+                                    }
+                                </InputRadioGroup>
+                            </ul>
+                        </div>
+
+                    }
+                    else
+                    {
+                        if (_performanceContext.ArtistResults is null)
+                        {
+                            <p>Loading... </p>
+                        }
+                        else
+                        {
+                            <p>There are no artists</p>
+                        }
+                    }
+
+                    <Pagination Context="_performanceContext.ArtistPaginationContext" OnPageChanged="(paginationContext) => FetchArtists(paginationContext, _performanceContext.ArtistFilter)" />
+                }
+
+            </section>
+        </WizardStep>
+
+        <WizardStep Name="Lineup">
+            <section id="lineup">
+                <h3>Lineup</h3>
+
+                @if (_performanceContext.LineupResults?.FirstOrDefault(a => a.Id == _performanceContext.LineupId) is { } lineup)
+                {
+                    <p>@lineup.Name ?? @lineup.Id</p>
+
+                    <input value="@lineup.Id" id="@nameof(PerformanceRequest.LineupId)" disabled />
+                }
+                else
+                {
+                    <p>No lineup selected</p>
+                }
+
+                <div>
+                    <button type="button" @onclick="() => _isNewLineupOpen = true">New</button>
+                    <button type="button" @onclick="() => _isSelectLineupOpen = true">Select</button>
+                </div>
+
+                @if (_isNewLineupOpen)
+                {
+                    <button type="button" @onclick="() => _isNewLineupOpen = false">Close new</button>
+
+                    <LineupCreateEditForm Model="_performanceContext.LineupFormModel" OnPosted="HandleOnLineupPosted" />
+                }
+
+                @if (_isSelectLineupOpen)
+                {
+                    <button type="button" @onclick="() => _isSelectLineupOpen = false">Close select</button>
+
+                    <LineupFilterForm Model="_performanceContext.LineupFilter" OnFilter="(lineupFilter) => FetchLineups(_performanceContext.LineupPaginationContext, lineupFilter)" />
+
+                    @if (_performanceContext.LineupResults is not null && _performanceContext.LineupResults.Count > 0)
+                    {
+                        <div>
+                            <h4>@_performanceContext.LineupPaginationContext.TotalCount results</h4>
+
+                            <ul>
+                                <InputRadioGroup Name="@nameof(PerformanceContext.LineupId)" @bind-Value="_performanceContext.LineupId">
+                                    @foreach (var lineupResult in _performanceContext.LineupResults)
+                                    {
+                                        <li>
+                                            <label>
+                                                <InputRadio Name="@nameof(PerformanceContext.LineupId)" Value="lineupResult.Id" />
+                                                <NavLink href="/">
+                                                    <span>Id: @lineupResult.Id</span>
+                                                    <span><b>Name: @lineupResult.Name</b></span>
+                                                    <span>Doors: @lineupResult.Doors</span>
+                                                </NavLink>
+                                            </label>
+                                        </li>
+
+                                    }
+                                </InputRadioGroup>
+                            </ul>
+                        </div>
+                    }
+                    else
+                    {
+                        if (_performanceContext.LineupResults is null)
+                        {
+                            <p>Loading... </p>
+                        }
+                        else
+                        {
+                            <p>There are no artists</p>
+                        }
+                    }
+
+                    <Pagination Context="_performanceContext.LineupPaginationContext" OnPageChanged="(paginationContext) => FetchLineups(paginationContext, _performanceContext.LineupFilter)" />
+                }
+
+            </section>
+        </WizardStep>
+
+
+        <WizardStep Name="Properties">
+            <section id="properties">
+                <h3>Properties</h3>
+
+
+            </section>
+        </WizardStep>
+
+        <WizardStep Name="Confirmation">
+            @if (_performanceRequest is not null)
+            {
+                <EditForm Id="MainForm" Model="_performanceRequest" OnValidSubmit="Post">
+                    <div>
+                        <label for="@nameof(PerformanceRequest.Type)">Type</label>
+                        <InputText @bind-Value="_performanceRequest.Type" id="@nameof(PerformanceRequest.Type)" disabled />
+                    </div>
+
+                    <div>
+                        <label for="@nameof(PerformanceRequest.ArtistId)">Artist</label>
+
+                        @if (_performanceContext.ArtistResults?.FirstOrDefault(a => a.Id == _performanceContext.ArtistId) is { } artist)
+                        {
+                            <p>@artist.Name</p>
+
+                            <input value="@artist.Id" id="@nameof(PerformanceRequest.ArtistId)" disabled />
+                        }
+                        else
+                        {
+                            <p>Artist not found.</p>
+                        }
+                    </div>
+
+                    <div>
+                        <label for="@nameof(PerformanceRequest.LineupId)">Lineup</label>
+
+                        @if (_performanceContext.LineupResults?.FirstOrDefault(a => a.Id == _performanceContext.LineupId) is { } lineup)
+                        {
+                            <p>@lineup.Name</p>
+
+                            <input value="@lineup.Id" id="@nameof(PerformanceRequest.ArtistId)" disabled />
+                        }
+                        else
+                        {
+                            <p>Lineup not found.</p>
+                        }
+                    </div>
+                </EditForm>
+            }
+            else
+            {
+                <p>Please select an artist and a lineup.</p>
+            }
+        </WizardStep>
+    </Wizard>
+</section>
+
+
+
+@code {
+    private PerformanceContext _performanceContext = new();
+
+    private PerformanceRequest? _performanceRequest;
+
+    private bool _isNewArtistOpen = false;
+    private bool _isSelectArtistOpen = false;
+
+    private bool _isNewLineupOpen = false;
+    private bool _isSelectLineupOpen = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await FetchLineups(_performanceContext.LineupPaginationContext, _performanceContext.LineupFilter);
+        await FetchArtists(_performanceContext.ArtistPaginationContext, _performanceContext.ArtistFilter);
+
+        await base.OnInitializedAsync();
+    }
+
+    private async Task Post()
+    {
+        if (_performanceRequest is null)
+        {
+            return;
+        }
+
+        var serviceResult = await PerformanceApiService.Create(_performanceRequest);
+        if (serviceResult.Messages is null)
+        {
+            NavigationManager.NavigateTo("/performances");
+        }
+    }
+
+
+    private void CreatePerformanceRequest()
+    {
+        if (_performanceContext.ArtistId is null || _performanceContext.ArtistId <= 0)
+        {
+            return;
+        }
+
+        if (_performanceContext.LineupId is null || _performanceContext.LineupId <= 0)
+        {
+            return;
+        }
+
+        _performanceRequest = new PerformanceRequest
+            {
+                ArtistId = (int)_performanceContext.ArtistId,
+                LineupId = (int)_performanceContext.LineupId,
+                Duration = _performanceContext.Duration,
+                Start = _performanceContext.Start,
+                Type = _performanceContext.Type
+            };
+    }
+
+    private async Task FetchArtists(PaginationContext paginationContext, ArtistFilter artistFilter)
+    {
+        var serviceResult = await ArtistApiService.GetAll(new PaginationRequest { Page = (uint)paginationContext.Page, PageSize = (uint)paginationContext.PageSize }, artistFilter);
+
+        _performanceContext.ArtistPaginationContext = new PaginationContext { Page = (int)serviceResult.Page, PageSize = (int)serviceResult.PageSize, TotalCount = (int)serviceResult.TotalCount };
+
+        _performanceContext.ArtistResults = serviceResult.Data;
+    }
+
+    private async Task FetchLineups(PaginationContext paginationContext, LineupFilter lineupFilter)
+    {
+        var serviceResult = await LineupApiService.GetAll(new PaginationRequest { Page = (uint)paginationContext.Page, PageSize = (uint)paginationContext.PageSize }, lineupFilter);
+
+        _performanceContext.LineupPaginationContext = new PaginationContext { Page = (int)serviceResult.Page, PageSize = (int)serviceResult.PageSize, TotalCount = (int)serviceResult.TotalCount };
+
+        _performanceContext.LineupResults = serviceResult.Data;
+
+    }
+
+    private async Task HandleOnArtistPosted(ArtistResult artistResult)
+    {
+        _performanceContext.ArtistFormModel = new ArtistCreateEditFormModel();
+
+        _performanceContext.ArtistId = artistResult.Id;
+
+        await FetchArtists(_performanceContext.ArtistPaginationContext, _performanceContext.ArtistFilter);
+    }
+
+    private async Task HandleOnLineupPosted(LineupResult lineupResult)
+    {
+        _performanceContext.LineupFormModel = new LineupCreateEditFormModel();
+
+        _performanceContext.LineupId = lineupResult.Id;
+
+        await FetchLineups(_performanceContext.LineupPaginationContext, _performanceContext.LineupFilter);
+    }
+}           

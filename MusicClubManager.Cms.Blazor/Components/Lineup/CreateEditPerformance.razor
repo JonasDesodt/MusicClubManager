@@ -1,0 +1,35 @@
+﻿@if (Model is not null)
+{
+    <DataAnnotationsValidator></DataAnnotationsValidator>
+
+    <ValidationSummary></ValidationSummary>
+
+    <div>
+        <div>
+            <label for="start">Start</label>
+
+            <InputDate Type="InputDateType.DateTimeLocal" @bind-Value="Model.Start" id="start" />
+        </div>
+
+        <div>
+            <label for="duration">Duration</label>
+
+            <InputNumber @bind-Value="Model.Duration" id="duration" />
+        </div>
+
+        <div>
+            <label for="type">Type</label>
+
+            <InputText @bind-Value="Model.Type" id="type" />
+        </div>
+    </div>
+}
+else
+{
+    <p>Loading...</p>
+}
+
+@code {
+    [Parameter, EditorRequired]
+    public CreateEditLineupPerformanceFormModel? Model { get; set; }
+}

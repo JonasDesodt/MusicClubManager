@@ -1,0 +1,105 @@
+﻿@page "/lineups/{id:int}"
+
+@layout LineupLayout
+
+@inject ILineupService LineupApiService
+@inject NavigationManager NavigationManager
+
+<h3>Edit lineup</h3>
+
+@if (_model is { } model)
+{
+    <EditForm Model="model" OnValidSubmit="() => Submit(Id, model)">
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+
+        <ValidationSummary></ValidationSummary>
+
+        <div>
+            <div>
+                <label for="name">Name</label>
+
+                <InputText @bind-Value="model.Name" id="name" />
+            </div>
+
+            <div>
+                <label for="doors">Doors <span>(required)</span></label>
+
+                <InputDate Type="InputDateType.DateTimeLocal" @bind-Value="model.Doors" id="doors" />
+            </div>
+
+            @{
+                var href = $"/lineups/{Id}/performances";
+            }
+            <NavLink href="@href">Peformances</NavLink>
+        </div>
+
+        <ul>
+            <li><button type="submit">Save</button></li>
+
+            <li><button type="button" @onclick="() => SetModel(Id)">Undo changes</button></li>
+
+
+            @{
+                var hrefDelete = $"lineups/{Id}/delete";
+            }
+            <li><NavLink href="@hrefDelete">Delete</NavLink></li> <!-- show the list with the performances that will be removed -->
+        </ul>
+    </EditForm>
+}
+else
+{
+    <p>Loading...</p>
+}
+
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private CreateLineupPropertiesFormModel? _model;
+
+
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await SetModel(Id);
+
+        await base.OnParametersSetAsync();
+    }
+
+    private async Task<ServiceResult<LineupResult>> FetchLineup(int id)
+    {
+        return await LineupApiService.Get(id, new PaginationRequest { Page = 1, PageSize = 5 });
+    }
+
+    private async Task SetModel(int id)
+    {
+        if (Id > 0 && (await FetchLineup(Id)).Data is { } lineupResult)
+        {
+
+            _model = new CreateLineupPropertiesFormModel
+                {
+                    Doors = lineupResult.Doors,
+                    IsSoldOut = lineupResult.IsSoldOut,
+                    Name = lineupResult.Name
+                };
+        }
+    }
+
+    private async Task Submit(int id, CreateLineupPropertiesFormModel model)
+    {
+        if (model.Doors is not { } doors || id <= 0)
+        {
+            return;
+        }
+
+        var serviceResult = await LineupApiService.Update(id, new LineupRequest
+            {
+                Doors = doors,
+                IsSoldOut = model.IsSoldOut,
+                Name = model.Name,
+            });
+
+        NavigationManager.NavigateTo("lineups");
+    }
+}

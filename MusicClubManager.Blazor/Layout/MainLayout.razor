@@ -1,0 +1,59 @@
+﻿@inherits LayoutComponentBase
+
+@inject ITokenStore TokenStore
+@inject ArtistFilterStore ArtistFilterStore
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<div class="@(_isOverlayOpen ? "overlay-open" : "overlay-closed")" id="content">
+    <header>
+        <div>
+            <h1><NavLink href="">Music Club Manager</NavLink></h1>
+
+            <button @onclick="ToggleOverlay">@(_isOverlayOpen ? "Close" : "Open")</button>
+        </div>
+
+        <nav>
+            <AuthorizeView>
+                <Authorized>
+                    <ul>
+                        <li class="username">@context.User.Identity?.Name</li>
+                        <li><button @onclick="SignOut">Sign out</button></li>
+                    </ul>
+                </Authorized>
+            </AuthorizeView>
+
+            <ul>
+                <li><NavLink href="events" @onclick="ToggleOverlay">Events</NavLink></li>
+                <li><NavLink href="lineups" @onclick="ToggleOverlay">Lineups</NavLink></li>
+                <li><NavLink href="performances" @onclick="ToggleOverlay">Performances</NavLink></li>
+                <li><NavLink href="artists" @onclick="ToggleOverlay">Artists</NavLink></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        @Body
+    </main>
+
+    <footer>
+        <p>&copy MusicClubManager </p>
+    </footer>
+</div>
+
+
+@code {
+    private bool _isOverlayOpen;
+
+    private void ToggleOverlay() => _isOverlayOpen = !_isOverlayOpen;
+
+    private async void SignOut()
+    {
+        await TokenStore.RemoveToken();
+
+        await ArtistFilterStore.Remove();
+
+        await AuthenticationStateProvider.GetAuthenticationStateAsync();
+
+        _isOverlayOpen = false;
+    }
+}

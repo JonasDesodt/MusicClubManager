@@ -1,0 +1,91 @@
+﻿@page "/lineups/{lineupId:int}/delete"
+
+@layout LineupLayout
+
+@inject ILineupService LineupApiService
+@inject IPerformanceService PerformanceApiService
+@inject NavigationManager NavigationManager
+
+<h3>Delete lineup</h3>
+
+@if (_lineupServiceResult?.Data is { } lineupResult && _pagedPerformanceServiceResult?.Data is { } performanceResults)
+{
+    <h4>Lineup</h4>
+
+    <ul>
+        <li>Date: @lineupResult.Doors.ToLongDateString()</li>
+        <li>Doors: @lineupResult.Doors.ToShortTimeString()</li>
+        <li>Name: @(lineupResult.Name ?? "/")</li>
+        <li>Id: @lineupResult.Id</li>
+    </ul>
+
+    <h4>Performances</h4>
+
+    <p>These performances will be deleted when deleting the lineup</p>
+    <ul>
+        @foreach (var performanceResult in performanceResults)
+        {
+            <li>@(performanceResult.Start?.ToShortTimeString() ?? "--:--") @performanceResult.ArtistResult.Name (id: @performanceResult.Id)</li>
+        }
+    </ul>
+
+    <PaginationBig Context="new Pagination { Page = (int)_pagedPerformanceServiceResult.Page, PageSize = (int)_pagedPerformanceServiceResult.PageSize, TotalCount = (int)_pagedPerformanceServiceResult.TotalCount}"
+                   OnPageChanged="(context) => FetchPerformances(lineupResult.Id, context, new PerformanceFilter())" />
+
+    <ul>
+        @{
+            var href = $"lineups/{LineupId}";
+        }
+
+        <li><NavLink href="@href">Cancel</NavLink></li>
+        <li><button @onclick="() => DeleteLineup(lineupResult.Id)">Delete</button></li>
+    </ul>
+
+} else
+{
+    <p>Loading...</p>
+}
+
+@code {
+    [Parameter]
+    public int LineupId { get; set; }
+
+    private ServiceResult<LineupResult>? _lineupServiceResult;
+
+    private PagedServiceResult<IList<LineupPerformanceResult>>? _pagedPerformanceServiceResult;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _lineupServiceResult = await FetchLineup(LineupId);
+        _pagedPerformanceServiceResult = await FetchPerformances(LineupId, new Pagination { Page = 1, PageSize = 24 }, new PerformanceFilter());
+
+        await base.OnParametersSetAsync();
+    }
+
+    private async Task<ServiceResult<LineupResult>?> FetchLineup(int id)
+    {
+        if (id <= 0)
+        {
+            return null;
+        }
+
+        return await LineupApiService.Get(id, new PaginationRequest { Page = 1, PageSize = 5 });
+    }
+
+    private async Task<PagedServiceResult<IList<LineupPerformanceResult>>?> FetchPerformances(int lineupId, Pagination pagination, PerformanceFilter performanceFilter)
+    {
+        if (lineupId <= 0)
+        {
+            return null;
+        }
+
+        return await PerformanceApiService.GetAll(lineupId, new PaginationRequest { Page = (uint)pagination.Page, PageSize = (uint)pagination.PageSize }, performanceFilter);
+    }
+
+    private async Task DeleteLineup(int id)
+    {
+        await LineupApiService.Delete(id);
+
+        NavigationManager.NavigateTo("/lineups");
+    }
+}

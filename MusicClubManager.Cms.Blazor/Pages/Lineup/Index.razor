@@ -1,0 +1,80 @@
+﻿@page "/lineups"
+
+@layout LineupLayout
+
+@inject ILineupService LineupApiService
+
+<h3>Select</h3>
+@if (LineupContext is { } context)
+{
+    @if (_pagedServiceResult is { } pagedServiceResult)
+    {
+        @if (pagedServiceResult.Data is { } lineupResults)
+        {
+            <ul>
+                @foreach (var lineupResult in lineupResults)
+                {
+                    <li>
+
+
+                        <ul>
+                            <li>Date: @lineupResult.Doors.ToLongDateString()</li>
+                            <li>Doors: @lineupResult.Doors.ToShortTimeString()</li>
+                            <li>Name: @(lineupResult.Name ?? "/")</li>
+                        </ul>
+
+                        @{
+                            var href = $"lineups/{lineupResult.Id}";
+                        }
+
+                        <ul>
+                            <li><NavLink href="@href">Edit</NavLink></li>
+                        </ul>
+                    </li>
+                }
+            </ul>
+
+            <PaginationBig Context="@context.Pagination" OnPageChanged="(pagination) => FetchLineups(context, pagination, context.LineupFilter)" />
+        }
+        else
+        {
+            <p>Something went wrong.</p>
+        }
+    }
+    else
+    {
+        <p>Loading ...</p>
+    }
+}
+else
+{
+    <p>Something went wrong.</p>
+}
+
+
+
+@code {
+    [CascadingParameter]
+    public LineupContext? LineupContext { get; set; }
+
+    private PagedServiceResult<IList<LineupResult>>? _pagedServiceResult;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (LineupContext is { } context)
+        {
+            await FetchLineups(context, context.Pagination, context.LineupFilter);
+        }
+
+        await base.OnInitializedAsync();
+    }
+
+    private async Task FetchLineups(LineupContext context, Pagination pagination, LineupFilter lineupFilter)
+    {
+        _pagedServiceResult = await LineupApiService.GetAll(new PaginationRequest { Page = (uint)pagination.Page, PageSize = (uint)pagination.PageSize }, lineupFilter);
+
+        context.Pagination.PageSize = (int)_pagedServiceResult.PageSize;
+        context.Pagination.Page = (int)_pagedServiceResult.Page;
+        context.Pagination.TotalCount = (int)_pagedServiceResult.TotalCount;
+    }
+}

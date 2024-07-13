@@ -1,0 +1,50 @@
+﻿@page "/lineups/create/performances/create-performance"
+
+@layout MusicClubManager.Cms.Blazor.Layout.Lineup.CreateLayout
+
+@inject IArtistService ArtistApiService
+@inject NavigationManager NavigationManager
+
+<h3>Create performance</h3>
+
+@if (CreateLineupContext?.CreateEditPerformanceFormModel is { } model)
+{
+    <EditForm Model="model" OnValidSubmit="AddPerformance">
+        <CreateEditPerformance Model="model"></CreateEditPerformance>
+
+        <div>
+            <InputNumber @bind-Value="model.ArtistId" hidden />
+
+            <NavLink href="lineups/create/performances/create-performance/select-artist">Select artist</NavLink>
+
+            <p>@model.ArtistName (@model.ArtistId)</p>
+        </div>
+
+        <ul>
+            <li><button type="submit">Add</button></li>
+        </ul>
+    </EditForm>
+
+    <NavLink href="lineups/create/performances">Return</NavLink>
+}
+else
+{
+    <p>Something went wrong.</p>
+}
+
+@code {
+    [CascadingParameter]
+    public CreateLineupContext? CreateLineupContext { get; set; }
+
+    private void AddPerformance(EditContext editContext)
+    {
+        if (CreateLineupContext is not null && editContext.Model is CreateEditLineupPerformanceFormModel model)
+        {
+            CreateLineupContext.SavedPerformanceFormModels.Add(model);
+
+            CreateLineupContext.CreateEditPerformanceFormModel = new();
+
+            NavigationManager.NavigateTo("/lineups/create/performances");
+        }
+    }
+}

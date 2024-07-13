@@ -1,0 +1,64 @@
+﻿@page "/lineups/{lineupId:int}/select-artist"
+
+@layout LineupLayout
+
+@inject IArtistService ArtistApiService
+@inject ILineupService LineupApiService
+
+<h3>Select artist</h3>
+
+@if (_lineupServiceResult?.Data is { } lineupResult && _pagedServiceResult?.Data is { } artistResults)
+{
+    <p>Lineup: @(lineupResult.Name ?? lineupResult.Doors.ToLongDateString())</p>
+
+    <NavLink>Create</NavLink>
+
+    <ul>
+        @foreach (var artistResult in artistResults)
+        {
+            <li>
+                @{
+                    var href = $"lineups/{LineupId}/{artistResult.Id}/add-performance";
+                }
+
+                <NavLink href="@href">@artistResult.Name</NavLink>
+            </li>
+        }
+    </ul>
+
+    <PaginationBig Context="new Pagination { Page = (int)_pagedServiceResult.Page, PageSize = (int)_pagedServiceResult.PageSize, TotalCount = (int)_pagedServiceResult.TotalCount }"
+                   OnPageChanged="(context) => FetchArtists(LineupId, new PaginationRequest { Page = (uint)context.Page, PageSize = (uint)context.PageSize }, new ArtistFilter ())" />
+
+}
+else
+{
+    <p>Loading...</p>
+}
+
+@code {
+    [Parameter]
+    public int LineupId { get; set; }
+    private ServiceResult<LineupResult>? _lineupServiceResult;
+
+    private PagedServiceResult<IList<ArtistResult>>? _pagedServiceResult;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _lineupServiceResult = await FetchLineup(LineupId, new PaginationRequest { Page = 1, PageSize = 5 });
+
+        _pagedServiceResult = await FetchArtists(LineupId, new PaginationRequest { Page = 1, PageSize = 24 }, new ArtistFilter { });
+
+        await base.OnParametersSetAsync();
+    }
+
+    private async Task<ServiceResult<LineupResult>?> FetchLineup(int id, PaginationRequest paginationRequest)
+    {
+        return await LineupApiService.Get(id, paginationRequest);
+    }
+
+    private async Task<PagedServiceResult<IList<ArtistResult>>?> FetchArtists(int id, PaginationRequest paginationRequest, ArtistFilter artistFilter)
+    {
+        return await ArtistApiService.GetAll(paginationRequest, artistFilter);
+    }
+
+}

@@ -1,0 +1,75 @@
+﻿<EditForm Model="Model" OnValidSubmit="() => OnFilter.InvokeAsync(Model)">
+    <div>
+        <label>Scoped</label>
+
+        <div>
+            <InputRadioGroup Name="scoped" @bind-Value="Model.Scoped">
+                <label>
+                    <InputRadio Name="scoped" Value="@true" />
+                    Yes
+                </label>
+
+                <label>
+                    <InputRadio Name="scoped" Value="@false" />
+                    No
+                </label>
+            </InputRadioGroup>
+        </div>
+    </div>
+
+
+    <div>
+        <label for="Name">Name</label>
+
+        <InputText @bind-Value="Model.Name" type="text" id="Name" />
+    </div>
+
+    <div>
+        <label for="SortProperty">Sort property</label>
+
+        <InputSelect @bind-Value="Model.SortProperty" id="SortProperty">
+            <option value="@nameof(ArtistResult.Id)">@nameof(ArtistResult.Id)</option>
+            <option value="@nameof(ArtistResult.Name)">@nameof(ArtistResult.Name)</option>
+        </InputSelect>
+    </div>
+
+    <div>
+        <label>Sort direction</label>
+
+        <div>
+            <InputRadioGroup Name="SortDirection" @bind-Value="Model.SortDirection">
+                <label>
+                    <InputRadio Name="SortDirection" Value="SortDirection.Ascending" />
+                    @SortDirection.Ascending.ToString()
+                </label>
+
+                <label>
+                    <InputRadio Name="SortDirection" Value="SortDirection.Descending" />
+                    @SortDirection.Descending.ToString()
+                </label>
+            </InputRadioGroup>
+        </div>
+    </div>
+
+    <div class="buttons">
+        <button type="submit">Filter</button>
+
+        <button type="button" @onclick="ClearLineupFilter">Clear</button>
+    </div>
+</EditForm>
+
+
+@code {
+    [Parameter, EditorRequired]
+    public required LineupFilter Model { get; set; }
+
+    [Parameter]
+    public EventCallback<LineupFilter> OnFilter { get; set; }
+
+    private async Task ClearLineupFilter()
+    {
+        Model = new LineupFilter { };
+
+        await OnFilter.InvokeAsync(Model);
+    }
+}

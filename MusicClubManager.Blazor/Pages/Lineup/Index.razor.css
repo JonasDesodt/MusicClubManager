@@ -1,0 +1,33 @@
+﻿section {
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
+}
+
+    section > ul {
+        display: flex;
+        flex-direction: column;
+        gap: .5em;
+        list-style-type: none;
+    }
+
+        section > ul > li > ::deep a {
+            display: flex;
+            color: rgb(0,0,0);
+            flex-direction: column;
+            gap: .5em;
+            padding: 0 0 .5em 0;
+            text-decoration: none;
+        }
+
+        section > ul > li:not(:last-of-type) {
+            border-bottom: 1px solid rgb(150,150,150);
+        }
+
+        section > ul > li > ::deep a > span:first-of-type {
+            font-size: .9em;
+        }
+
+        section > ul > li > ::deep a:hover {
+            color: rgb(0,150,0);
+        }
