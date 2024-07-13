@@ -10,19 +10,19 @@
 
 <h3>Add performance</h3>
 
-@if (_lineupResult is { } lineupResult && _artistResult is { } artistResult)
+@if (_lineupResult is { } lineupResult && _artistResult is { } artistResult && _model is { }  model)
 {
-    <EditForm Model="_model" OnValidSubmit="AddPerformance">
-        <CreateEditPerformance Model="_model"></CreateEditPerformance>
+    <EditForm Model="model" OnValidSubmit="AddPerformance">
+        <CreateEditPerformance Model="model"></CreateEditPerformance>
 
         <div>
-            <InputNumber @bind-Value="_model.LineupId" hidden />
-            <p>@(lineupResult.Name ?? lineupResult.Doors.ToLongDateString()) (id: @_model.ArtistId))</p>
+            <InputNumber @bind-Value="model.LineupId" hidden />
+            <p>@(lineupResult.Name ?? lineupResult.Doors.ToLongDateString()) (id: @model.ArtistId))</p>
         </div>
 
         <div>
-            <InputNumber @bind-Value="_model.ArtistId" hidden />
-            <p>@artistResult.Name (id: @_model.ArtistId)</p>
+            <InputNumber @bind-Value="model.ArtistId" hidden />
+            <p>@artistResult.Name (id: @model.ArtistId)</p>
         </div>
 
         <ul>
@@ -40,7 +40,7 @@
     public int ArtistId { get; set; }
     private ArtistResult? _artistResult;
 
-    private CreateEditLineupPerformanceFormModel _model = new();
+    private CreateEditLineupPerformanceFormModel? _model;
 
     protected override async Task OnParametersSetAsync()
     {
