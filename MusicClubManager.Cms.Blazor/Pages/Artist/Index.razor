@@ -7,21 +7,30 @@
 
 <h3>Select artist</h3>
 
+@{
+    var artistHref = $"lineups/{LineupId}/create-artist";
+}
+<NavLink href="@artistHref">Create new</NavLink>
+
 @if (_lineupServiceResult?.Data is { } lineupResult && _pagedServiceResult?.Data is { } artistResults)
 {
     <p>Lineup: @(lineupResult.Name ?? lineupResult.Doors.ToLongDateString())</p>
-
-    <NavLink>Create</NavLink>
 
     <ul>
         @foreach (var artistResult in artistResults)
         {
             <li>
+
                 @{
-                    var href = $"lineups/{LineupId}/{artistResult.Id}/add-performance";
+                    var editHref = $"lineups/{lineupResult.Id}/{artistResult.Id}/edit-artist";
+                }
+                <NavLink href="@editHref">@artistResult.Name</NavLink>
+
+                @{
+                    var selectHref = $"lineups/{LineupId}/{artistResult.Id}/add-performance";
                 }
 
-                <NavLink href="@href">@artistResult.Name</NavLink>
+                <NavLink href="@selectHref">Select</NavLink>
             </li>
         }
     </ul>

@@ -1,4 +1,4 @@
-﻿@page "/lineups/{lineupId:int}/{artistId:int}/edit-performance"
+﻿@page "/performances/{performanceId:int}"
 
 @layout LineupLayout
 
@@ -8,9 +8,9 @@
 
 @inject NavigationManager NavigationManager
 
-<h3>Add performance</h3>
+<h3>Edit performance</h3>
 
-@if (_lineupResult is { } lineupResult && _artistResult is { } artistResult && _model is { }  model)
+@if (_lineupResult is { } lineupResult && _artistResult is { } artistResult && _model is { } model)
 {
     <EditForm Model="model" OnValidSubmit="AddPerformance">
         <CreateEditPerformance Model="model"></CreateEditPerformance>
@@ -33,8 +33,11 @@
 
 @code {
     [Parameter]
+    public int PerformanceId { get; set; }
+
+    [Parameter]
     public int LineupId { get; set; }
-    private LineupResult? _lineupResult;
+    private PerformanceLineupResult? _lineupResult;
 
     [Parameter]
     public int ArtistId { get; set; }
@@ -44,22 +47,24 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        var artistServiceResult = await ArtistApiService.Get(ArtistId);
-        if (artistServiceResult.Data is not { } artistResult)
+        var performanceServiceResult = await PerformanceApiService.Get(PerformanceId);
+        if (performanceServiceResult?.Data is not { } performanceResult)
         {
             return;
         }
-        _artistResult = artistResult;
-        _model.ArtistId = artistResult.Id;
+
+        _model = new CreateEditLineupPerformanceFormModel
+            {
+                ArtistId = performanceResult.ArtistResult.Id,
+                Duration = performanceResult.Duration,
+                LineupId = performanceResult.LineupResult.Id,
+                Start = performanceResult.Start,
+                Type = performanceResult.Type
+            };
 
 
-        var lineupServiceResult = await LineupApiService.Get(LineupId, new PaginationRequest { Page = 1, PageSize = 5 });
-        if (lineupServiceResult.Data is not { } lineupResult)
-        {
-            return;
-        }
-        _lineupResult = lineupResult;
-        _model.LineupId = lineupResult.Id;
+        _artistResult = performanceResult.ArtistResult;
+        _lineupResult = performanceResult.LineupResult;
 
         await base.OnParametersSetAsync();
     }
@@ -67,20 +72,25 @@
 
     private async Task AddPerformance()
     {
-        if (_model.ArtistId is not { } artistId)
+        if(_model is not { } model)
         {
             return;
         }
 
-        if (_model.LineupId is not { } lineupId)
+        if (model.ArtistId is not { } artistId)
         {
             return;
         }
 
-        var serviceResult = await PerformanceApiService.Create(new PerformanceRequest { ArtistId = artistId, LineupId = lineupId, Duration = _model.Duration, Start = _model.Start, Type = _model.Type });
+        if (model.LineupId is not { } lineupId)
+        {
+            return;
+        }
+
+        var serviceResult = await PerformanceApiService.Update(PerformanceId, new PerformanceRequest { ArtistId = artistId, LineupId = lineupId, Duration = model.Duration, Start = model.Start, Type = model.Type });
         if (serviceResult.Messages is null)
         {
-            NavigationManager.NavigateTo($"lineups/{LineupId}/performances");
+            NavigationManager.NavigateTo($"lineups/{lineupId}/performances");
         }
     }
 }

@@ -20,7 +20,10 @@
         @foreach (var performanceResult in performanceResults)
         {
             <li>
-                @(performanceResult.Start?.ToShortTimeString() ?? "--:--") @performanceResult.ArtistResult.Name (id:@performanceResult.ArtistResult.Id)
+                @{
+                    var hrefPerformance = $"performances/{performanceResult.Id}";
+                }
+                <NavLink href="@hrefPerformance">@(performanceResult.Start?.ToShortTimeString() ?? "--:--") @performanceResult.ArtistResult.Name (id:@performanceResult.ArtistResult.Id)</NavLink>
             </li>
         }
     </ul>

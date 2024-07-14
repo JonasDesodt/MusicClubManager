@@ -1,0 +1,103 @@
+﻿@page "/lineups/{lineupId:int}/{artistId:int}/edit-artist"
+
+@inject IArtistService ArtistApiService
+@inject NavigationManager NavigationManager
+
+<h3>Create artist</h3>
+
+@if (_model is { } model)
+{
+    <EditForm Model="model" OnValidSubmit="() => Submit(model)">
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+
+        <ValidationSummary></ValidationSummary>
+
+        <div>
+            <div>
+                <label for="name">Name</label>
+
+                <InputText @bind-Value="model.Name" id="name" />
+            </div>
+
+            <div>
+                <label for="description">Description</label>
+
+                <InputTextArea @bind-Value="model.Description" id="description" />
+            </div>
+        </div>
+
+        <ul>
+            <li><button type="submit">Save</button></li>
+
+            <li><button type="button" @onclick="() => FetchArtist(ArtistId)">Undo changes</button></li>
+        </ul>
+    </EditForm>
+}
+else
+{
+    <p>Loading...</p>
+}
+
+
+@code {
+    [Parameter]
+    public int ArtistId { get; set; }
+
+    [Parameter]
+    public int LineupId { get; set; }
+
+    private CreateArtistFormModel? _model;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await FetchArtist(ArtistId);
+
+        await base.OnParametersSetAsync();
+    }
+
+    private async Task FetchArtist(int id)
+    {
+        if (ArtistId <= 0)
+        {
+            return;
+        }
+
+        var artistServiceResult = await ArtistApiService.Get(ArtistId);
+
+        if (artistServiceResult.Data is { } artistResult)
+        {
+            _model = new CreateArtistFormModel
+                {
+                    Name = artistResult.Name,
+                    Description = artistResult.Description
+                };
+        }
+    }
+
+    private async Task Submit(CreateArtistFormModel _model)
+    {
+        if (ArtistId <= 0)
+        {
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(_model.Name))
+        {
+            return;
+        }
+
+        var request = new ArtistRequest
+            {
+                Name = _model.Name,
+                Description = _model.Description,
+                Image = _model.Image
+            };
+
+        if ((await ArtistApiService.Update(ArtistId, request)).Data is not { } artistResult)
+        {
+            return;
+        }
+
+        NavigationManager.NavigateTo($"lineups/{LineupId}/select-artist");
+    }
+}
