@@ -32,14 +32,14 @@
     <PaginationBig Context="new Pagination { Page = (int)_pagedPerformanceServiceResult.Page, PageSize = (int)_pagedPerformanceServiceResult.PageSize, TotalCount = (int)_pagedPerformanceServiceResult.TotalCount}"
                    OnPageChanged="(context) => FetchPerformances(lineupResult.Id, context, new PerformanceFilter())" />
 
-    <ul>
+    <FormButtons>
         @{
             var href = $"lineups/{LineupId}";
         }
 
         <li><NavLink href="@href">Cancel</NavLink></li>
         <li><button @onclick="() => DeleteLineup(lineupResult.Id)">Delete</button></li>
-    </ul>
+    </FormButtons>
 
 } else
 {

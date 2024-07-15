@@ -1,0 +1,45 @@
+﻿@inject IArtistService ArtistApiService
+
+<EditForm Model="_model" OnValidSubmit="() => Submit(_model)">
+    <DataAnnotationsValidator></DataAnnotationsValidator>
+
+    <ValidationSummary></ValidationSummary>
+
+    <ArtistInputs Model="_model"></ArtistInputs>
+
+    <FormButtons>
+        <li><button type="submit">Create</button></li>
+
+        <li><button type="reset" class="warning">Reset</button></li>
+    </FormButtons>
+</EditForm>
+
+@code {
+    [Parameter, EditorRequired]
+    public EventCallback<int> OnSubmitted { get; set; }
+
+    private CreateArtistFormModel _model = new();
+
+    private async Task Submit(CreateArtistFormModel _model)
+    {
+
+        if (string.IsNullOrWhiteSpace(_model.Name))
+        {
+            return;
+        }
+
+        var request = new ArtistRequest
+            {
+                Name = _model.Name,
+                Description = _model.Description,
+                Image = _model.Image
+            };
+
+        if ((await ArtistApiService.Create(request)).Data is not { } artistResult)
+        {
+            return;
+        }
+
+        await OnSubmitted.InvokeAsync(artistResult.Id);
+    }
+}

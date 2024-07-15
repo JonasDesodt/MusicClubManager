@@ -1,0 +1,28 @@
+﻿@inject IArtistService ArtistApiService
+
+@if (PagedServiceResult?.Data is { } artistResults)
+{
+    <ul>
+        @foreach (var artistResult in artistResults)
+        {
+            <li>
+                @ItemTemplate(artistResult)
+            </li>
+        }
+    </ul>
+
+    <PaginationBig Context="new Pagination { Page = (int)PagedServiceResult.Page, PageSize = (int)PagedServiceResult.PageSize, TotalCount = (int)PagedServiceResult.TotalCount }"
+                   OnPageChanged="(context) => OnPageChanged.InvokeAsync(context)" />
+
+}
+
+@code {
+    [Parameter, EditorRequired]
+    public RenderFragment<ArtistResult> ItemTemplate { get; set; } = default!;
+
+    [Parameter, EditorRequired]
+    public PagedServiceResult<IList<ArtistResult>>? PagedServiceResult { get; set; }
+
+    [Parameter, EditorRequired]
+    public EventCallback<Pagination> OnPageChanged { get; set; }
+}

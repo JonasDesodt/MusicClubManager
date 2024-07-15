@@ -33,17 +33,17 @@
             <NavLink href="@href">Peformances</NavLink>
         </div>
 
-        <ul>
+        <FormButtons>
             <li><button type="submit">Save</button></li>
 
-            <li><button type="button" @onclick="() => SetModel(Id)">Undo changes</button></li>
+            <li><button type="button" @onclick="() => SetModel(Id)" class="warning">Undo changes</button></li>
 
 
             @{
                 var hrefDelete = $"lineups/{Id}/delete";
             }
-            <li><NavLink href="@hrefDelete">Delete</NavLink></li> <!-- show the list with the performances that will be removed -->
-        </ul>
+            <li><NavLink href="@hrefDelete" class="warning">Delete</NavLink></li> <!-- show the list with the performances that will be removed -->
+        </FormButtons>
     </EditForm>
 }
 else

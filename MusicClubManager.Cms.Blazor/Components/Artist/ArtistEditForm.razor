@@ -1,0 +1,85 @@
+﻿@inject IArtistService ArtistApiService
+
+@if (_model is { } model)
+{
+    <EditForm Model="model" OnValidSubmit="() => Submit(model)">
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+
+        <ValidationSummary></ValidationSummary>
+
+        <ArtistInputs Model="model"></ArtistInputs>
+
+        <FormButtons>
+            <li><button type="submit">Save</button></li>
+
+            <li><button type="button" @onclick="() => FetchArtist(ArtistId)" class="warning">Undo changes</button></li>
+        </FormButtons>
+    </EditForm>
+}
+else
+{
+    <p>Loading...</p>
+}
+
+@code {
+    [Parameter, EditorRequired]
+    public int ArtistId { get; set; }
+
+    [Parameter, EditorRequired]
+    public EventCallback OnSubmitted { get; set; }
+
+    private CreateArtistFormModel? _model;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await FetchArtist(ArtistId);
+
+        await base.OnInitializedAsync();
+    }
+
+    private async Task FetchArtist(int id)
+    {
+        if (ArtistId <= 0)
+        {
+            return;
+        }
+
+        var artistServiceResult = await ArtistApiService.Get(ArtistId);
+
+        if (artistServiceResult.Data is { } artistResult)
+        {
+            _model = new CreateArtistFormModel
+                {
+                    Name = artistResult.Name,
+                    Description = artistResult.Description
+                };
+        }
+    }
+
+    private async Task Submit(CreateArtistFormModel _model)
+    {
+        if (ArtistId <= 0)
+        {
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(_model.Name))
+        {
+            return;
+        }
+
+        var request = new ArtistRequest
+            {
+                Name = _model.Name,
+                Description = _model.Description,
+                Image = _model.Image
+            };
+
+        if ((await ArtistApiService.Update(ArtistId, request)).Data is not { } artistResult)
+        {
+            return;
+        }
+
+        await OnSubmitted.InvokeAsync();
+    }
+}

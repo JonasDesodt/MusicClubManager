@@ -1,0 +1,22 @@
+﻿@if (Model is { } model)
+{
+    <div>
+        <div>
+            <label for="name">Name</label>
+
+            <InputText @bind-Value="model.Name" id="name" />
+        </div>
+
+        <div>
+            <label for="description">Description</label>
+
+            <InputTextArea @bind-Value="model.Description" id="description" />
+        </div>
+    </div>
+}
+
+
+@code {
+    [Parameter, EditorRequired]
+    public CreateArtistFormModel? Model { get; set; }
+}

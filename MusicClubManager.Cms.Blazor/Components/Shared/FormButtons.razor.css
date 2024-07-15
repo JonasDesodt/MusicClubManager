@@ -1,0 +1,39 @@
+﻿ul {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1em;
+    justify-content: flex-end;
+    list-style-type: none;
+}
+
+    ul > ::deep li > a {
+        text-decoration: none;
+    }
+
+    ul > ::deep li > * {
+        background: rgb(67,161,107);
+        color: rgb(255,255,255);
+        cursor: pointer;
+        padding: .5em;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+        ul > ::deep li > *.warning {
+            background: rgb(161,67,107);
+        }
+
+        ul > ::deep li > *:hover {
+            background: rgb(47,141,87);
+        }
+
+        ul > ::deep li > *.warning:hover {
+            background: rgb(141,47,87);
+        }
+
+    ul > ::deep li > button {
+        border: none;
+        font-size: 1em;
+    }

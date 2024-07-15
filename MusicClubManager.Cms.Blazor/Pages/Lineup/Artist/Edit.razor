@@ -1,0 +1,43 @@
+﻿@page "/lineups/{lineupId:int}/{artistId:int}/edit-artist"
+
+@layout LineupLayout
+
+@inject ILineupService LineupApiService
+@inject NavigationManager NavigationManager
+
+<h3>Edit artist</h3>
+
+@if (_lineupServiceResult?.Data is { } lineupResult)
+{
+    <p>Lineup: @lineupResult.Doors.ToLongDateString() @lineupResult.Name</p>
+
+    <p>Show all affected lineups / performances</p>
+}
+
+<ArtistEditForm ArtistId="ArtistId" OnSubmitted="@(() => NavigationManager.NavigateTo($"lineups/{LineupId}/select-artist"))" />
+
+@code {
+    [Parameter]
+    public int ArtistId { get; set; }
+
+    [Parameter]
+    public int? LineupId { get; set; }
+    private ServiceResult<LineupResult>? _lineupServiceResult;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await FetchLineup(LineupId);
+
+        await base.OnParametersSetAsync();
+    }
+
+    private async Task FetchLineup(int? id)
+    {
+        if (id is null || id <= 0)
+        {
+            return;
+        }
+
+        _lineupServiceResult = await LineupApiService.Get((int)id, new PaginationRequest { Page = 1, PageSize = 5 });
+    }
+}
