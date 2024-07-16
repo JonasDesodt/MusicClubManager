@@ -12,6 +12,12 @@
 
             <InputTextArea @bind-Value="model.Description" id="description" />
         </div>
+
+        <div>
+            <label for="image">Image</label>
+
+            <InputFile OnChange="(file) => model.BrowserFile = file.File" id="image" />
+        </div>
     </div>
 }
 
@@ -19,4 +25,6 @@
 @code {
     [Parameter, EditorRequired]
     public CreateArtistFormModel? Model { get; set; }
+
+  
 }

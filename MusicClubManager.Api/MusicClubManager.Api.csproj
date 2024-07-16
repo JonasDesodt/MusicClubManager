@@ -19,4 +19,8 @@
     <ProjectReference Include="..\MusicClubManager.Services\MusicClubManager.Services.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\images\" />
+  </ItemGroup>
+
 </Project>

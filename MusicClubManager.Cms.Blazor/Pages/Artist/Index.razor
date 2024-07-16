@@ -9,11 +9,11 @@
 
 <NavLink href="artists/create">Create new</NavLink>
 
-@if (_pagedServiceResult is not null)
+@if (_pagedServiceResult is not null && LineupContext is not null)
 {
     if (_pagedServiceResult.Data is not null)
     {
-        <ArtistIndex PagedServiceResult="_pagedServiceResult" Context="artistResult" OnPageChanged="(context) => FetchArtists(new PaginationRequest { Page = (uint)context.Page, PageSize = (uint)context.PageSize }, new ArtistFilter ())">
+        <ArtistIndex PagedServiceResult="_pagedServiceResult" Context="artistResult" OnPageChanged="(context) => FetchArtists(new PaginationRequest { Page = (uint)LineupContext.Pagination.Page, PageSize = (uint)LineupContext.Pagination.PageSize}, new ArtistFilter ())">
             <ItemTemplate>
                 @{
                     var editHref = $"artists/{artistResult.Id}";
@@ -33,17 +33,24 @@ else
 }
 
 @code {
+    [CascadingParameter]
+    public LineupContext? LineupContext { get; set; }
+
     private PagedServiceResult<IList<ArtistResult>>? _pagedServiceResult;
 
     protected override async Task OnInitializedAsync()
     {
-        await FetchArtists(new PaginationRequest { Page = 1, PageSize = 5 }, new ArtistFilter());
+        if(LineupContext is null) {
+            return;
+        }
+
+        await FetchArtists(new PaginationRequest { Page = (uint)LineupContext.Pagination.Page, PageSize = (uint)LineupContext.Pagination.PageSize }, new ArtistFilter());
 
         await base.OnInitializedAsync();
     }
 
     private async Task FetchArtists(PaginationRequest paginationRequest, ArtistFilter artistFilter)
     {
-        _pagedServiceResult = await ArtistApiService.GetAll(new PaginationRequest { Page = 1, PageSize = 5 }, new ArtistFilter());
+        _pagedServiceResult = await ArtistApiService.GetAll(paginationRequest, new ArtistFilter());
     }
 }

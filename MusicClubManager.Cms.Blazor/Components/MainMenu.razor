@@ -1,41 +1,47 @@
 ﻿@inject NavigationManager NavigationManager
 
 <nav>
-    @if (_route.Equals(""))
-    {
-        <div>
-            <h2>Main menu</h2>
-        </div>
+    <div>
+        <h2>Main menu</h2>
+    </div>
 
-        <ul>
-            <li>
-                <NavLink href="/" ActiveClass="active" Match="NavLinkMatch.All" @onclick="()=> OnNavigationStarted.InvokeAsync()">Home</NavLink>
-            </li>
+    <ul>
+        <li>
+            @if (_route.Equals(""))
+            {
+                <a href="/" @onclick="()=> OnNavigationStarted.InvokeAsync()" class="active">Home</a>
+            }
+            else
+            {
+                <a href="/" @onclick="()=> OnNavigationStarted.InvokeAsync()">Home</a>
+            }
 
-            <li>
-                <button @onclick="@(() => _route = "lineups")">Lineups</button>
-            </li>
-        </ul>
-    }
+        </li>
 
-    @if (_route.Contains("lineups"))
-    {
-        <div>
-            <button @onclick="@(() => _route = "")">&#8592</button>
+        <li>
+            @if (_route.StartsWith("lineups"))
+            {
+                <a href="lineups" @onclick="()=> OnNavigationStarted.InvokeAsync()" class="active">Lineups</a>
+            }
+            else
+            {
+                <a href="lineups" @onclick="()=> OnNavigationStarted.InvokeAsync()">Lineups</a>
+            }
+        </li>
 
-            <h2>Lineups</h2>
-        </div>
+        <li>
+            @if (_route.StartsWith("artists"))
+            {
+                <a href="artists" @onclick="()=> OnNavigationStarted.InvokeAsync()" class="active">Artists</a>
 
-        <ul>
-            <li>
-                <NavLink href="lineups/create" ActiveClass="active" @onclick="()=> OnNavigationStarted.InvokeAsync()" >Create</NavLink>
-            </li>
+            }
+            else
+            {
+                <a href="artists" @onclick="()=> OnNavigationStarted.InvokeAsync()">Artists</a>
+            }
 
-            <li>
-                <NavLink href="lineups" ActiveClass="active" @onclick="()=> OnNavigationStarted.InvokeAsync()">Search</NavLink>
-            </li>
-        </ul>
-    }
+        </li>
+    </ul>
 </nav>
 
 @code {

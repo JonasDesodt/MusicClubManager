@@ -9,7 +9,7 @@ namespace MusicClubManager.Cms.Blazor.Models.Contexts
         public Pagination Pagination { get; set; } = new ()
         {
             Page = 1,
-            PageSize = 12
+            PageSize = 24
         };
     }
 }

@@ -88,9 +88,6 @@ namespace MusicClubManager.Sdk
 
             var httpResponseMessage = await httpClient.GetAsync($"Performance/by-lineup-id/{id}?" + paginationRequest.ToQueryString() + '&' + filter.ToQueryString());
 
-
-            var test = await httpResponseMessage.Content.ReadAsStringAsync();
-
             if (!httpResponseMessage.IsSuccessStatusCode || await httpResponseMessage.Content.ReadFromJsonAsync<PagedServiceResult<IList<LineupPerformanceResult>>>() is not { } result)
             {
                 return new PagedServiceResult<IList<LineupPerformanceResult>>

@@ -1,7 +1,6 @@
 ﻿using MusicClubManager.Dto.Request;
 using MusicClubManager.Dto.Result;
 using MusicClubManager.Dto.Transfer;
-using System.Net.Http;
 using System.Net.Http.Json;
 using MusicClubManager.Abstractions;
 

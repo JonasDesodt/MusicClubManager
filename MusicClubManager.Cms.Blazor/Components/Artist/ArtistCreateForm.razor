@@ -1,4 +1,5 @@
 ﻿@inject IArtistService ArtistApiService
+@inject ImageApiService ImageApiService;
 
 <EditForm Model="_model" OnValidSubmit="() => Submit(_model)">
     <DataAnnotationsValidator></DataAnnotationsValidator>
@@ -32,13 +33,24 @@
             {
                 Name = _model.Name,
                 Description = _model.Description,
-                Image = _model.Image
+                Image = _model.BrowserFile?.Name
             };
 
         if ((await ArtistApiService.Create(request)).Data is not { } artistResult)
         {
             return;
         }
+
+        if(_model.BrowserFile is { Size: > 0}  file)
+        {
+            var content = new MultipartFormDataContent();
+            var fileContent = new StreamContent(file.OpenReadStream());
+            fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType);
+            content.Add(fileContent, "file", file.Name);
+
+            await ImageApiService.Create(content);
+        }
+
 
         await OnSubmitted.InvokeAsync(artistResult.Id);
     }

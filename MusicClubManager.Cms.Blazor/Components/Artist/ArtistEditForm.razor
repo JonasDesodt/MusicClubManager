@@ -9,6 +9,13 @@
 
         <ArtistInputs Model="model"></ArtistInputs>
 
+        @if (!string.IsNullOrWhiteSpace(model.Image))
+        {
+            var src = $"https://localhost:7188/image/{model.Image}";
+
+            <img src="@src" alt="@model.Image" />
+        }
+
         <FormButtons>
             <li><button type="submit">Save</button></li>
 
@@ -51,7 +58,8 @@ else
             _model = new CreateArtistFormModel
                 {
                     Name = artistResult.Name,
-                    Description = artistResult.Description
+                    Description = artistResult.Description,
+                    Image = artistResult.Image
                 };
         }
     }

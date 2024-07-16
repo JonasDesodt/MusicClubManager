@@ -41,7 +41,7 @@ nav ul > li {
     flex-direction: column;
 }
 
-nav > ul > li > ::deep * {
+nav > ul > li > * {
     background-color: rgb(67, 161, 107);
     color: rgb(255,255,255);
     font-weight: bold;
@@ -49,11 +49,11 @@ nav > ul > li > ::deep * {
     text-transform: uppercase;
 }
 
-    nav > ul > li > ::deep *:hover {
+    nav > ul > li > *:hover {
         background-color: rgb(47, 141, 87);
     }
 
-nav > ul > li > ::deep a {
+nav > ul > li > a {
     text-decoration: none;
 }
 
@@ -63,10 +63,10 @@ nav > ul > li > button {
     text-align: left;
 }
 
-nav > ul > li > ::deep a.active {
+nav > ul > li > a.active {
     background-color: rgb(67, 107, 161);
 }
 
-    nav > ul > li > ::deep a.active:hover {
+    nav > ul > li > a.active:hover {
         background-color: rgb(47, 87, 141);
     }
