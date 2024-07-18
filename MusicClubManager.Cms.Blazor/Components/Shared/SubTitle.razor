@@ -1,0 +1,18 @@
+﻿<h3>
+    @if (!string.IsNullOrWhiteSpace(ReturnUrl))
+    {
+        <Return Href="@ReturnUrl"/>
+    }
+    
+    <span>
+        @ChildContent
+    </span>
+</h3>
+
+@code {
+    [Parameter]
+    public string? ReturnUrl { get; set; }
+
+    [Parameter, EditorRequired]
+    public RenderFragment? ChildContent { get; set; }
+}   

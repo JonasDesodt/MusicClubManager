@@ -1,0 +1,8 @@
+﻿<ul>
+    @ChildContent
+</ul>
+
+@code {
+    [Parameter, EditorRequired]
+    public RenderFragment? ChildContent { get; set; }
+}

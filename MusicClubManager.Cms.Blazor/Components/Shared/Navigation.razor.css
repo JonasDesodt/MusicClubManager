@@ -1,0 +1,31 @@
+﻿ul {
+    display: flex;
+    flex-direction: row;
+    gap: 1em;
+    list-style-type: none;
+}
+
+    ul > ::deep li > * {
+        background-color: rgb(67,161,107);
+        color: rgb(255,255,255);
+        display: flex;
+        font-weight: bold;
+        padding: .5em;
+        text-transform: uppercase;
+    }
+
+        ul > ::deep li > *:hover {
+            background-color: rgb(47,141,87);
+        }
+
+        ul > ::deep li > *.active {
+            background-color: rgb(67,107,161);
+        }
+
+            ul > ::deep li > *.active:hover {
+                background-color: rgb(47,87,141);
+            }
+
+    ul > ::deep li > a {
+        text-decoration: none;
+    }

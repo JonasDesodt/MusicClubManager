@@ -4,14 +4,13 @@
 
 @inject ILineupService LineupApiService
 
-<h3>Select</h3>
-
-<NavLink href="lineups/create">Create new </NavLink>
-
-
 @if (LineupContext is { } context)
 {
-    <NavLink href="lineups/filters">Filters</NavLink>
+    <Navigation>
+        <li><NavLink href="lineups/create">Create</NavLink></li>
+
+        <li><NavLink href="lineups/filters">Filters</NavLink></li>
+    </Navigation>
 
     @if (_pagedServiceResult is { } pagedServiceResult)
     {

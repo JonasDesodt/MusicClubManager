@@ -5,7 +5,10 @@
 @inject ILineupService LineupApiService
 @inject NavigationManager NavigationManager
 
-<h3>Create lineup</h3>
+<SubTitle ReturnUrl="lineups">
+    Create
+</SubTitle>
+
 
 <EditForm Model="_model" OnValidSubmit="() => Submit(_model)">
     <DataAnnotationsValidator></DataAnnotationsValidator>

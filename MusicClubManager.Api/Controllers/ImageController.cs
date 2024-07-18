@@ -31,7 +31,7 @@ namespace MusicClubManager.Api.Controllers
 
             if (System.IO.File.Exists(filePath))
             {
-                return BadRequest("Duplicate name");
+                return BadRequest("Duplicate file name");
             }
 
 

@@ -7,7 +7,6 @@ using MusicClubManager.Dto.Request;
 using MusicClubManager.Dto.Result;
 using MusicClubManager.Dto.Transfer;
 using MusicClubManager.Models;
-using Microsoft.AspNetCore.Http;
 
 namespace MusicClubManager.Services
 {

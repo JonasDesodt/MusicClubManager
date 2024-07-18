@@ -87,10 +87,16 @@ code {
     font-family: Helvetica, sans-serif;
     margin: 0;
     padding: 0;
+
+ /*   outline: 1px dotted red;*/
 }
 
 html {
     font-size: 16px;
+}
+
+body {
+    overflow-y: scroll;
 }
 
 div#app {
@@ -99,7 +105,7 @@ div#app {
     min-height: 100vh;
 }
 
-form {
+/*form {
     display: flex;
     flex-direction: column;
     gap: 2em;
@@ -127,7 +133,7 @@ form {
 
             form > div > div > input {
                 padding: .5em;
-            }
+            }*/
 
 /*    form > ul {
         display: flex;
@@ -153,10 +159,16 @@ form {
             border: none;
         }*/
 
-h2 {
+/*h2 {
     font-size: 1.5em;
 }
 
 h3 {
     font-size: 1.25em;
 }
+*/
+
+/** {
+    outline: 1px dotted red;
+}
+*/

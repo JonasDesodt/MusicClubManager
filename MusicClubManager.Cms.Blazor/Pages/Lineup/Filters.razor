@@ -4,12 +4,10 @@
 
 @inject NavigationManager NavigationManager
 
-<h3>
-    <NavLink href="lineups">&larr;</NavLink>
+<SubTitle ReturnUrl="lineups">
+    Filters
+</SubTitle>
 
-    <span>Filters</span>
-</h3>
- 
 @if(LineupContext is not null)
 {
     <LineupFilters Model="LineupContext.LineupFilter" OnFilter="@((filter) => {LineupContext.LineupFilter = filter; NavigationManager.NavigateTo("lineups");})"/>
