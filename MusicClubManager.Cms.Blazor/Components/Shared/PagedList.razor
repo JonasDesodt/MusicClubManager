@@ -1,10 +1,12 @@
-﻿@if (PagedServiceResult?.Data is { } artistResults)
+﻿@typeparam TEntity
+
+@if (PagedServiceResult?.Data is { } results)
 {
     <ul>
-        @foreach (var artistResult in artistResults)
+        @foreach (var result in results)
         {
             <li>
-                @ItemTemplate(artistResult)
+                @ItemTemplate(result)
             </li>
         }
     </ul>
@@ -16,10 +18,10 @@
 
 @code {
     [Parameter, EditorRequired]
-    public RenderFragment<ArtistResult> ItemTemplate { get; set; } = default!;
+    public RenderFragment<TEntity> ItemTemplate { get; set; } = default!;
 
     [Parameter, EditorRequired]
-    public PagedServiceResult<IList<ArtistResult>>? PagedServiceResult { get; set; }
+    public PagedServiceResult<IList<TEntity>>? PagedServiceResult { get; set; }
 
     [Parameter, EditorRequired]
     public EventCallback<Pagination> OnPageChanged { get; set; }

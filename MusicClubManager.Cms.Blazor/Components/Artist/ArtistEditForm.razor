@@ -16,11 +16,11 @@
             <img src="@src" alt="@model.Image" />
         }
 
-        <FormButtons>
+        <Buttons>
             <li><button type="submit">Save</button></li>
 
             <li><button type="button" @onclick="() => FetchArtist(ArtistId)" class="warning">Undo changes</button></li>
-        </FormButtons>
+        </Buttons>
     </EditForm>
 }
 else

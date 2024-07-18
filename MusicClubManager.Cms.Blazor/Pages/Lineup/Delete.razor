@@ -6,42 +6,40 @@
 @inject IPerformanceService PerformanceApiService
 @inject NavigationManager NavigationManager
 
-<h3>Delete lineup</h3>
+@{
+    var returnUrl = $"lineups/{LineupId}";
+}
+
+<SubTitle ReturnUrl="@returnUrl">
+    Delete
+</SubTitle>
 
 @if (_lineupServiceResult?.Data is { } lineupResult && _pagedPerformanceServiceResult?.Data is { } performanceResults)
 {
     <h4>Lineup</h4>
 
-    <ul>
-        <li>Date: @lineupResult.Doors.ToLongDateString()</li>
-        <li>Doors: @lineupResult.Doors.ToShortTimeString()</li>
-        <li>Name: @(lineupResult.Name ?? "/")</li>
-        <li>Id: @lineupResult.Id</li>
-    </ul>
+    <LineupItem LineupResult="@lineupResult"/>
 
     <h4>Performances</h4>
 
     <p>These performances will be deleted when deleting the lineup</p>
-    <ul>
-        @foreach (var performanceResult in performanceResults)
-        {
+
+    <PagedList PagedServiceResult="_pagedPerformanceServiceResult" Context="performanceResult" OnPageChanged="(pagination) => FetchPerformances(lineupResult.Id, pagination, new PerformanceFilter())">
+        <ItemTemplate>
             <li>@(performanceResult.Start?.ToShortTimeString() ?? "--:--") @performanceResult.ArtistResult.Name (id: @performanceResult.Id)</li>
-        }
-    </ul>
+        </ItemTemplate>
+    </PagedList>
 
-    <PaginationBig Context="new Pagination { Page = (int)_pagedPerformanceServiceResult.Page, PageSize = (int)_pagedPerformanceServiceResult.PageSize, TotalCount = (int)_pagedPerformanceServiceResult.TotalCount}"
-                   OnPageChanged="(context) => FetchPerformances(lineupResult.Id, context, new PerformanceFilter())" />
-
-    <FormButtons>
+    <Buttons>
         @{
             var href = $"lineups/{LineupId}";
         }
 
         <li><NavLink href="@href">Cancel</NavLink></li>
         <li><button @onclick="() => DeleteLineup(lineupResult.Id)">Delete</button></li>
-    </FormButtons>
-
-} else
+    </Buttons>
+}
+else
 {
     <p>Loading...</p>
 }

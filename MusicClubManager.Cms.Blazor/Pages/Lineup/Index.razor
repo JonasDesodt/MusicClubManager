@@ -4,63 +4,32 @@
 
 @inject ILineupService LineupApiService
 
-@if (LineupContext is { } context)
-{
-    <Navigation>
-        <li><NavLink href="lineups/create">Create</NavLink></li>
+<Navigation>
+    <li><NavLink href="lineups/create">Create</NavLink></li>
 
-        <li><NavLink href="lineups/filters">Filters</NavLink></li>
-    </Navigation>
+    <li><NavLink href="lineups/filters">Filters</NavLink></li>
+</Navigation>
 
-    @if (_pagedServiceResult is { } pagedServiceResult)
-    {
-        @if (pagedServiceResult.Data is { } lineupResults)
-        {
-            <ul>
-                @foreach (var lineupResult in lineupResults)
-                {
-                    <li>
+<DataTemplate Data="_pagedServiceResult" Context="pagedServiceResult">
+    <Template>
+        <PagedList PagedServiceResult="pagedServiceResult" Context="lineupResult" OnPageChanged="(pagination) => FetchLineups(LineupContext, pagination, LineupContext.LineupFilter)">
+            <ItemTemplate>
+                <LineupItem LineupResult="lineupResult" />
 
-
-                        <ul>
-                            <li>Date: @lineupResult.Doors.ToLongDateString()</li>
-                            <li>Doors: @lineupResult.Doors.ToShortTimeString()</li>
-                            <li>Name: @(lineupResult.Name ?? "/")</li>
-                        </ul>
-
-                        @{
-                            var href = $"lineups/{lineupResult.Id}";
-                        }
-
-                        <ul>
-                            <li><NavLink href="@href">Edit</NavLink></li>
-                        </ul>
-                    </li>
+                @{
+                    var href = $"lineups/{lineupResult.Id}";
                 }
-            </ul>
-
-            <PaginationBig Context="@context.Pagination" OnPageChanged="(pagination) => FetchLineups(context, pagination, context.LineupFilter)" />
-        }
-        else
-        {
-            <p>Something went wrong.</p>
-        }
-    }
-    else
-    {
-        <p>Loading ...</p>
-    }
-}
-else
-{
-    <p>Something went wrong.</p>
-}
-
-
+                <Buttons>
+                    <li><NavLink href="@href">Edit</NavLink></li>
+                </Buttons>
+            </ItemTemplate>
+        </PagedList>
+    </Template>
+</DataTemplate>
 
 @code {
-    [CascadingParameter]
-    public LineupContext? LineupContext { get; set; }
+    [CascadingParameter, EditorRequired]
+    public required LineupContext LineupContext { get; set; }
 
     private PagedServiceResult<IList<LineupResult>>? _pagedServiceResult;
 

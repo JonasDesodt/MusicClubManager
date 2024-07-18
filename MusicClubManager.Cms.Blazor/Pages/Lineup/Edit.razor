@@ -5,7 +5,9 @@
 @inject ILineupService LineupApiService
 @inject NavigationManager NavigationManager
 
-<h3>Edit lineup</h3>
+<SubTitle ReturnUrl="lineups">
+    Edit
+</SubTitle>
 
 @if (_model is { } model)
 {
@@ -33,7 +35,7 @@
             <NavLink href="@href">Peformances</NavLink>
         </div>
 
-        <FormButtons>
+        <Buttons>
             <li><button type="submit">Save</button></li>
 
             <li><button type="button" @onclick="() => SetModel(Id)" class="warning">Undo changes</button></li>
@@ -43,7 +45,7 @@
                 var hrefDelete = $"lineups/{Id}/delete";
             }
             <li><NavLink href="@hrefDelete" class="warning">Delete</NavLink></li> <!-- show the list with the performances that will be removed -->
-        </FormButtons>
+        </Buttons>
     </EditForm>
 }
 else

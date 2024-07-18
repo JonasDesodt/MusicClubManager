@@ -1,0 +1,18 @@
+﻿@typeparam TEntity
+
+@if (Data is TEntity context)
+{
+    @Template(context)
+}
+else
+{
+    <p>Loading...</p>
+}
+
+@code {
+    [Parameter, EditorRequired]
+    public TEntity? Data { get; set; }
+
+    [Parameter, EditorRequired]
+    public RenderFragment<TEntity> Template { get; set; } = default!;
+}
