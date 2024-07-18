@@ -3,6 +3,7 @@
 @layout LineupLayout
 
 @inject ILineupService LineupApiService
+@inject NavigationManager NavigationManager
 
 <Navigation>
     <li><NavLink href="lineups/create">Create</NavLink></li>
@@ -10,22 +11,21 @@
     <li><NavLink href="lineups/filters">Filters</NavLink></li>
 </Navigation>
 
-<DataTemplate Data="_pagedServiceResult" Context="pagedServiceResult">
-    <Template>
-        <PagedList PagedServiceResult="pagedServiceResult" Context="lineupResult" OnPageChanged="(pagination) => FetchLineups(LineupContext, pagination, LineupContext.LineupFilter)">
-            <ItemTemplate>
-                <LineupItem LineupResult="lineupResult" />
+@if(_pagedServiceResult is { } pagedServiceResult)
+{
+    <PagedList PagedServiceResult="pagedServiceResult" Context="lineupResult" OnPageChanged="(pagination) => FetchLineups(LineupContext, pagination, LineupContext.LineupFilter)">
+        <ItemTemplate>
+            <LineupItem LineupResult="lineupResult" />
 
-                @{
-                    var href = $"lineups/{lineupResult.Id}";
-                }
-                <Buttons>
-                    <li><NavLink href="@href">Edit</NavLink></li>
-                </Buttons>
-            </ItemTemplate>
-        </PagedList>
-    </Template>
-</DataTemplate>
+            @{
+                var href = $"lineups/{lineupResult.Id}";
+            }
+            <Buttons>
+                <li><NavLink href="@href">Edit</NavLink></li>
+            </Buttons>
+        </ItemTemplate>
+    </PagedList>
+} 
 
 @code {
     [CascadingParameter, EditorRequired]
@@ -50,5 +50,10 @@
         context.Pagination.PageSize = (int)_pagedServiceResult.PageSize;
         context.Pagination.Page = (int)_pagedServiceResult.Page;
         context.Pagination.TotalCount = (int)_pagedServiceResult.TotalCount;
+
+        if(_pagedServiceResult.Data is null)
+        {
+            throw new NullReferenceException("Unable to fetch data");
+        }
     }
 }
