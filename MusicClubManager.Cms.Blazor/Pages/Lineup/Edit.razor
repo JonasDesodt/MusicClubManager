@@ -9,9 +9,45 @@
     Edit
 </SubTitle>
 
+<Navigation>
+    @{
+        var href = $"/lineups/{Id}/performances";
+    }
+    <li><NavLink href="@href">Peformances</NavLink></li>
+</Navigation>
+
 @if (_model is { } model)
 {
-    <EditForm Model="model" OnValidSubmit="() => Submit(Id, model)">
+    <Form TModel="CreateLineupPropertiesFormModel" Model="model" Context="context" OnValidSubmit="(context) => Submit(Id, context)">
+        <Template>
+            <div>
+                <div>
+                    <label for="name">Name</label>
+
+                    <InputText @bind-Value="context.Name" id="name" />
+                </div>
+
+                <div>
+                    <label for="doors">Doors <span>(required)</span></label>
+
+                    <InputDate Type="InputDateType.DateTimeLocal" @bind-Value="context.Doors" id="doors" />
+                </div>
+            </div>
+
+            <Buttons>
+                <li><button type="submit">Save</button></li>
+
+                <li><button type="button" @onclick="() => SetModel(Id)" class="warning">Undo changes</button></li>
+
+                @{
+                    var hrefDelete = $"lineups/{Id}/delete";
+                }
+                <li><NavLink href="@hrefDelete" class="warning">Delete</NavLink></li> 
+            </Buttons>
+        </Template>
+    </Form>
+
+@*     <EditForm Model="model" OnValidSubmit="() => Submit(Id, model)">
         <DataAnnotationsValidator></DataAnnotationsValidator>
 
         <ValidationSummary></ValidationSummary>
@@ -28,11 +64,6 @@
 
                 <InputDate Type="InputDateType.DateTimeLocal" @bind-Value="model.Doors" id="doors" />
             </div>
-
-            @{
-                var href = $"/lineups/{Id}/performances";
-            }
-            <NavLink href="@href">Peformances</NavLink>
         </div>
 
         <Buttons>
@@ -46,7 +77,7 @@
             }
             <li><NavLink href="@hrefDelete" class="warning">Delete</NavLink></li> <!-- show the list with the performances that will be removed -->
         </Buttons>
-    </EditForm>
+    </EditForm> *@
 }
 else
 {

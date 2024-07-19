@@ -1,0 +1,33 @@
+﻿@typeparam TModel
+
+<fieldset>
+    @if (!string.IsNullOrWhiteSpace(Legend))
+    {
+        <legend>
+            @Legend
+        </legend>
+    }
+
+    <EditForm Model="Model" OnValidSubmit="() => OnValidSubmit.InvokeAsync(Model)">
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+
+        <ValidationSummary></ValidationSummary>
+        
+        @Template(Model)
+   
+    </EditForm>
+</fieldset>
+
+@code {
+    [Parameter]
+    public string? Legend { get; set; }
+
+    [Parameter, EditorRequired]
+    public required TModel Model { get; set; }
+
+    [Parameter, EditorRequired]
+    public RenderFragment<TModel> Template { get; set; } = default!;
+
+    [Parameter]
+    public EventCallback<TModel> OnValidSubmit { get; set; }
+}

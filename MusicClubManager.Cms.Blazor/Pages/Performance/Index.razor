@@ -5,7 +5,13 @@
 @inject ILineupService LineupApiService
 @inject IPerformanceService PerformanceApiService
 
-<h3>Performances</h3>
+@{
+    var returnUrl = $"lineups/{LineupId}";
+}
+<SubTitle ReturnUrl="@returnUrl">
+    Performances
+</SubTitle>
+
 
 @{
     var href = $"/lineups/{LineupId}/select-artist";

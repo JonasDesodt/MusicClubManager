@@ -9,32 +9,29 @@
     Create
 </SubTitle>
 
-
-<EditForm Model="_model" OnValidSubmit="() => Submit(_model)">
-    <DataAnnotationsValidator></DataAnnotationsValidator>
-
-    <ValidationSummary></ValidationSummary>
-
-    <div>
+<Form TModel="CreateLineupPropertiesFormModel" Model="_model" OnValidSubmit="Submit" Context="model">
+    <Template>
         <div>
-            <label for="name">Name</label>
+            <div>
+                <label for="name">Name</label>
 
-            <InputText @bind-Value="_model.Name" id="name" />
+                <InputText @bind-Value="model.Name" id="name" />
+            </div>
+
+            <div>
+                <label for="doors">Doors <span>(required)</span></label>
+
+                <InputDate Type="InputDateType.DateTimeLocal" @bind-Value="model.Doors" id="doors" />
+            </div>
         </div>
 
-        <div>
-            <label for="doors">Doors <span>(required)</span></label>
+        <Buttons>
+            <li><button type="submit">Create</button></li>
 
-            <InputDate Type="InputDateType.DateTimeLocal" @bind-Value="_model.Doors" id="doors" />
-        </div>
-    </div>
-
-    <Buttons>
-        <li><button type="submit">Create</button></li>
-
-        <li><button type="reset" class="warning">Reset</button></li>
-    </Buttons>
-</EditForm>
+            <li><button type="reset" class="warning">Reset</button></li>
+        </Buttons>
+    </Template>
+</Form>
 
 @code {
     private CreateLineupPropertiesFormModel _model = new();

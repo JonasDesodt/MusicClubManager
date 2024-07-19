@@ -51,9 +51,11 @@
         context.Pagination.Page = (int)_pagedServiceResult.Page;
         context.Pagination.TotalCount = (int)_pagedServiceResult.TotalCount;
 
-        if(_pagedServiceResult.Data is null)
-        {
-            throw new NullReferenceException("Unable to fetch data");
-        }
+        // _pagedServiceResult.Data = null;
+
+        // if(_pagedServiceResult.Data is null)
+        // {
+        //     throw new NullReferenceException("Unable to fetch data");
+        // }
     }
 }
