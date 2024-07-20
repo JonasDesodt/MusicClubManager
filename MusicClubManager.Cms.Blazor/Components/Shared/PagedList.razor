@@ -2,6 +2,14 @@
 
 @if (PagedServiceResult?.Data is { } results)
 {
+    @if(PagedServiceResult.TotalCount == 1)
+    {
+        <h4>@PagedServiceResult.TotalCount result</h4>
+    } else
+    {
+        <h4>@PagedServiceResult.TotalCount results</h4>
+    }
+
     <ul>
         @foreach (var result in results)
         {

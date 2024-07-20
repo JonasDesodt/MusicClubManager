@@ -1,38 +1,47 @@
-﻿@page "/lineups/{lineupId:int}/select-artist"
+﻿@page "/lineups/{lineupId:int}/performances/select-artist"
 
 @layout LineupLayout
 
 @inject IArtistService ArtistApiService
 @inject ILineupService LineupApiService
 
-<h3>Select artist</h3>
 
-@{
-    var artistHref = $"lineups/{LineupId}/create-artist";
-}
-<NavLink href="@artistHref">Create new</NavLink>
+<SubTitle ReturnUrl="@($"lineups/{LineupId}/performances")">
+    Select artist
+</SubTitle>
+
+<Navigation>
+    <li><NavLink href="@($"lineups/{LineupId}/performances/create-artist")">Create</NavLink></li>
+
+    <li><NavLink href="@($"lineups/{LineupId}/performances/select-artist/filters)")">Filters</NavLink></li>
+</Navigation>
 
 @if (_lineupServiceResult is not null && _pagedServiceResult is not null)
 {
     if (_lineupServiceResult.Data is { } lineupResult && _pagedServiceResult.Data is not null)
     {
-        <p>Lineup: @(lineupResult.Name ?? lineupResult.Doors.ToLongDateString())</p>
 
-        <ArtistIndex Context="artistResult" PagedServiceResult="_pagedServiceResult" OnPageChanged="(context) => FetchArtists(LineupId, new PaginationRequest { Page = (uint)context.Page, PageSize = (uint)context.PageSize }, new ArtistFilter ())">
+        <PagedList PagedServiceResult="_pagedServiceResult" OnPageChanged="(context) => FetchArtists(LineupId, new PaginationRequest { Page = (uint)context.Page, PageSize = (uint)context.PageSize }, new ArtistFilter ())" Context="artistResult">
             <ItemTemplate>
 
-                @{
-                    var editHref = $"lineups/{lineupResult.Id}/{artistResult.Id}/edit-artist";
-                }
-                <NavLink href="@editHref">@artistResult.Name</NavLink>
+                <ArtistItem Model="artistResult" />
 
-                @{
-                    var selectHref = $"lineups/{LineupId}/{artistResult.Id}/add-performance";
-                }
+                <Buttons>
+                    @{
+                        var selectHref = $"lineups/{LineupId}/{artistResult.Id}/add-performance";
+                    }
 
-                <NavLink href="@selectHref">Select</NavLink>
+                    <li><NavLink href="@selectHref">Select</NavLink></li>
+
+                    @{
+                        var editHref = $"lineups/{lineupResult.Id}/{artistResult.Id}/edit-artist";
+                    }
+
+                    <li><NavLink href="@editHref">Edit</NavLink></li>
+                </Buttons>
+
             </ItemTemplate>
-        </ArtistIndex>
+        </PagedList>
     }
     else
     {

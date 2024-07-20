@@ -104,6 +104,12 @@ div#app {
     min-height: 100vh;
 }
 
+ul.item {
+    display: flex;
+    flex-direction: column;
+    list-style-type: none;
+    gap: .5em;
+}
 
 
 /*        form > div > a {

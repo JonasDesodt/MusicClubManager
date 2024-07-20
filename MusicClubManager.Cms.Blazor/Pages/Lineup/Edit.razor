@@ -1,4 +1,4 @@
-﻿@page "/lineups/{id:int}"
+﻿@page "/lineups/{lineupId:int}"
 
 @layout LineupLayout
 
@@ -11,14 +11,14 @@
 
 <Navigation>
     @{
-        var href = $"/lineups/{Id}/performances";
+        var href = $"/lineups/{LineupId}/performances";
     }
     <li><NavLink href="@href">Peformances</NavLink></li>
 </Navigation>
 
 @if (_model is { } model)
 {
-    <Form TModel="CreateLineupPropertiesFormModel" Model="model" Context="context" OnValidSubmit="(context) => Submit(Id, context)">
+    <Form TModel="CreateLineupPropertiesFormModel" Model="model" Context="context" OnValidSubmit="(context) => Submit(LineupId, context)">
         <Template>
             <div>
                 <div>
@@ -37,47 +37,15 @@
             <Buttons>
                 <li><button type="submit">Save</button></li>
 
-                <li><button type="button" @onclick="() => SetModel(Id)" class="warning">Undo changes</button></li>
+                <li><button type="button" @onclick="() => SetModel(LineupId)" class="warning">Undo changes</button></li>
 
                 @{
-                    var hrefDelete = $"lineups/{Id}/delete";
+                    var hrefDelete = $"lineups/{LineupId}/delete";
                 }
                 <li><NavLink href="@hrefDelete" class="warning">Delete</NavLink></li> 
             </Buttons>
         </Template>
     </Form>
-
-@*     <EditForm Model="model" OnValidSubmit="() => Submit(Id, model)">
-        <DataAnnotationsValidator></DataAnnotationsValidator>
-
-        <ValidationSummary></ValidationSummary>
-
-        <div>
-            <div>
-                <label for="name">Name</label>
-
-                <InputText @bind-Value="model.Name" id="name" />
-            </div>
-
-            <div>
-                <label for="doors">Doors <span>(required)</span></label>
-
-                <InputDate Type="InputDateType.DateTimeLocal" @bind-Value="model.Doors" id="doors" />
-            </div>
-        </div>
-
-        <Buttons>
-            <li><button type="submit">Save</button></li>
-
-            <li><button type="button" @onclick="() => SetModel(Id)" class="warning">Undo changes</button></li>
-
-
-            @{
-                var hrefDelete = $"lineups/{Id}/delete";
-            }
-            <li><NavLink href="@hrefDelete" class="warning">Delete</NavLink></li> <!-- show the list with the performances that will be removed -->
-        </Buttons>
-    </EditForm> *@
 }
 else
 {
@@ -87,7 +55,7 @@ else
 
 @code {
     [Parameter]
-    public int Id { get; set; }
+    public int LineupId { get; set; }
 
     private CreateLineupPropertiesFormModel? _model;
 
@@ -95,7 +63,7 @@ else
 
     protected override async Task OnParametersSetAsync()
     {
-        await SetModel(Id);
+        await SetModel(LineupId);
 
         await base.OnParametersSetAsync();
     }
@@ -107,7 +75,7 @@ else
 
     private async Task SetModel(int id)
     {
-        if (Id > 0 && (await FetchLineup(Id)).Data is { } lineupResult)
+        if (LineupId > 0 && (await FetchLineup(LineupId)).Data is { } lineupResult)
         {
 
             _model = new CreateLineupPropertiesFormModel

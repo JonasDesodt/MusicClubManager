@@ -1,0 +1,8 @@
+﻿<ul class="item">
+    <li>@Model.Name</li>
+</ul>
+
+@code {
+    [Parameter, EditorRequired]
+    public required ArtistResult Model { get; set; }
+}

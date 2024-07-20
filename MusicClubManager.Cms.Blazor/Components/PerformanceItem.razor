@@ -1,0 +1,9 @@
+﻿<ul class="item">
+    <li>@(Model.Start?.ToShortTimeString() ?? "--:--")</li>
+    <li>@Model.ArtistResult.Name</li>
+</ul>
+
+@code {
+    [Parameter, EditorRequired]
+    public required LineupPerformanceResult Model { get; set; }
+}

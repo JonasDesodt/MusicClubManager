@@ -29,5 +29,26 @@ fieldset > ::deep form {
             }
 
             fieldset > ::deep form > div > div > input {
+                border: 1px solid rgb(150,150,150);
+                font-size: 1em;
                 padding: .5em;
+            }
+
+            fieldset > ::deep form > div > div > select {
+                border: 1px solid rgb(150,150,150);
+                font-size: 1em;
+                padding: .5em;
+            }
+
+            fieldset > ::deep form > div > div > div {
+                align-items: center;
+                border: 1px solid rgb(150,150,150);
+                display: flex;
+                flex-direction: row;
+                gap: 1em;
+                padding: .5em;
+            }
+
+            fieldset > ::deep form > div > div > div > label {
+                font-weight: normal;
             }

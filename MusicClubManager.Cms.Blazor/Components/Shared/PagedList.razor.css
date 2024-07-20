@@ -1,13 +1,19 @@
 ﻿ul {
     display: flex;
     flex-direction: column;
+    gap: 1em;
     list-style-type: none;
 }
 
     ul > li {
-        padding: 1em 0;
+        border: 1px solid rgb(200,200,200);
+        display: flex;
+        flex-direction: column;
+        gap: 1em;
+        padding: 1em;
     }
 
-    ul > li:not(:last-of-type){
+/*    ul > li:not(:last-of-type){
         border-bottom: 1px solid rgb(200,200,200);
-    }
+    } */
+

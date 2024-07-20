@@ -1,18 +1,11 @@
-﻿@if (LineupResult is not null)
-{
-    var href = $"lineups/{LineupResult.Id}";
-
-    <div>
-        <ul>
-            <li>Date: @LineupResult.Doors.ToLongDateString()</li>
-            <li>Doors: @LineupResult.Doors.ToShortTimeString()</li>
-            <li>Name: @(LineupResult.Name ?? "/")</li>
-        </ul>
-    </div>
-}
+﻿<ul class="item">
+    <li>Date: @LineupResult.Doors.ToLongDateString()</li>
+    <li>Doors: @LineupResult.Doors.ToShortTimeString()</li>
+    <li>Name: @(LineupResult.Name ?? "/")</li>
+</ul>
 
 
 @code {
     [Parameter, EditorRequired]
-    public LineupResult? LineupResult { get; set; }
+    public required LineupResult LineupResult { get; set; }
 }

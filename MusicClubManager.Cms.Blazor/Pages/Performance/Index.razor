@@ -12,35 +12,27 @@
     Performances
 </SubTitle>
 
+<Navigation>
+    <li>
+        <NavLink href="@($"/lineups/{LineupId}/performances/select-artist")">Create</NavLink>
+    </li>
 
-@{
-    var href = $"/lineups/{LineupId}/select-artist";
-}
-<NavLink href="@href">Add</NavLink>
+    <li>
+        <NavLink href="@($"/lineups/{LineupId}/performances/filters")">Filters</NavLink>
+    </li>
+</Navigation>
 
-@if (_lineupResult?.Data is { } lineupResult && _pagedServiceResult?.Data is { } performanceResults)
-{
-    <h4>Lineup: @(lineupResult.Name ?? @lineupResult.Doors.ToLongDateString())</h4>
+<PagedList PagedServiceResult="_pagedServiceResult" OnPageChanged="(context) => FetchPerformances(LineupId, new PaginationRequest { Page = (uint)context.Page, PageSize = (uint)context.PageSize })" Context="performanceResult">
+    <ItemTemplate>
+        <PerformanceItem Model="performanceResult" />
 
-    <ul>
-        @foreach (var performanceResult in performanceResults)
-        {
-            <li>
-                @{
-                    var hrefPerformance = $"performances/{performanceResult.Id}";
-                }
-                <NavLink href="@hrefPerformance">@(performanceResult.Start?.ToShortTimeString() ?? "--:--") @performanceResult.ArtistResult.Name (id:@performanceResult.ArtistResult.Id)</NavLink>
-            </li>
-        }
-    </ul>
+        <Buttons>
+            <li><NavLink href="@($"performances/{performanceResult.Id}")">Edit</NavLink></li>
+        </Buttons>
+    </ItemTemplate>
+</PagedList>
 
-    <PaginationBig Context="new Pagination { Page = (int)_pagedServiceResult.Page, PageSize = (int)_pagedServiceResult.PageSize, TotalCount = (int)_pagedServiceResult.TotalCount }"
-                   OnPageChanged="(context) => FetchPerformances(LineupId, new PaginationRequest { Page = (uint)context.Page, PageSize = (uint)context.PageSize })" />
-}
-else
-{
-    <p>Loading... </p>
-}
+
 
 @code {
     [Parameter]

@@ -2,12 +2,38 @@
 
 @layout MainLayout
 
-<h2>Lineups</h2>
+@inject ILineupService LineupApiService
+
+
+@if (_lineupServiceResult?.Data is { } lineupResult)
+{
+    <h2>Lineup: @lineupResult.Doors.ToLongDateString()</h2>
+}
+else
+{
+    <h2>Lineups</h2>
+}
 
 <CascadingValue Value="LineupContext">
     @Body
 </CascadingValue>
 
 @code {
+    private ServiceResult<LineupResult>? _lineupServiceResult;
+
     public LineupContext LineupContext { get; set; } = new();
+
+    protected async override Task OnParametersSetAsync()
+    {
+        if ((this.Body?.Target as RouteView)?.RouteData.RouteValues?.TryGetValue("lineupId", out object? param) is true && param is int lineupId && lineupId > 0)
+        {
+            _lineupServiceResult = await LineupApiService.Get(lineupId, new PaginationRequest { Page = 1, PageSize = 5 });
+        }
+        else
+        {
+            _lineupServiceResult = null;
+        }
+
+        await base.OnParametersSetAsync();
+    }
 }

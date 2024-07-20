@@ -7,7 +7,9 @@
 
 <h3>Artists</h3>
 
-<NavLink href="artists/create">Create new</NavLink>
+<Navigation>
+    <li><NavLink href="artists/create">Create new</NavLink></li>
+</Navigation>
 
 @if (_pagedServiceResult is not null && LineupContext is not null)
 {
