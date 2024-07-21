@@ -16,6 +16,7 @@
         background: rgb(67,161,107);
         color: rgb(255,255,255);
         cursor: pointer;
+        display: flex;
         padding: .5em;
         font-weight: bold;
         text-transform: uppercase;

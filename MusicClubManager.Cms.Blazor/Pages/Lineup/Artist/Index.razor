@@ -6,7 +6,7 @@
 @inject ILineupService LineupApiService
 
 
-<SubTitle ReturnUrl="@($"lineups/{LineupId}/performances")">
+<SubTitle ReturnUrl="@($"lineups/{LineupId}/performances")" ReturnTitle="Performances">
     Select artist
 </SubTitle>
 
@@ -23,23 +23,13 @@
 
         <PagedList PagedServiceResult="_pagedServiceResult" OnPageChanged="(context) => FetchArtists(LineupId, new PaginationRequest { Page = (uint)context.Page, PageSize = (uint)context.PageSize }, new ArtistFilter ())" Context="artistResult">
             <ItemTemplate>
+                <ArtistItem Model="artistResult">
+                    <Buttons>
+                        <li><NavLink href="@($"lineups/{LineupId}/{artistResult.Id}/add-performance")">Select</NavLink></li>
 
-                <ArtistItem Model="artistResult" />
-
-                <Buttons>
-                    @{
-                        var selectHref = $"lineups/{LineupId}/{artistResult.Id}/add-performance";
-                    }
-
-                    <li><NavLink href="@selectHref">Select</NavLink></li>
-
-                    @{
-                        var editHref = $"lineups/{lineupResult.Id}/{artistResult.Id}/edit-artist";
-                    }
-
-                    <li><NavLink href="@editHref">Edit</NavLink></li>
-                </Buttons>
-
+                        <li><NavLink href="@($"lineups/{lineupResult.Id}/{artistResult.Id}/edit-artist")">Edit</NavLink></li>
+                    </Buttons>
+                </ArtistItem>
             </ItemTemplate>
         </PagedList>
     }

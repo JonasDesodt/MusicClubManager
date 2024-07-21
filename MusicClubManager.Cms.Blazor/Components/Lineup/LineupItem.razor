@@ -1,11 +1,29 @@
-﻿<ul class="item">
-    <li>Date: @LineupResult.Doors.ToLongDateString()</li>
-    <li>Doors: @LineupResult.Doors.ToShortTimeString()</li>
-    <li>Name: @(LineupResult.Name ?? "/")</li>
-</ul>
+﻿<div>
+
+    <!-- image -->
+
+    <div>
+        <ul class="item">
+            <li><h5>@LineupResult.Doors.ToLongDateString()</h5></li>
+            <li>Doors: @LineupResult.Doors.ToShortTimeString()</li>
+            <li>Name: @(LineupResult.Name ?? "/")</li>
+        </ul>
+
+        @if(Buttons is not null)
+        {
+            <Buttons>
+                @Buttons
+            </Buttons>
+        }
+    </div>
+</div>
+
 
 
 @code {
     [Parameter, EditorRequired]
     public required LineupResult LineupResult { get; set; }
+
+    [Parameter]
+    public RenderFragment? Buttons { get; set; }
 }

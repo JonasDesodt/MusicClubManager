@@ -1,8 +1,27 @@
-﻿<ul class="item">
-    <li>@Model.Name</li>
-</ul>
+﻿<div>
+    @if (!string.IsNullOrWhiteSpace(Model.Image))
+    {
+        <img src="@($"https://localhost:7188/image/{Model.Image}")" />
+    }
 
+    <div>
+        <ul>
+            <li><h5>@Model.Name</h5></li>
+        </ul>
+
+        @if(Buttons is not null)
+        {
+            <Buttons>
+                @Buttons
+            </Buttons>
+        }
+    </div>
+</div>
 @code {
     [Parameter, EditorRequired]
     public required ArtistResult Model { get; set; }
+
+    [Parameter]
+    public RenderFragment? Buttons { get; set; }
 }
+

@@ -1,10 +1,9 @@
-﻿h3 {
-    align-items: center;
+﻿div {
     display: flex;
-    flex-direction: row;
-    text-transform: uppercase;
+    flex-direction: column;
+    gap: .5em;
 }
 
-    h3 > ::deep span > * {
-        padding: .5em;
-    }
+div > h3 {
+    text-transform: uppercase;
+}

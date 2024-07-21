@@ -5,27 +5,28 @@
 @inject ILineupService LineupApiService
 @inject NavigationManager NavigationManager
 
+<SubTitle ReturnUrl="/" ReturnTitle="Home">
+    Index
+</SubTitle>
+
 <Navigation>
     <li><NavLink href="lineups/create">Create</NavLink></li>
 
     <li><NavLink href="lineups/filters">Filters</NavLink></li>
 </Navigation>
 
-@if(_pagedServiceResult is { } pagedServiceResult)
+@if (_pagedServiceResult is { } pagedServiceResult)
 {
     <PagedList PagedServiceResult="pagedServiceResult" Context="lineupResult" OnPageChanged="(pagination) => FetchLineups(LineupContext, pagination, LineupContext.LineupFilter)">
         <ItemTemplate>
-            <LineupItem LineupResult="lineupResult" />
-
-            @{
-                var href = $"lineups/{lineupResult.Id}";
-            }
-            <Buttons>
-                <li><NavLink href="@href">Edit</NavLink></li>
-            </Buttons>
+            <LineupItem LineupResult="lineupResult">
+                <Buttons>
+                    <li><NavLink href="@($"lineups/{lineupResult.Id}")">Edit</NavLink></li>
+                </Buttons>
+            </LineupItem>
         </ItemTemplate>
     </PagedList>
-} 
+}
 
 @code {
     [CascadingParameter, EditorRequired]

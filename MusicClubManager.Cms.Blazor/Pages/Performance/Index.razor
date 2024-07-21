@@ -8,7 +8,7 @@
 @{
     var returnUrl = $"lineups/{LineupId}";
 }
-<SubTitle ReturnUrl="@returnUrl">
+<SubTitle ReturnUrl="@returnUrl" ReturnTitle="Edit lineup">
     Performances
 </SubTitle>
 
@@ -24,11 +24,11 @@
 
 <PagedList PagedServiceResult="_pagedServiceResult" OnPageChanged="(context) => FetchPerformances(LineupId, new PaginationRequest { Page = (uint)context.Page, PageSize = (uint)context.PageSize })" Context="performanceResult">
     <ItemTemplate>
-        <PerformanceItem Model="performanceResult" />
-
-        <Buttons>
-            <li><NavLink href="@($"performances/{performanceResult.Id}")">Edit</NavLink></li>
-        </Buttons>
+        <PerformanceItem Model="performanceResult">
+            <Buttons>
+                <li><NavLink href="@($"performances/{performanceResult.Id}")">Edit</NavLink></li>
+            </Buttons>
+        </PerformanceItem>
     </ItemTemplate>
 </PagedList>
 

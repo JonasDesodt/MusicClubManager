@@ -3,7 +3,7 @@
     display: flex;
     font-weight: bold;
     text-decoration: none;
-    transform: translateX(-.5em);
+/*    transform: translateX(-.5em);*/
 }
     span > ::deep a:hover {
         color: rgb(47,141,87);

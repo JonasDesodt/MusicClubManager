@@ -10,7 +10,7 @@
     var returnUrl = $"lineups/{LineupId}";
 }
 
-<SubTitle ReturnUrl="@returnUrl">
+<SubTitle ReturnUrl="@returnUrl" ReturnTitle="Edit">
     Delete
 </SubTitle>
 
@@ -26,7 +26,7 @@
 
     <PagedList PagedServiceResult="_pagedPerformanceServiceResult" Context="performanceResult" OnPageChanged="(pagination) => FetchPerformances(lineupResult.Id, pagination, new PerformanceFilter())">
         <ItemTemplate>
-            <li>@(performanceResult.Start?.ToShortTimeString() ?? "--:--") @performanceResult.ArtistResult.Name (id: @performanceResult.Id)</li>
+            <PerformanceItem Model="performanceResult"/>
         </ItemTemplate>
     </PagedList>
 
