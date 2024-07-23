@@ -15,14 +15,15 @@
 {
     if (_pagedServiceResult.Data is not null)
     {
-        <ArtistIndex PagedServiceResult="_pagedServiceResult" Context="artistResult" OnPageChanged="(context) => FetchArtists(new PaginationRequest { Page = (uint)LineupContext.Pagination.Page, PageSize = (uint)LineupContext.Pagination.PageSize}, new ArtistFilter ())">
+        <PagedList PagedServiceResult="_pagedServiceResult" Context="artistResult" OnPageChanged="(context) => FetchArtists(new PaginationRequest { Page = (uint)LineupContext.Pagination.Page, PageSize = (uint)LineupContext.Pagination.PageSize}, new ArtistFilter ())">
             <ItemTemplate>
-                @{
-                    var editHref = $"artists/{artistResult.Id}";
-                }
-                <NavLink href="@editHref">@artistResult.Name</NavLink>
+                <ArtistItem Model="artistResult">
+                    <Buttons>
+                        <li><NavLink href="@($"artists/{artistResult.Id}")">Edit</NavLink></li>
+                    </Buttons>
+                </ArtistItem>
             </ItemTemplate>
-        </ArtistIndex>
+        </PagedList>
     }
     else
     {

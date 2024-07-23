@@ -4,7 +4,27 @@
     height: 36px;
     border-radius: 50%;
     border-left-color: #09f;
-    animation: spin 1s ease infinite;
+    animation: delay .5s, spin 1s ease infinite;
+
+    align-self: center;
+ /*   justify-self: center;*/
+    /*position: fixed;
+    top: 50%;*/
+/*    bottom: 50%;
+    right: 50%;*/
+    /*left: 50%;
+
+    transform: translateX(-31px);
+    transform: translateY(-31px);*/
+}
+
+@keyframes delay {
+    0% {
+        display: none;
+    }
+    100% {
+        display: none;
+    }
 }
 
 @keyframes spin {

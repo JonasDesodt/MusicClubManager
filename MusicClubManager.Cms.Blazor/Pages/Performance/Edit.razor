@@ -1,4 +1,4 @@
-﻿@page "/performances/{performanceId:int}"
+﻿@page "/lineups/{lineupId:int}/performances/{performanceId:int}"
 
 @layout LineupLayout
 
@@ -8,27 +8,37 @@
 
 @inject NavigationManager NavigationManager
 
-<h3>Edit performance</h3>
+<SubTitle ReturnUrl="@($"lineups/{LineupId}/performances")" ReturnTitle="Performances">
+    Edit performance
+</SubTitle>
 
 @if (_lineupResult is { } lineupResult && _artistResult is { } artistResult && _model is { } model)
 {
-    <EditForm Model="model" OnValidSubmit="AddPerformance">
-        <CreateEditPerformance Model="model"></CreateEditPerformance>
+    <Form TModel="CreateEditLineupPerformanceFormModel" Model="model" OnValidSubmit="AddPerformance">
+        <Template>
+            <div>
+                <CreateEditPerformance Model="model"></CreateEditPerformance>
 
-        <div>
-            <InputNumber @bind-Value="model.LineupId" hidden />
-            <p>@(lineupResult.Name ?? lineupResult.Doors.ToLongDateString()) (id: @model.ArtistId))</p>
-        </div>
+                <div>
+                    <InputNumber @bind-Value="model.LineupId" hidden />
 
-        <div>
-            <InputNumber @bind-Value="model.ArtistId" hidden />
-            <p>@artistResult.Name (id: @model.ArtistId)</p>
-        </div>
+                    <p>Lineup:</p>
+                    <p>@(lineupResult.Name ?? lineupResult.Doors.ToLongDateString()) (id: @model.ArtistId))</p>
+                </div>
 
-        <ul>
-            <li><button type="submit">Add</button></li>
-        </ul>
-    </EditForm>
+                <div>
+                    <InputNumber @bind-Value="model.ArtistId" hidden />
+
+                    <p>Artist:</p>
+                    <p>@artistResult.Name (id: @model.ArtistId)</p>
+                </div>
+            </div>
+
+            <Buttons>
+                <li><button type="submit">Add</button></li>
+            </Buttons>
+        </Template>
+    </Form>
 }
 
 @code {
@@ -72,7 +82,7 @@
 
     private async Task AddPerformance()
     {
-        if(_model is not { } model)
+        if (_model is not { } model)
         {
             return;
         }

@@ -13,7 +13,7 @@
     @{
         var href = $"/lineups/{LineupId}/performances";
     }
-    <li><NavLink href="@href">Peformances</NavLink></li>
+    <li><NavLink href="@href">Peformances (@_performancesCount)</NavLink></li>
 </Navigation>
 
 @if (_model is { } model)
@@ -59,14 +59,21 @@ else
 
     private CreateLineupPropertiesFormModel? _model;
 
+    private int _performancesCount;
 
 
-    protected override async Task OnParametersSetAsync()
+    protected override async  Task OnInitializedAsync()
     {
         await SetModel(LineupId);
-
-        await base.OnParametersSetAsync();
+        await base.OnInitializedAsync();
     }
+
+    // protected override async Task OnParametersSetAsync()
+    // {
+    //     await SetModel(LineupId);
+
+    //     await base.OnParametersSetAsync();
+    // }
 
     private async Task<ServiceResult<LineupResult>> FetchLineup(int id)
     {
@@ -84,6 +91,8 @@ else
                     IsSoldOut = lineupResult.IsSoldOut,
                     Name = lineupResult.Name
                 };
+
+            _performancesCount = (int)lineupResult.PagedLineupPerformanceResult.TotalCount;
         }
     }
 

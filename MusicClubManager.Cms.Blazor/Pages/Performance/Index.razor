@@ -14,11 +14,11 @@
 
 <Navigation>
     <li>
-        <NavLink href="@($"/lineups/{LineupId}/performances/select-artist")">Create</NavLink>
+        <NavLink href="@($"lineups/{LineupId}/performances/select-artist")">Create</NavLink>
     </li>
 
     <li>
-        <NavLink href="@($"/lineups/{LineupId}/performances/filters")">Filters</NavLink>
+        <NavLink href="@($"lineups/{LineupId}/performances/filters")">Filters</NavLink>
     </li>
 </Navigation>
 
@@ -26,7 +26,7 @@
     <ItemTemplate>
         <PerformanceItem Model="performanceResult">
             <Buttons>
-                <li><NavLink href="@($"performances/{performanceResult.Id}")">Edit</NavLink></li>
+                <li><NavLink href="@($"lineups/{LineupId}/performances/{performanceResult.Id}")">Edit</NavLink></li>
             </Buttons>
         </PerformanceItem>
     </ItemTemplate>

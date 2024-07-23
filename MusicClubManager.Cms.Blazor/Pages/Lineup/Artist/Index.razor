@@ -7,7 +7,7 @@
 
 
 <SubTitle ReturnUrl="@($"lineups/{LineupId}/performances")" ReturnTitle="Performances">
-    Select artist
+    Create performance: select artist
 </SubTitle>
 
 <Navigation>
@@ -46,6 +46,7 @@ else
 @code {
     [Parameter]
     public int LineupId { get; set; }
+
     private ServiceResult<LineupResult>? _lineupServiceResult;
 
     private PagedServiceResult<IList<ArtistResult>>? _pagedServiceResult;

@@ -8,27 +8,35 @@
 
 @inject NavigationManager NavigationManager
 
-<h3>Add performance</h3>
+<SubTitle ReturnUrl="@($"lineups/{LineupId}/performances/select-artist")" ReturnTitle="Select artist">
+    Create performance: properties
+</SubTitle>
 
-@if(_lineupResult is { } lineupResult && _artistResult is { } artistResult)
+@if (_lineupResult is { } lineupResult && _artistResult is { } artistResult)
 {
-    <EditForm Model="_model" OnValidSubmit="AddPerformance">
-        <CreateEditPerformance Model="_model"></CreateEditPerformance>
+    <Form TModel="CreateEditLineupPerformanceFormModel" Model="_model" OnValidSubmit="AddPerformance">
+        <Template>
+            <div>
+                <CreateEditPerformance Model="_model"></CreateEditPerformance>
 
-        <div>
-            <InputNumber @bind-Value="_model.LineupId" hidden />
-            <p>@(lineupResult.Name ?? lineupResult.Doors.ToLongDateString()) (id: @_model.ArtistId))</p>
-        </div>
+                <div>
+                    <InputNumber @bind-Value="_model.LineupId" hidden />
+                    <p>Lineup:</p>
+                    <p>@(lineupResult.Name ?? lineupResult.Doors.ToLongDateString()) (id: @_model.ArtistId))</p>
+                </div>
 
-        <div>
-            <InputNumber @bind-Value="_model.ArtistId" hidden />
-            <p>@artistResult.Name (id: @_model.ArtistId)</p>
-        </div>
+                <div>
+                    <InputNumber @bind-Value="_model.ArtistId" hidden />
+                    <p>Artist: </p>
+                    <p>@artistResult.Name (id: @_model.ArtistId)</p>
+                </div>
+            </div>
 
-        <ul>
-            <li><button type="submit">Add</button></li>
-        </ul>
-    </EditForm>
+            <Buttons>
+                <li><button type="submit">Add</button></li>
+            </Buttons>
+        </Template>
+    </Form>
 }
 
 @code {
@@ -45,7 +53,7 @@
     protected override async Task OnParametersSetAsync()
     {
         var artistServiceResult = await ArtistApiService.Get(ArtistId);
-        if(artistServiceResult.Data is not { } artistResult)
+        if (artistServiceResult.Data is not { } artistResult)
         {
             return;
         }
@@ -54,7 +62,7 @@
 
 
         var lineupServiceResult = await LineupApiService.Get(LineupId, new PaginationRequest { Page = 1, PageSize = 5 });
-        if(lineupServiceResult.Data is not { } lineupResult)
+        if (lineupServiceResult.Data is not { } lineupResult)
         {
             return;
         }
@@ -67,18 +75,18 @@
 
     private async Task AddPerformance()
     {
-        if(_model.ArtistId is not { } artistId)
+        if (_model.ArtistId is not { } artistId)
         {
             return;
         }
 
-        if(_model.LineupId is not { } lineupId)
+        if (_model.LineupId is not { } lineupId)
         {
             return;
         }
 
         var serviceResult = await PerformanceApiService.Create(new PerformanceRequest { ArtistId = artistId, LineupId = lineupId, Duration = _model.Duration, Start = _model.Start, Type = _model.Type });
-        if(serviceResult.Messages is null)
+        if (serviceResult.Messages is null)
         {
             NavigationManager.NavigateTo($"lineups/{LineupId}/performances");
         }
