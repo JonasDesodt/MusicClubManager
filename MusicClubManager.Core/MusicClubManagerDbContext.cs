@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using MusicClubManager.Core.Models;
 using MusicClubManager.Models;
-    
+
 namespace MusicClubManager.Core
 {
     public class MusicClubManagerDbContext(DbContextOptions<MusicClubManagerDbContext> options) : IdentityDbContext<ApplicationUser>(options)
@@ -14,6 +14,8 @@ namespace MusicClubManager.Core
         public DbSet<Lineup> Lineups => Set<Lineup>();
 
         public DbSet<Performance> Performances => Set<Performance>();
+
+        public DbSet<Image> Images => Set<Image>();
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -34,6 +36,12 @@ namespace MusicClubManager.Core
                 .WithMany(l => l.Performances)
                 .HasForeignKey(p => p.LineupId)
                 .IsRequired(true);
+
+            builder.Entity<Artist>()
+                .HasOne(a => a.Image)
+                .WithMany(i => i.Artists)
+                .HasForeignKey(a => a.ImageId)
+                .IsRequired(false);
 
             base.OnModelCreating(builder);
         }

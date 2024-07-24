@@ -8,14 +8,11 @@
     Filters
 </SubTitle>
 
-@if(LineupContext is not null)
-{
-    <LineupFilters Model="LineupContext.LineupFilter" OnFilter="@((filter) => {LineupContext.LineupFilter = filter; NavigationManager.NavigateTo("lineups");})"/>
-}
+<LineupFilters Model="LineupContext.LineupFilter" OnFilter="@((filter) => {LineupContext.LineupFilter = filter; NavigationManager.NavigateTo("lineups");})" />
 
 @code {
-    [CascadingParameter]
-    public LineupContext? LineupContext {get;set;}
+    [CascadingParameter, EditorRequired]
+    public required LineupContext LineupContext { get; set; }
 
     // protected override void OnInitialized()
     // {

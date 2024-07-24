@@ -1,19 +1,19 @@
-﻿@inject IArtistService ArtistApiService
+﻿@using System.Text.Json
+@using System.Text
+@inject IArtistService ArtistApiService
 @inject ImageApiService ImageApiService;
 
-<EditForm Model="_model" OnValidSubmit="() => Submit(_model)">
-    <DataAnnotationsValidator></DataAnnotationsValidator>
+<Form TModel="CreateArtistFormModel" Model="_model" OnValidSubmit="() => Submit(_model)">
+    <Template>
+        <ArtistInputs Model="_model"></ArtistInputs>
 
-    <ValidationSummary></ValidationSummary>
+        <Buttons>
+            <li><button type="submit">Create</button></li>
 
-    <ArtistInputs Model="_model"></ArtistInputs>
-
-    <Buttons>
-        <li><button type="submit">Create</button></li>
-
-        <li><button type="reset" class="warning">Reset</button></li>
-    </Buttons>
-</EditForm>
+            <li><button type="reset" class="warning">Reset</button></li>
+        </Buttons>
+    </Template>
+</Form>
 
 @code {
     [Parameter, EditorRequired]
@@ -32,21 +32,34 @@
         var request = new ArtistRequest
             {
                 Name = _model.Name,
-                Description = _model.Description,
-                Image = _model.BrowserFile?.Name
-            };
+                Description = _model.Description
+            }; //IMAGEID !!
 
         if ((await ArtistApiService.Create(request)).Data is not { } artistResult)
         {
             return;
         }
 
-        if(_model.BrowserFile is { Size: > 0}  file)
+        int? imageId = null;
+
+        if (_model.BrowserFile is { Size: > 0 } file)
         {
             var content = new MultipartFormDataContent();
             var fileContent = new StreamContent(file.OpenReadStream());
             fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType);
             content.Add(fileContent, "file", file.Name);
+
+            var now = DateTime.UtcNow;
+
+            var imageRequest = new ImageRequest
+            {
+                Alt = file.Name,
+                Created = now,
+                Updated = now,
+                ContentType = file.ContentType
+            };
+            var json = JsonSerializer.Serialize(imageRequest);
+            content.Add(new StringContent(json, Encoding.UTF8, "application/json"), "request");
 
             await ImageApiService.Create(content);
         }

@@ -1,8 +1,8 @@
 ﻿
 <div>
-    @if (!string.IsNullOrEmpty(Model.ArtistResult.Image))
+    @if (Model.ArtistResult.ImageResult is not null)
     {
-        <img src="@($"https://localhost:7188/image/{Model.ArtistResult.Image}")" alt="@Model.ArtistResult.Name" />
+        <img src="@($"https://localhost:7188/image/{Model.ArtistResult.ImageResult.Id}")" alt="@Model.ArtistResult.ImageResult.Alt" />
     }
 
     <div>

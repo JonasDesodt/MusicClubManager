@@ -9,11 +9,11 @@
 
         <ArtistInputs Model="model"></ArtistInputs>
 
-        @if (!string.IsNullOrWhiteSpace(model.Image))
+        @if (model.ImageId is not null)
         {
-            var src = $"https://localhost:7188/image/{model.Image}";
+            var src = $"https://localhost:7188/image/{model.ImageId}";
 
-            <img src="@src" alt="@model.Image" />
+            <img src="@src" alt="@model.Name" /> // todo should be the alt from image class?
         }
 
         <Buttons>
@@ -59,7 +59,7 @@ else
                 {
                     Name = artistResult.Name,
                     Description = artistResult.Description,
-                    Image = artistResult.Image
+                    ImageId = artistResult.ImageResult?.Id
                 };
         }
     }
@@ -80,7 +80,7 @@ else
             {
                 Name = _model.Name,
                 Description = _model.Description,
-                Image = _model.Image
+                ImageId = _model.ImageId
             };
 
         if ((await ArtistApiService.Update(ArtistId, request)).Data is not { } artistResult)

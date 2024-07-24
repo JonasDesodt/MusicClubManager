@@ -8,7 +8,7 @@ namespace MusicClubManager.Cms.Blazor.Models.FormModels
         [Required(ErrorMessage = "Name is a required property.")]
         public string? Name { get; set; }
         public string? Description { get; set; }
-        public string? Image { get; set; }
+        public int? ImageId { get; set; }
 
         public IBrowserFile? BrowserFile { get; set; }
     }

@@ -1,7 +1,7 @@
 ﻿<div>
-    @if (!string.IsNullOrWhiteSpace(Model.Image))
+    @if (Model.ImageResult is not null)
     {
-        <img src="@($"https://localhost:7188/image/{Model.Image}")" />
+        <img src="@($"https://localhost:7188/image/{Model.ImageResult.Id}")" />
     }
 
     <div>

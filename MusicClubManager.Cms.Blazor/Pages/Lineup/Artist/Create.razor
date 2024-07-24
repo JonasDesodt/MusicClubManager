@@ -5,14 +5,9 @@
 @inject ILineupService LineupApiService
 @inject NavigationManager NavigationManager
 
-<h3>Create artist</h3>
-
-@if (_lineupServiceResult?.Data is { } lineupResult)
-{
-    <p>Lineup: @lineupResult.Doors.ToLongDateString() @lineupResult.Name</p>
-
-    <p>Show all affected lineups / performances</p>
-}
+<SubTitle ReturnUrl="@($"/lineups/{LineupId}/performances/select-artist")" ReturnTitle="Artists">
+    Create artist
+</SubTitle>
 
 <ArtistCreateForm OnSubmitted="@((artistId) => NavigationManager.NavigateTo($" lineups /{LineupId}/{artistId}/add-performance"))" />
 

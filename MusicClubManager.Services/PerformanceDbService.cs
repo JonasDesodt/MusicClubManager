@@ -17,7 +17,7 @@ namespace MusicClubManager.Services
 
         public async Task<ServiceResult<PerformanceResult>> Create(PerformanceRequest request)
         {
-            if (await dbContext.Artists.FirstOrDefaultAsync(a => a.Id == request.ArtistId) is not { } artist)
+            if (await dbContext.Artists.Include(a => a.Image).FirstOrDefaultAsync(a => a.Id == request.ArtistId) is not { } artist)
             {
                 return new ServiceResult<PerformanceResult>
                 {
@@ -76,7 +76,16 @@ namespace MusicClubManager.Services
                         Id = artist.Id,
                         Description = artist.Description,
                         Name = artist.Name,
-                        Image = artist.Image
+                        ImageResult = artist.Image != null
+                                    ? new ImageResult
+                                    {
+                                        Alt = artist.Image.Alt,
+                                        ContentType = artist.Image.ContentType,
+                                        Created = artist.Image.Created,
+                                        Id = artist.Image.Id,
+                                        Updated = artist.Image.Updated
+                                    }
+                                    : null
                     },
                     LineupResult = new PerformanceLineupResult
                     {
@@ -171,7 +180,16 @@ namespace MusicClubManager.Services
                         Id = performance.Artist.Id,
                         Name = performance.Artist.Name,
                         Description = performance.Artist.Description,
-                        Image = performance.Artist.Image
+                        ImageResult = performance.Artist.Image != null
+                                    ? new ImageResult
+                                    {
+                                        Alt = performance.Artist.Image.Alt,
+                                        ContentType = performance.Artist.Image.ContentType,
+                                        Created = performance.Artist.Image.Created,
+                                        Id = performance.Artist.Image.Id,
+                                        Updated = performance.Artist.Image.Updated
+                                    }
+                                    : null
                     },
                     LineupResult = new PerformanceLineupResult
                     {
@@ -205,6 +223,7 @@ namespace MusicClubManager.Services
 
             var query = from performance in dbContext.Performances
                         join artist in dbContext.Artists on performance.ArtistId equals artist.Id
+                        join image in dbContext.Images on artist.ImageId equals image.Id
                         where performance.LineupId == id
                         select new LineupPerformanceResult
                         {
@@ -217,7 +236,17 @@ namespace MusicClubManager.Services
                                 Id = artist.Id,
                                 Name = artist.Name,
                                 Description = artist.Description,
-                                Image = artist.Image
+                                ImageResult = artist.Image != null 
+                                ? new ImageResult
+                                {
+                                    Alt = artist.Image.Alt,
+                                    ContentType = artist.Image.ContentType,
+                                    Created = artist.Image.Created,
+                                    Updated = artist.Image.Updated,
+                                    Id = artist.Image.Id,
+
+                                }
+                                : null
                             }
                         };
 
@@ -249,8 +278,9 @@ namespace MusicClubManager.Services
             var skip = (paginationRequest.Page - 1) * paginationRequest.PageSize;
 
             var query = from performance in dbContext.Performances
-                        join artist in dbContext.Artists on performance.ArtistId equals artist.Id
                         join lineup in dbContext.Lineups on performance.LineupId equals lineup.Id
+                        join artist in dbContext.Artists on performance.ArtistId equals artist.Id
+                        join image in dbContext.Images on artist.ImageId equals image.Id
                         select new PerformanceResult
                         {
                             Id = performance.Id,
@@ -262,7 +292,17 @@ namespace MusicClubManager.Services
                                 Id = artist.Id,
                                 Name = artist.Name,
                                 Description = artist.Description,
-                                Image = artist.Image
+                                ImageResult = artist.Image != null
+                                ? new ImageResult
+                                {
+                                    Alt = artist.Image.Alt,
+                                    ContentType = artist.Image.ContentType,
+                                    Created = artist.Image.Created,
+                                    Updated = artist.Image.Updated,
+                                    Id = artist.Image.Id,
+
+                                }
+                                : null
                             },
                             LineupResult = new PerformanceLineupResult
                             {
@@ -362,7 +402,7 @@ namespace MusicClubManager.Services
                         Id = artist.Id,
                         Name = artist.Name,
                         Description = artist.Description,
-                        Image = artist.Image,
+                        ImageResult = null!, //TODO TEMP HACK
                     },
                     LineupResult = new PerformanceLineupResult
                     {

@@ -18,12 +18,13 @@ namespace MusicClubManager.Services
             {
                 Name = request.Name,
                 Description = request.Description,
-                Image = request.Image
+                ImageId = request.ImageId
             };
 
             await dbContext.Artists.AddAsync(artist);
 
             await dbContext.SaveChangesAsync();
+
 
             return new ServiceResult<ArtistResult>
             {
@@ -32,7 +33,15 @@ namespace MusicClubManager.Services
                     Id = artist.Id,
                     Name = artist.Name,
                     Description = artist.Description,
-                    Image = artist.Image
+                    ImageResult = await dbContext.Images.Select(i => new ImageResult
+                    {
+                        Alt = i.Alt,
+                        ContentType = i.ContentType,
+                        Created = i.Created,
+                        Updated = i.Updated,
+                        Id = i.Id
+
+                    }).FirstOrDefaultAsync(i => i.Id == artist.ImageId)
                 }
             };
         }
@@ -72,7 +81,7 @@ namespace MusicClubManager.Services
 
         public async Task<ServiceResult<ArtistResult>> Get(int id)
         {
-            var artist = await dbContext.Artists.FindAsync(id);
+            var artist = await dbContext.Artists.Include(a => a.Image).FirstOrDefaultAsync(a => a.Id == id);
 
             if (artist is null)
             {
@@ -92,29 +101,50 @@ namespace MusicClubManager.Services
                     Id = artist.Id,
                     Name = artist.Name,
                     Description = artist.Description,
-                    Image = artist.Image
+                    ImageResult = artist.Image != null
+                    ? new ImageResult
+                    {
+                        Alt = artist.Image.Alt,
+                        ContentType = artist.Image.ContentType,
+                        Created = artist.Image.Created,
+                        Updated = artist.Image.Updated,
+                        Id = artist.Image.Id
+                    }
+                    : null
                 }
             };
         }
 
         public async Task<PagedServiceResult<IList<ArtistResult>>> GetAll(PaginationRequest paginationRequest, ArtistFilter filter)
         {
-            var totalCount = await dbContext.Artists  
+            var totalCount = await dbContext.Artists
+                .Include(a => a.Image)
                 .AddFilter(filter)
                 .CountAsync();
-            
+
             var skip = (paginationRequest.Page - 1) * paginationRequest.PageSize;
 
             var artists = await dbContext.Artists
+                .Include(a => a.Image)
                 .AddFilter(filter)
                 .Skip((int)skip)
                 .Take((int)paginationRequest.PageSize)
+
                 .Select(a => new ArtistResult
                 {
                     Id = a.Id,
                     Name = a.Name,
                     Description = a.Description,
-                    Image = a.Image
+                    ImageResult = a.Image != null
+                                  ? new ImageResult
+                                  {
+                                      Alt = a.Image.Alt,
+                                      ContentType = a.Image.ContentType,
+                                      Created = a.Image.Created,
+                                      Updated = a.Image.Updated,
+                                      Id = a.Image.Id
+                                  }
+                                  : null
                 })
                 .ToListAsync();
 
@@ -129,7 +159,7 @@ namespace MusicClubManager.Services
 
         public async Task<ServiceResult<ArtistResult>> Update(int id, ArtistRequest request)
         {
-            var artist = await dbContext.Artists.FindAsync(id);
+            var artist = await dbContext.Artists.Include(a => a.Image).FirstOrDefaultAsync( a => a.Id == id);
 
             if (artist is null)
             {
@@ -144,7 +174,7 @@ namespace MusicClubManager.Services
 
             artist.Name = request.Name;
             artist.Description = request.Description;
-            artist.Image = request.Image;
+            artist.ImageId = request.ImageId;
 
             dbContext.Artists.Update(artist);
 
@@ -157,7 +187,16 @@ namespace MusicClubManager.Services
                     Id = artist.Id,
                     Name = artist.Name,
                     Description = artist.Description,
-                    Image = artist.Image
+                    ImageResult = artist.Image != null
+                                  ? new ImageResult
+                                  {
+                                      Alt = artist.Image.Alt,
+                                      ContentType = artist.Image.ContentType,
+                                      Created = artist.Image.Created,
+                                      Updated = artist.Image.Updated,
+                                      Id = artist.Image.Id
+                                  }
+                                  : null
                 }
             };
         }

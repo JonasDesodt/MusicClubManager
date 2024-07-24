@@ -84,7 +84,7 @@ namespace MusicClubManager.Services
 
             var performances = await dbContext.Performances.Where(p => p.LineupId == id).ToListAsync();
 
-            foreach(var performance in performances)
+            foreach (var performance in performances)
             {
                 dbContext.Remove(performance);
             }
@@ -115,7 +115,8 @@ namespace MusicClubManager.Services
 
             var lineup = await dbContext.Lineups
                 .Include(l => l.Event)
-                .Include(l => (l.Performances.AsQueryable().Skip(0).Take(5).Include(p => p.Artist)))
+
+                .Include(l => (l.Performances.AsQueryable().Skip(0).Take(5).Include(p => p.Artist).ThenInclude(a => a != null ? a.Image : null)))
                 .FirstOrDefaultAsync(l => l.Id == id);
 
             if (lineup is null)
@@ -152,9 +153,18 @@ namespace MusicClubManager.Services
                                 Id = p.Artist.Id,
                                 Name = p.Artist.Name,
                                 Description = p.Artist.Description,
-                                Image = p.Artist.Image
+                                ImageResult = p.Artist.Image != null
+                                ? new ImageResult
+                                {
+                                    Alt = p.Artist.Image.Alt,
+                                    ContentType = p.Artist.Image.ContentType,
+                                    Created = p.Artist.Image.Created,
+                                    Id = p.Artist.Image.Id,
+                                    Updated = p.Artist.Image.Updated
+                                }
+                                : null
                             }
-                            : null
+                            : null! //temp hack, the artist in a performace should never be null
                         }).ToList(),
                         Page = 1,
                         PageSize = 5,
@@ -204,7 +214,7 @@ namespace MusicClubManager.Services
             }
 
             lineupResult.PagedLineupPerformanceResult.Data = await dbContext.Performances
-                            .Include(p => p.Artist)
+                            .Include(p => p.Artist).ThenInclude(a => a != null ? a.Image : null)
                             .Where(p => p.LineupId == id)
                             .Skip((int)skip)
                             .Take(take)
@@ -216,10 +226,19 @@ namespace MusicClubManager.Services
                                             {
                                                 Id = p.Artist.Id,
                                                 Description = p.Artist.Description,
-                                                Image = p.Artist.Image,
+                                                ImageResult = p.Artist.Image != null
+                                                            ? new ImageResult
+                                                            {
+                                                                Alt = p.Artist.Image.Alt,
+                                                                ContentType = p.Artist.Image.ContentType,
+                                                                Created = p.Artist.Image.Created,
+                                                                Id = p.Artist.Image.Id,
+                                                                Updated = p.Artist.Image.Updated
+                                                            }
+                                                            : null,
                                                 Name = p.Artist.Name
                                             }
-                                            : null
+                                            : null! //temp hack, the artist in a performace should never be null
                             })
                             .ToListAsync();
 
@@ -244,7 +263,7 @@ namespace MusicClubManager.Services
 
             var lineups = dbContext.Lineups
                 .Include(l => l.Performances)
-                .ThenInclude(p => p.Artist)
+                .ThenInclude(p => p.Artist).ThenInclude(a => a != null ? a.Image : null)
                 .Select(l => l)
                 .AddFilter(filter);
 
@@ -268,8 +287,17 @@ namespace MusicClubManager.Services
                             Id = p.Artist.Id,
                             Name = p.Artist.Name,
                             Description = p.Artist.Description,
-                            Image = p.Artist.Image
-                        } : null,
+                            ImageResult = p.Artist.Image != null
+                                                            ? new ImageResult
+                                                            {
+                                                                Alt = p.Artist.Image.Alt,
+                                                                ContentType = p.Artist.Image.ContentType,
+                                                                Created = p.Artist.Image.Created,
+                                                                Id = p.Artist.Image.Id,
+                                                                Updated = p.Artist.Image.Updated
+                                                            }
+                                                            : null
+                        } : null!, //temp hack, the artist in a performace should never be null
                         Id = p.Id,
                         Duration = p.Duration,
                         Start = p.Start,
