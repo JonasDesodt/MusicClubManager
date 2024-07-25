@@ -48,25 +48,14 @@ namespace MusicClubManager.Api.Controllers
         //    return PhysicalFile(filePath, mimeType);
         //}
 
-        [HttpPost]
+
+         [HttpPost]
         [Route("Upload")]
-        //public async Task<IActionResult> Upload(IFormFile file,ImageRequest request)
-        public async Task<IActionResult> Upload(IFormFile file, string json)
+        public async Task<IActionResult> Upload(IFormFile file, [FromForm] ImageRequest properties)
         {
             if (file == null || file.Length == 0)
             {
                 return BadRequest("No file uploaded."); //return serviceresult?
-            }
-
-            if (string.IsNullOrEmpty(json))
-            {
-                return BadRequest("No request recieved");
-            }
-
-            var request = JsonSerializer.Deserialize<ImageRequest>(json);
-            if (request is null)
-            {
-                return BadRequest("Unable to deserialize the json string");
             }
 
             var now = DateTime.UtcNow;
@@ -80,11 +69,11 @@ namespace MusicClubManager.Api.Controllers
                 {
                     var image = new Image
                     {
-                        Alt = request.Alt,
+                        Alt = properties.Alt,
                         Created = now,
                         Updated = now,
                         Content = memoryStream.ToArray(),
-                        ContentType = request.ContentType
+                        ContentType = properties.ContentType
                     };
 
                     dbContext.Images.Add(image);
