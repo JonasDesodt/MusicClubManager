@@ -45,11 +45,11 @@
             return;
         }
 
-        var serviceResult = await ArtistApiService.Create(new ArtistRequest { Name = Model.Name, Description = Model.Description, Image = Model.Image });
+        // var serviceResult = await ArtistApiService.Create(new ArtistRequest { Name = Model.Name, Description = Model.Description, ImageId = Model.ImageId });
 
-        if (serviceResult.Messages is null)
-        {
-            await OnPosted.InvokeAsync(serviceResult.Data);
-        }
+        // if (serviceResult.Messages is null)
+        // {
+        //     await OnPosted.InvokeAsync(serviceResult.Data);
+        // }
     }
 }

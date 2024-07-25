@@ -12,9 +12,5 @@ namespace MusicClubManager.Dto.Request
         public required string Alt { get; set; }
 
         public required string ContentType { get; set; }
-
-        public required DateTime Created { get; set; }
-
-        public required DateTime Updated { get; set; }
     }
 }

@@ -10,7 +10,7 @@ namespace MusicClubManager.Sdk
         {
             var httpClient = httpClientFactory.CreateClient("MusicClubManagerApi");
 
-            var response = await httpClient.PostAsync("Image", content);
+            var response = await httpClient.PostAsync("Image/Upload", content);
             if (response is not null && response.IsSuccessStatusCode)
             {
                 var result = await response.Content.ReadFromJsonAsync<ServiceResult<ImageResult>>();

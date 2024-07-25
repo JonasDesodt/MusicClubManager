@@ -75,6 +75,7 @@ builder.Services
 
 builder.Services.AddScoped<IArtistService, ArtistDbService>();
 builder.Services.AddScoped<IEventService, EventDbService>();
+builder.Services.AddScoped<ImageDbService>();
 builder.Services.AddScoped<ILineupService, LineupDbService>();
 builder.Services.AddScoped<IPerformanceService, PerformanceDbService>();
 

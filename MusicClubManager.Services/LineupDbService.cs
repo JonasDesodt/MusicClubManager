@@ -15,12 +15,16 @@ namespace MusicClubManager.Services
     {
         public async Task<ServiceResult<LineupResult>> Create(LineupRequest request)
         {
+            var now = DateTime.UtcNow;
+
             var lineup = new Lineup
             {
                 Doors = request.Doors,
                 Name = request.Name,
                 IsSoldOut = request.IsSoldOut,
                 EventId = request.EventId,
+                Created = now,
+                Updated = now
             };
 
             await dbContext.Lineups.AddAsync(lineup);
@@ -349,6 +353,7 @@ namespace MusicClubManager.Services
             lineup.Doors = request.Doors;
             lineup.IsSoldOut = request.IsSoldOut;
             lineup.Name = request.Name;
+            lineup.Updated = DateTime.UtcNow;
 
             await dbContext.SaveChangesAsync();
 

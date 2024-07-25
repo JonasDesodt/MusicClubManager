@@ -50,11 +50,15 @@ namespace MusicClubManager.Services
                 };
             }
 
+            var now = DateTime.UtcNow;
+
             var performance = new Performance
             {
                 Duration = request.Duration,
                 Start = request.Start,
                 Type = request.Type,
+                Created = now,
+                Updated = now,
                 ArtistId = request.ArtistId,
                 LineupId = request.LineupId,
             };
@@ -385,6 +389,7 @@ namespace MusicClubManager.Services
             performance.Start = request.Start;
             performance.ArtistId = request.ArtistId;
             performance.LineupId = request.LineupId;
+            performance.Updated = DateTime.UtcNow;
 
             dbContext.Lineups.Update(lineup);
 

@@ -15,6 +15,10 @@
         public required int ArtistId { get; set; }
         public Artist? Artist { get; set; }
 
+        public required DateTime Created { get; set; }
+
+        public required DateTime Updated { get; set; }
+
         public required int LineupId { get; set; }
         public Lineup? Lineup { get; set; }
     }

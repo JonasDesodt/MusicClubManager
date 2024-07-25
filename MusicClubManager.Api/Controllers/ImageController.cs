@@ -4,19 +4,21 @@ using MusicClubManager.Dto.Request;
 using MusicClubManager.Dto.Result;
 using MusicClubManager.Dto.Transfer;
 using MusicClubManager.Models;
+using MusicClubManager.Services;
+using System.Text.Json;
 
 
 namespace MusicClubManager.Api.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class ImageController(MusicClubManagerDbContext dbContext) : ControllerBase
+    public class ImageController(MusicClubManagerDbContext dbContext, ImageDbService imageDbService) : ControllerBase
     {
-        [HttpGet("{id:int}")]
-        public async Task<IActionResult> Get(int id)
+        [HttpGet("Download/{id:int}")]
+        public async Task<IActionResult> Download(int id)
         {
             var image = await dbContext.Images.FindAsync(id);
-            if(image is null)
+            if (image is null)
             {
                 return NotFound(); // return serviceResult
             }
@@ -28,7 +30,7 @@ namespace MusicClubManager.Api.Controllers
             return new FileStreamResult(memoryStream, image.ContentType)
             {
                 FileDownloadName = image.Alt
-            };        
+            };
         }
 
 
@@ -47,12 +49,27 @@ namespace MusicClubManager.Api.Controllers
         //}
 
         [HttpPost]
-        public async Task<IActionResult> Upload(IFormFile file, ImageRequest request)
+        [Route("Upload")]
+        //public async Task<IActionResult> Upload(IFormFile file,ImageRequest request)
+        public async Task<IActionResult> Upload(IFormFile file, string json)
         {
             if (file == null || file.Length == 0)
             {
                 return BadRequest("No file uploaded."); //return serviceresult?
             }
+
+            if (string.IsNullOrEmpty(json))
+            {
+                return BadRequest("No request recieved");
+            }
+
+            var request = JsonSerializer.Deserialize<ImageRequest>(json);
+            if (request is null)
+            {
+                return BadRequest("Unable to deserialize the json string");
+            }
+
+            var now = DateTime.UtcNow;
 
             using (var memoryStream = new MemoryStream())
             {
@@ -64,8 +81,8 @@ namespace MusicClubManager.Api.Controllers
                     var image = new Image
                     {
                         Alt = request.Alt,
-                        Created = request.Created,
-                        Updated = request.Updated,
+                        Created = now,
+                        Updated = now,
                         Content = memoryStream.ToArray(),
                         ContentType = request.ContentType
                     };
@@ -82,7 +99,7 @@ namespace MusicClubManager.Api.Controllers
                             Created = image.Created,
                             Updated = image.Updated,
                             Id = image.Id,
-                            ContentType = request.ContentType
+                            ContentType = image.ContentType
                         }
                     });
                 }
@@ -118,5 +135,18 @@ namespace MusicClubManager.Api.Controllers
 
         //    return Ok(new { Url = Url.Action(nameof(Get), new { fileName = file.FileName }) });
         //}
+
+        [HttpGet]
+        [Route("{id:int}")]
+        public async Task<IActionResult> Get(int id)
+        {
+            return Ok(await imageDbService.Get(id));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Get()
+        {
+            return Ok(await imageDbService.GetAll());
+        }
     }
 }

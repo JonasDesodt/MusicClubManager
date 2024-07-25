@@ -11,6 +11,10 @@
         public int? EventId { get; set; }
         public Event? Event { get; set; }
 
+        public required DateTime Created { get; set; }
+
+        public required DateTime Updated { get; set; }
+
         public IList<Performance> Performances { get; set; } = [];
     }
 }

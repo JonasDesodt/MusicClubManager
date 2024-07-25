@@ -14,11 +14,15 @@ namespace MusicClubManager.Services
     {
         public async Task<ServiceResult<ArtistResult>> Create(ArtistRequest request)
         {
+            var now = DateTime.UtcNow;
+
             var artist = new Artist
             {
                 Name = request.Name,
                 Description = request.Description,
-                ImageId = request.ImageId
+                ImageId = request.ImageId,
+                Created = now,
+                Updated = now
             };
 
             await dbContext.Artists.AddAsync(artist);
@@ -175,6 +179,7 @@ namespace MusicClubManager.Services
             artist.Name = request.Name;
             artist.Description = request.Description;
             artist.ImageId = request.ImageId;
+            artist.Updated = DateTime.UtcNow;
 
             dbContext.Artists.Update(artist);
 

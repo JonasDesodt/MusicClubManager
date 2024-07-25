@@ -236,17 +236,25 @@ namespace MusicClubManager.Core.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Image")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("ImageId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("Updated")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("ImageId");
 
                     b.ToTable("Artists");
                 });
@@ -259,6 +267,9 @@ namespace MusicClubManager.Core.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
@@ -266,9 +277,43 @@ namespace MusicClubManager.Core.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("Updated")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
                     b.ToTable("Events");
+                });
+
+            modelBuilder.Entity("MusicClubManager.Models.Image", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Alt")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("Content")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("Updated")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Images");
                 });
 
             modelBuilder.Entity("MusicClubManager.Models.Lineup", b =>
@@ -278,6 +323,9 @@ namespace MusicClubManager.Core.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("Doors")
                         .HasColumnType("datetime2");
@@ -290,6 +338,9 @@ namespace MusicClubManager.Core.Migrations
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Updated")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -309,6 +360,9 @@ namespace MusicClubManager.Core.Migrations
                     b.Property<int>("ArtistId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
                     b.Property<int?>("Duration")
                         .HasColumnType("int");
 
@@ -320,6 +374,9 @@ namespace MusicClubManager.Core.Migrations
 
                     b.Property<string>("Type")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Updated")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -381,6 +438,15 @@ namespace MusicClubManager.Core.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("MusicClubManager.Models.Artist", b =>
+                {
+                    b.HasOne("MusicClubManager.Models.Image", "Image")
+                        .WithMany("Artists")
+                        .HasForeignKey("ImageId");
+
+                    b.Navigation("Image");
+                });
+
             modelBuilder.Entity("MusicClubManager.Models.Lineup", b =>
                 {
                     b.HasOne("MusicClubManager.Models.Event", "Event")
@@ -417,6 +483,11 @@ namespace MusicClubManager.Core.Migrations
             modelBuilder.Entity("MusicClubManager.Models.Event", b =>
                 {
                     b.Navigation("Lineups");
+                });
+
+            modelBuilder.Entity("MusicClubManager.Models.Image", b =>
+                {
+                    b.Navigation("Artists");
                 });
 
             modelBuilder.Entity("MusicClubManager.Models.Lineup", b =>
