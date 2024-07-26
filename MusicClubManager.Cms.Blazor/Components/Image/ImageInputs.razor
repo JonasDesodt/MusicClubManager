@@ -17,6 +17,10 @@
             {
                 <img src="@imagePreview" alt="Image Preview" style="max-width: 100%; height: auto;" />
             }
+            else if (Model is EditImageFormModel editImageFormModel && editImageFormModel.Id > 0)
+            {
+                <img src="@($"https://localhost:7188/image/download/{editImageFormModel.Id}")" alt="Image Preview" style="max-width: 100%; height: auto;" />
+            }
         </div>
     </div>
 </div>
@@ -27,6 +31,7 @@
     [Parameter, EditorRequired]
     public required IImageFormModel Model { get; set; }
 
+    private int? id { get; set; }
     private string? imagePreview;
 
     private async Task HandleFileSelection(InputFileChangeEventArgs e)

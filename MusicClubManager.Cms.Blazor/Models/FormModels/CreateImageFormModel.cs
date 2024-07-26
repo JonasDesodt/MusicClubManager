@@ -7,6 +7,7 @@ namespace MusicClubManager.Cms.Blazor.Models.FormModels
 {
     public class CreateImageFormModel : IImageFormModel
     {
+
         public string? Alt { get; set; }
 
         [Required(ErrorMessage="File is a required property")]
