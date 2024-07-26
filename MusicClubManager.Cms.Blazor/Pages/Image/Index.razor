@@ -1,13 +1,10 @@
-﻿@page "/lineups/{lineupId:int}/performances/create-artist/select-image"
-
-@layout LineupLayout
+﻿@page "/images"
 
 @inject ImageApiService ImageApiService
 
-<SubTitle ReturnUrl="@($"lineups/{LineupId}/performances/create-artist")" ReturnTitle="Performances">
-    Create artist: select image
+<SubTitle ReturnUrl="@($"/")" ReturnTitle="Home">
+    Index
 </SubTitle>
-
 
 @if (_pagedServiceResult is { } pagedServiceResult)
 {
@@ -15,9 +12,7 @@
         <ItemTemplate>
             <ImageItem Model="imageResult">
                 <Buttons>
-                    <li><NavLink href="@("")">Select</NavLink></li>
-
-                    <li><NavLink href="@("")">Continue</NavLink></li>
+                    <li><NavLink href="@($"images/{imageResult.Id}")">Edit</NavLink></li>
                 </Buttons>
             </ImageItem>
         </ItemTemplate>
@@ -29,9 +24,6 @@ else
 }
 
 @code {
-    [Parameter]
-    public int LineupId { get; set; }
-
     private PagedServiceResult<IList<ImageResult>>? _pagedServiceResult;
 
     protected override async Task OnInitializedAsync()

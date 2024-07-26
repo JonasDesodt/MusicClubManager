@@ -11,7 +11,7 @@
 
         @if (model.ImageId is not null)
         {
-            var src = $"https://localhost:7188/image/{model.ImageId}";
+            var src = $"https://localhost:7188/image/download/{model.ImageId}";
 
             <img src="@src" alt="@model.Name" /> // todo should be the alt from image class?
         }

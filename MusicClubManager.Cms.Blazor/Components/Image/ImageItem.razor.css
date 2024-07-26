@@ -1,0 +1,23 @@
+﻿div {
+    display: flex;
+    flex-direction: column;
+}
+
+    div > img {
+        max-width: 100%;
+    }
+
+    div > div {
+        gap: 1em;
+        padding: 1em;
+    }
+
+        div > div > ul {
+            display: flex;
+            flex-direction: column;
+            list-style-type: none;
+        }
+
+            div > div > ul > li > h5 {
+                font-size: 1.2em;
+            }

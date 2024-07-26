@@ -39,7 +39,18 @@
             {
                 <a href="artists" @onclick="()=> OnNavigationStarted.InvokeAsync()">Artists</a>
             }
+        </li>
 
+        <li>
+            @if (_route.StartsWith("images"))
+            {
+                <a href="images" @onclick="()=> OnNavigationStarted.InvokeAsync()" class="active">Images</a>
+
+            }
+            else
+            {
+                <a href="images" @onclick="()=> OnNavigationStarted.InvokeAsync()">Images</a>
+            }
         </li>
     </ul>
 </nav>

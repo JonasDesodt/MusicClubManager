@@ -16,9 +16,8 @@ builder.Services.AddHttpClient("MusicClubManagerApi", httpClient =>
 });
 
 builder.Services.AddScoped<IArtistService, ArtistApiService>();
+builder.Services.AddScoped<ImageApiService>();
 builder.Services.AddScoped<ILineupService, LineupApiService>();
 builder.Services.AddScoped<IPerformanceService, PerformanceApiService>();
-
-builder.Services.AddScoped<ImageApiService>();
 
 await builder.Build().RunAsync();

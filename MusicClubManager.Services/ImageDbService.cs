@@ -17,7 +17,7 @@ namespace MusicClubManager.Services
         {
             var image = await dbContext.Images.FindAsync(id);
 
-            if(image is null)
+            if (image is null)
             {
                 return new ServiceResult<ImageResult>()
                 {
@@ -44,11 +44,18 @@ namespace MusicClubManager.Services
             };
         }
 
-        public async Task<ServiceResult<IList<ImageResult>>> GetAll()
+        public async Task<PagedServiceResult<IList<ImageResult>>> GetAll(PaginationRequest paginationRequest)
         {
-              return new ServiceResult<IList<ImageResult>>
+            uint skip = (paginationRequest.Page - 1) * paginationRequest.PageSize;
+
+            var totalCount = await dbContext.Images.CountAsync();
+
+            return new PagedServiceResult<IList<ImageResult>>
             {
-                Data = await dbContext.Images.Select(i => new ImageResult
+                Page = paginationRequest.Page,
+                PageSize = paginationRequest.PageSize,
+                TotalCount = (uint)totalCount,
+                Data = await dbContext.Images.Skip((int)skip).Take((int)paginationRequest.PageSize).Select(i => new ImageResult
                 {
                     Alt = i.Alt,
                     ContentType = i.ContentType,

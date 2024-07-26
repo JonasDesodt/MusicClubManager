@@ -1,0 +1,20 @@
+﻿<div>
+    <div>
+        <label for="alt">Alt</label>
+
+        <InputText @bind-Value="Model.Alt" id="alt" />
+    </div>
+
+    <div>
+        <label for="file">File</label>
+
+        <InputFile OnChange="(file) => Model.BrowserFile = file.File" id="file" />
+    </div>
+</div>
+
+
+
+@code {
+    [Parameter, EditorRequired]
+    public required IImageFormModel Model { get; set; }
+}

@@ -5,6 +5,7 @@ using MusicClubManager.Dto.Result;
 using MusicClubManager.Dto.Transfer;
 using MusicClubManager.Models;
 using MusicClubManager.Services;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 
@@ -33,24 +34,7 @@ namespace MusicClubManager.Api.Controllers
             };
         }
 
-
-
-        //[HttpGet("{name}")]
-        //public IActionResult Get(string name)
-        //{
-        //    var filePath = Path.Combine(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images"), name);
-        //    if (!System.IO.File.Exists(filePath))
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var mimeType = "image/png";
-        //    return PhysicalFile(filePath, mimeType);
-        //}
-
-
-         [HttpPost]
-        [Route("Upload")]
+        [HttpPost("Upload")]
         public async Task<IActionResult> Upload(IFormFile file, [FromForm] ImageRequest properties)
         {
             if (file == null || file.Length == 0)
@@ -73,7 +57,7 @@ namespace MusicClubManager.Api.Controllers
                         Created = now,
                         Updated = now,
                         Content = memoryStream.ToArray(),
-                        ContentType = properties.ContentType
+                        ContentType = file.ContentType
                     };
 
                     dbContext.Images.Add(image);
@@ -99,31 +83,83 @@ namespace MusicClubManager.Api.Controllers
             }
         }
 
+        [HttpPut("Properties/{id:int}")]
+        public async Task<IActionResult> Update([FromRoute] int id, ImageRequest properties)
+        {
+            //if (model.BrowserFile is { Size: > 0 } file)
 
-        //[HttpPost]
-        //public async Task<IActionResult> Upload(IFormFile file)
-        //{
-        //    if (file == null || file.Length == 0)
-        //    {
-        //        return BadRequest("No file uploaded.");
-        //    }
+            var image = await dbContext.Images.FindAsync(id);
+            if (image is null)
+            {
+                return BadRequest("The image could not be found."); //return serviceresult?
+            }
 
-        //    var filePath = Path.Combine(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/" + file.FileName));
+            image.Alt = properties.Alt;
+            image.Updated = DateTime.UtcNow;
 
-        //    if (System.IO.File.Exists(filePath))
-        //    {
-        //        return BadRequest("Duplicate file name");
-        //    }
+            await dbContext.SaveChangesAsync();
 
+            return Ok(new ServiceResult<ImageResult>
+            {
+                Data = new ImageResult
+                {
+                    Alt = image.Alt,
+                    Created = image.Created,
+                    Updated = image.Updated,
+                    Id = image.Id,
+                    ContentType = image.ContentType
+                }
+            });
+        }
 
-        //    using (var stream = new FileStream(filePath, FileMode.Create))
-        //    {
-        //        await file.CopyToAsync(stream);
-        //    }
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> Update([FromRoute] int id, [FromForm] ImageRequest properties, IFormFile formFile)
+        {
+            if (formFile is not { Length: > 0 } file)
+            {
+                return BadRequest("No file uploaded."); //return serviceresult?
+            }
 
+            var image = await dbContext.Images.FindAsync(id);
+            if (image is null)
+            {
+                return BadRequest("The image could not be found."); //return serviceresult?
+            }
 
-        //    return Ok(new { Url = Url.Action(nameof(Get), new { fileName = file.FileName }) });
-        //}
+            using (var memoryStream = new MemoryStream())
+            {
+                await file.CopyToAsync(memoryStream);
+
+                // Upload the file if less than 2 MB
+                if (memoryStream.Length < 2097152)
+                {
+                    image.Content = memoryStream.ToArray();
+
+                    image.Alt = properties.Alt;
+                    image.ContentType = file.ContentType;
+                    image.Updated = DateTime.UtcNow;
+
+                    await dbContext.SaveChangesAsync();
+                }
+                else
+                {
+                    return BadRequest("The image is too large"); //return serviceresult?
+                }
+            }
+
+            return Ok(new ServiceResult<ImageResult>
+            {
+                Data = new ImageResult
+                {
+                    Alt = image.Alt,
+                    Created = image.Created,
+                    Updated = image.Updated,
+                    Id = image.Id,
+                    ContentType = image.ContentType
+                }
+            });
+        }
+
 
         [HttpGet]
         [Route("{id:int}")]
@@ -133,9 +169,9 @@ namespace MusicClubManager.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get([FromQuery] PaginationRequest paginationRequest)
         {
-            return Ok(await imageDbService.GetAll());
+            return Ok(await imageDbService.GetAll(paginationRequest));
         }
     }
 }

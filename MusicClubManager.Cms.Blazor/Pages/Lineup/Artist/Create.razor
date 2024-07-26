@@ -9,27 +9,31 @@
     Create artist
 </SubTitle>
 
+<Navigation>
+    <li><NavLink href="@($"/lineups/{LineupId}/performances/create-artist/select-image")">Select image</NavLink></li>
+</Navigation>
+
 <ArtistCreateForm OnSubmitted="@((artistId) => NavigationManager.NavigateTo($" lineups /{LineupId}/{artistId}/add-performance"))" />
 
 @code {
     [Parameter]
     public int LineupId { get; set; }
-    private ServiceResult<LineupResult>? _lineupServiceResult;
+    // private ServiceResult<LineupResult>? _lineupServiceResult;
 
-    protected override async Task OnParametersSetAsync()
-    {
-        await FetchLineup(LineupId);
+    // protected override async Task OnParametersSetAsync()
+    // {
+    //     await FetchLineup(LineupId);
 
-        await base.OnParametersSetAsync();
-    }
+    //     await base.OnParametersSetAsync();
+    // }
 
-    private async Task FetchLineup(int? id)
-    {
-        if (id is null || id <= 0)
-        {
-            return;
-        }
+    // private async Task FetchLineup(int? id)
+    // {
+    //     if (id is null || id <= 0)
+    //     {
+    //         return;
+    //     }
 
-        _lineupServiceResult = await LineupApiService.Get((int)id, new PaginationRequest { Page = 1, PageSize = 5 });
-    }
+    //     _lineupServiceResult = await LineupApiService.Get((int)id, new PaginationRequest { Page = 1, PageSize = 5 });
+    // }
 }

@@ -40,8 +40,6 @@
             return;
         }
 
-        int? imageId = null;
-
         if (_model.BrowserFile is { Size: > 0 } file)
         {
             var content = new MultipartFormDataContent();
@@ -54,7 +52,6 @@
             var imageRequest = new ImageRequest
             {
                 Alt = file.Name,
-                ContentType = file.ContentType
             };
             var json = JsonSerializer.Serialize(imageRequest);
             content.Add(new StringContent(json, Encoding.UTF8, "application/json"), "request");

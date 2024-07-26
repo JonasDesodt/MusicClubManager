@@ -1,0 +1,93 @@
+﻿@page "/images/{id:int}";
+
+@using System.Text.Json
+@using System.Text
+
+@inject ImageApiService ImageApiService
+@inject NavigationManager NavigationManager
+
+<SubTitle ReturnUrl="/images" ReturnTitle="Index">
+    Edit
+</SubTitle>
+
+@if (_model is not null)
+{
+    <Form TModel="IImageFormModel" Model="_model" OnValidSubmit="() => Submit(_model)">
+        <Template>
+            <ImageInputs Model="_model" />
+
+            <Buttons>
+                <li><button type="submit">Save</button></li>
+
+                <li><button type="button" class="warning" @onclick="async () => _model = await GetModel(Id)">Undo changes</button></li>
+            </Buttons>
+        </Template>
+    </Form>
+}
+
+
+@code {
+    private IImageFormModel? _model;
+
+    [Parameter]
+    public int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _model = await GetModel(Id);
+
+        await base.OnInitializedAsync();
+    }
+
+
+    private async Task Submit(IImageFormModel model)
+    {
+        var content = new MultipartFormDataContent();
+
+        if (model.BrowserFile is { Size: > 0 } file)
+        {
+            var fileContent = new StreamContent(file.OpenReadStream());
+            fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType);
+            content.Add(fileContent, "formFile", file.Name);
+
+            content.Add(new StringContent(model.Alt ?? file.Name), "Alt");
+
+            var serviceResult = await ImageApiService.Update(Id, content);
+
+            if (serviceResult?.Data is null)
+            {
+                return; //todo: errormessages?
+            }
+
+        }
+        else if (!string.IsNullOrWhiteSpace(model.Alt))
+        {
+            content.Add(new StringContent(model.Alt), "Alt");
+
+            var serviceResult = await ImageApiService.UpdateProperties(Id, new ImageRequest
+                {
+                    Alt = model.Alt
+                });
+
+            if (serviceResult?.Data is null)
+            {
+                return; //todo: errormessages?
+            }
+        }
+
+        NavigationManager.NavigateTo("images");
+    }
+
+    private async Task<IImageFormModel?> GetModel(int id)
+    {
+        if ((await ImageApiService.Get(id)).Data is { } imageResult)
+        {
+            return new EditImageFormModel
+                {
+                    Alt = imageResult.Alt
+                };
+        };
+
+        return null;
+    }
+}

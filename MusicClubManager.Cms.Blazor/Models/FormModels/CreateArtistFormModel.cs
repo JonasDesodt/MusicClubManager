@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
+using MusicClubManager.Cms.Blazor.Interfaces;
 using System.ComponentModel.DataAnnotations;
 
 namespace MusicClubManager.Cms.Blazor.Models.FormModels
 {
-    public class CreateArtistFormModel
+    public class CreateArtistFormModel 
     {
         [Required(ErrorMessage = "Name is a required property.")]
         public string? Name { get; set; }

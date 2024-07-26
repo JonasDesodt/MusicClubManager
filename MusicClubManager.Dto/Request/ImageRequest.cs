@@ -10,7 +10,5 @@ namespace MusicClubManager.Dto.Request
     public class ImageRequest
     {
         public required string Alt { get; set; }
-
-        public required string ContentType { get; set; }
     }
 }
