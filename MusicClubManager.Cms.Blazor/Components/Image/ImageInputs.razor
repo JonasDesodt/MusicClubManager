@@ -10,12 +10,14 @@
     <div>
         <label for="file">File</label>
 
-        <InputFile OnChange="HandleFileSelection" id="file" />
+        <div>
+            <InputFile OnChange="HandleFileSelection" id="file" />
 
-        @if (!string.IsNullOrWhiteSpace(imagePreview))
-        {
-            <img src="@imagePreview" alt="Image Preview" style="max-width: 100%; height: auto;" />
-        }
+            @if (!string.IsNullOrWhiteSpace(imagePreview))
+            {
+                <img src="@imagePreview" alt="Image Preview" style="max-width: 100%; height: auto;" />
+            }
+        </div>
     </div>
 </div>
 
@@ -32,6 +34,12 @@
         var file = e.File;
         if (file != null)
         {
+            //in attribute?
+            if (!file.ContentType.StartsWith("image/"))
+            {
+                return;
+            }
+
             Model.BrowserFile = file;
 
             // Read the file data into a byte array

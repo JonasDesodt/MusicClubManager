@@ -15,6 +15,12 @@ namespace MusicClubManager.Api.Controllers
     [Route("[controller]")]
     public class ImageController(MusicClubManagerDbContext dbContext, ImageDbService imageDbService) : ControllerBase
     {
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> Delete([FromRoute] int id)
+        {
+            return Ok(await imageDbService.Delete(id));
+        }
+
         [HttpGet("Download/{id:int}")]
         public async Task<IActionResult> Download(int id)
         {

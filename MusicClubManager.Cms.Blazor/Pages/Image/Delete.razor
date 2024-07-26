@@ -1,5 +1,47 @@
-﻿<h3>Delete</h3>
+﻿@page "/images/{id:int}/delete"
+
+@layout ImageLayout
+
+@inject ImageApiService ImageApiService
+@inject NavigationManager NavigationManager
+
+<SubTitle ReturnUrl="images" ReturnTitle="Index">
+    Delete
+</SubTitle>
+
+<p>Are you sure you want to delete the image?</p>
+
+<Buttons>
+    <li><NavLink href="images">No</NavLink></li>
+
+    <li><button class="warning" @onclick="HandleDelete">Yes</button></li>
+</Buttons>
+
+@if(imageResult is not null)
+{
+    <ImageItem Model="imageResult" />
+}
 
 @code {
+    [Parameter]
+    public int Id { get; set; }
 
+    private ImageResult? imageResult { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        imageResult = (await ImageApiService.Get(Id)).Data;
+
+        await base.OnInitializedAsync();
+    }
+
+    private async Task HandleDelete()
+    {
+        var serviceResult = await ImageApiService.Delete(Id);
+
+        if(serviceResult?.Messages is not null)
+        {
+            NavigationManager.NavigateTo("images");
+        }
+    }
 }

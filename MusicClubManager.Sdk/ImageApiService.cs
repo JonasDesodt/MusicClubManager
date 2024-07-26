@@ -61,6 +61,23 @@ namespace MusicClubManager.Sdk
             return result;
         }
 
+        public async Task<ServiceResult<ImageResult>> Delete(int id)
+        {
+            var httpClient = httpClientFactory.CreateClient("MusicClubManagerApi");
+
+            var httpResponseMessage = await httpClient.DeleteAsync("Image/" + id);
+
+            if (!httpResponseMessage.IsSuccessStatusCode || await httpResponseMessage.Content.ReadFromJsonAsync<ServiceResult<ImageResult>>() is not { } result)
+            {
+                return new ServiceResult<ImageResult>
+                {
+                    Messages = [new ServiceMessage { Message = "Failed to delete the image." }],
+                };
+            }
+
+            return result;
+        }
+
         public async Task<ServiceResult<ImageResult>?> UpdateProperties(int id, ImageRequest request)
         {
             var httpClient = httpClientFactory.CreateClient("MusicClubManagerApi");

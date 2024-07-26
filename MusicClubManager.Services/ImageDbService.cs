@@ -13,6 +13,29 @@ namespace MusicClubManager.Services
         //    return null;
         //}
 
+
+        public async Task<ServiceResult<ImageResult>> Delete(int id)
+        {
+            var image = await dbContext.Images.FindAsync(id);
+
+            if (image is null)
+            {
+                return new ServiceResult<ImageResult>
+                {
+                    Messages =
+                    [
+                        new () { Message = "The image has not been deleted. The image could not be found." }
+                    ]
+                };
+            }
+
+            dbContext.Images.Remove(image);
+
+            await dbContext.SaveChangesAsync();
+
+            return new ServiceResult<ImageResult> { };
+        }
+
         public async Task<ServiceResult<ImageResult>> Get(int id)
         {
             var image = await dbContext.Images.FindAsync(id);

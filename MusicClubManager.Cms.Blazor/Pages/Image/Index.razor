@@ -1,5 +1,7 @@
 ﻿@page "/images"
 
+@layout ImageLayout
+
 @inject ImageApiService ImageApiService
 
 <SubTitle ReturnUrl="@($"/")" ReturnTitle="Home">
@@ -17,6 +19,8 @@
             <ImageItem Model="imageResult">
                 <Buttons>
                     <li><NavLink href="@($"images/{imageResult.Id}")">Edit</NavLink></li>
+
+                    <li><NavLink href="@($"images/{imageResult.Id}/delete")" class="warning">Delete</NavLink></li>
                 </Buttons>
             </ImageItem>
         </ItemTemplate>
