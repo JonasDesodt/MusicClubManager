@@ -6,6 +6,10 @@
     Index
 </SubTitle>
 
+<Navigation>
+    <li><NavLink href="images/create">Create</NavLink></li>
+</Navigation>
+
 @if (_pagedServiceResult is { } pagedServiceResult)
 {
     <PagedList PagedServiceResult="pagedServiceResult" Context="imageResult" OnPageChanged="(pagination) => FetchImages(pagination)">
