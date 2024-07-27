@@ -1,0 +1,11 @@
+﻿@inherits LayoutComponentBase
+
+@layout ArtistLayout
+
+<CascadingValue Value="Model">
+    @Body
+</CascadingValue>
+
+@code {
+    public CreateArtistFormModel Model { get; set; } = new();
+}

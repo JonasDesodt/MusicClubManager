@@ -27,6 +27,8 @@
 @code {
     private CreateImageFormModel _model = new();
 
+    private string query => new Uri(NavigationManager.Uri).Query;
+
     private async Task Submit(CreateImageFormModel model)
     {
         if (_model.BrowserFile is not { Size: > 0 } file)
@@ -49,6 +51,6 @@
             return;
         }
 
-        NavigationManager.NavigateTo("images");
+        NavigationManager.NavigateTo($"images{query}");
     }
 }

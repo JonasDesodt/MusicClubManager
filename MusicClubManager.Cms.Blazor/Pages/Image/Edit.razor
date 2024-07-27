@@ -8,7 +8,7 @@
 @inject ImageApiService ImageApiService
 @inject NavigationManager NavigationManager
 
-<SubTitle ReturnUrl="/images" ReturnTitle="Index">
+<SubTitle ReturnUrl="@($"/images{query}")" ReturnTitle="Index">
     Edit
 </SubTitle>
 
@@ -25,6 +25,9 @@
             </Buttons>
         </Template>
     </Form>
+} else
+{
+    <Spinner />
 }
 
 
@@ -33,6 +36,8 @@
 
     [Parameter]
     public int Id { get; set; }
+
+    private string query => new Uri(NavigationManager.Uri).Query;
 
     protected override async Task OnInitializedAsync()
     {
@@ -77,7 +82,7 @@
             }
         }
 
-        NavigationManager.NavigateTo("images");
+        NavigationManager.NavigateTo($"/images?{query}");
     }
 
     private async Task<IImageFormModel?> GetModel(int id)

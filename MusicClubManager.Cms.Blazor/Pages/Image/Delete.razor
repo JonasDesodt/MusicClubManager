@@ -12,7 +12,7 @@
 <p>Are you sure you want to delete the image?</p>
 
 <Buttons>
-    <li><NavLink href="images">No</NavLink></li>
+    <li><NavLink href="@($"images{query}")">No</NavLink></li>
 
     <li><button class="warning" @onclick="HandleDelete">Yes</button></li>
 </Buttons>
@@ -28,6 +28,8 @@
 
     private ImageResult? imageResult { get; set; }
 
+    private string query => new Uri(NavigationManager.Uri).Query;
+
     protected override async Task OnInitializedAsync()
     {
         imageResult = (await ImageApiService.Get(Id)).Data;
@@ -41,7 +43,7 @@
 
         if(serviceResult?.Messages is not null)
         {
-            NavigationManager.NavigateTo("images");
+            NavigationManager.NavigateTo($"images{query}");
         }
     }
 }

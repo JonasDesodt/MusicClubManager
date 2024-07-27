@@ -1,0 +1,67 @@
+﻿@page "/artists/create/select-image"
+
+@layout CreateArtistLayout
+
+@inject ImageApiService ImageApiService
+@inject NavigationManager NavigationManager
+
+<SubTitle ReturnUrl="@($"artists/create{query}")" ReturnTitle="Create">
+    Create: select image
+</SubTitle>
+
+@* <Navigation>
+    <li><NavLink href="@($"artists/create{RemoveImageId(query)}")">Clear image selection</NavLink></li>
+</Navigation> *@
+
+@if (_pagedServiceResult is { } pagedServiceResult)
+{
+    <PagedList PagedServiceResult="pagedServiceResult" Context="imageResult" OnPageChanged="(pagination) => FetchImages(pagination)">
+        <ItemTemplate>
+            <ImageItem Model="imageResult">
+                <Buttons>
+@*                     <li><NavLink href="@($"artists/create{(string.IsNullOrWhiteSpace(query) ? '?' : query + '&' )}imageId={imageResult.Id}")">Select</NavLink></li>
+ *@                
+                    <li><button @onclick="() => Select(imageResult.Id)">Select</button></li>
+                </Buttons>
+            </ImageItem>
+        </ItemTemplate>
+    </PagedList>
+}
+else
+{
+    <Spinner />
+}
+
+@code {
+    [CascadingParameter, EditorRequired]
+    public required CreateArtistFormModel Model { get; set; }
+
+    private string query => new Uri(NavigationManager.Uri).Query;
+
+    private PagedServiceResult<IList<ImageResult>>? _pagedServiceResult;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await FetchImages(new Pagination { Page = 1, PageSize = 12 });
+
+        await base.OnInitializedAsync();
+    }
+
+    private async Task FetchImages(Pagination pagination)
+    {
+        _pagedServiceResult = await ImageApiService.GetAll(new PaginationRequest { Page = (uint)pagination.Page, PageSize = (uint)pagination.PageSize });
+    }
+
+    private string RemoveImageId(string query)
+    {
+        var queryDictionary = QueryHelpers.ParseQuery(query);
+        queryDictionary.Remove("imageId");
+        return QueryHelpers.AddQueryString("", queryDictionary);
+    }
+
+    private void Select(int id)
+    {
+        Model.ImageId = id;
+        NavigationManager.NavigateTo($"artists/create{query}");
+    }
+}
