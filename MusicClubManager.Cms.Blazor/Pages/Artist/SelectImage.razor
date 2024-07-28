@@ -34,7 +34,7 @@ else
 
 @code {
     [CascadingParameter, EditorRequired]
-    public required CreateArtistFormModel Model { get; set; }
+    public required ArtistFormModel Model { get; set; }
 
     private string query => new Uri(NavigationManager.Uri).Query;
 

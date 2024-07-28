@@ -3,7 +3,7 @@
 @inject IArtistService ArtistApiService
 @inject ImageApiService ImageApiService;
 
-<Form TModel="CreateArtistFormModel" Model="_model" OnValidSubmit="() => Submit(_model)">
+<Form TModel="ArtistFormModel" Model="_model" OnValidSubmit="() => Submit(_model)">
     <Template>
         <ArtistInputs Model="_model"></ArtistInputs>
 
@@ -19,9 +19,9 @@
     [Parameter, EditorRequired]
     public EventCallback<int> OnSubmitted { get; set; }
 
-    private CreateArtistFormModel _model = new();
+    private ArtistFormModel _model = new();
 
-    private async Task Submit(CreateArtistFormModel _model)
+    private async Task Submit(ArtistFormModel _model)
     {
 
         if (string.IsNullOrWhiteSpace(_model.Name))

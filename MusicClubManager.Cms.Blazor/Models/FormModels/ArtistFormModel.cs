@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MusicClubManager.Cms.Blazor.Models.FormModels
 {
-    public class CreateArtistFormModel 
+    public class ArtistFormModel 
     {
         [Required(ErrorMessage = "Name is a required property.")]
         public string? Name { get; set; }

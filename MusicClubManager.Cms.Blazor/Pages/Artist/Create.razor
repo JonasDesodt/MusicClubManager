@@ -6,11 +6,11 @@
 @inject ImageApiService ImageApiService
 @inject NavigationManager NavigationManager
 
-<SubTitle ReturnUrl="@($"artists{new Uri(NavigationManager.Uri).Query}")" ReturnTitle="Index">
+<SubTitle ReturnUrl="@($"artists{query}")" ReturnTitle="Index">
     Create
 </SubTitle>
 
-<Form TModel="CreateArtistFormModel" Model="Model" OnValidSubmit="() => Submit(Model)">
+<Form TModel="ArtistFormModel" Model="Model" OnValidSubmit="() => Submit(Model)">
     <Template>
         <ArtistInputs Model="Model"></ArtistInputs>
 
@@ -31,7 +31,9 @@
                 <p>There is no image selected</p>
 
                 <Navigation>
-                    <li><NavLink href="@($"artists/create/select-image{new Uri(NavigationManager.Uri).Query}")">Select image</NavLink></li>
+                    <li><NavLink>Create image</NavLink></li>
+
+                    <li><NavLink href="@($"artists/create/select-image{query}")">Select image</NavLink></li>
                 </Navigation>
             }
         </div>
@@ -44,17 +46,13 @@
     </Template>
 </Form>
 
-@* <ArtistCreateForm OnSubmitted="@(() => NavigationManager.NavigateTo($"artists{returnQuery}"))" /> *@
-
 @code {
-    private string? returnQuery;
+    private string query => NavigationManager.GetQuery();
 
     private ServiceResult<ImageResult>? imageServiceResult;
 
-    private Dictionary<string, StringValues>? queryDictionary;
-
     [CascadingParameter, EditorRequired]
-    public CreateArtistFormModel Model { get; set; } = new();
+    public required ArtistFormModel Model { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -63,24 +61,10 @@
             imageServiceResult = await ImageApiService.Get(imageId);
         }
 
-
-
-        // queryDictionary = QueryHelpers.ParseQuery(new Uri(NavigationManager.Uri).Query);
-
-        // if (queryDictionary.TryGetValue("imageId", out StringValues value) && int.TryParse(value, out int id))
-        // {
-        //     imageServiceResult = await ImageApiService.Get(id);
-
-        // }
-
-        // queryDictionary.Remove("imageId");
-
-        // returnQuery = QueryHelpers.AddQueryString("", queryDictionary);
-
         base.OnInitialized();
     }
 
-    private async Task Submit(CreateArtistFormModel model)
+    private async Task Submit(ArtistFormModel model)
     {
         if(model.Name is null)
         {
@@ -97,7 +81,7 @@
 
         if(serviceResult?.Data is not null)
         {
-            NavigationManager.NavigateTo($"artists{new Uri(NavigationManager.Uri).Query}");
+            NavigationManager.NavigateTo($"artists{query}");
         }
     }
 }

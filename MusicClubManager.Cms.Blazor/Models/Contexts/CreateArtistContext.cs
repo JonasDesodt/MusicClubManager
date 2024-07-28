@@ -4,6 +4,6 @@ namespace MusicClubManager.Cms.Blazor.Models.Contexts
 {
     public class CreateArtistContext
     {
-        public required CreateArtistFormModel Model { get; set; }
+        public required ArtistFormModel Model { get; set; }
     }
 }

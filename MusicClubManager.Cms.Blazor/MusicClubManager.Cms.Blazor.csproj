@@ -7,19 +7,20 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Extensions\**" />
     <Compile Remove="Pages\Lineup\Create\**" />
-    <Content Remove="Extensions\**" />
     <Content Remove="Pages\Lineup\Create\**" />
-    <EmbeddedResource Remove="Extensions\**" />
     <EmbeddedResource Remove="Pages\Lineup\Create\**" />
-    <None Remove="Extensions\**" />
     <None Remove="Pages\Lineup\Create\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Pages\Artist\Delete.razor" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="Components\Lineup\CreateEditPerformance.razor" />
     <None Include="Components\Lineup\LineupDetails.razor" />
+    <None Include="Pages\Artist\Delete.razor" />
   </ItemGroup>
 
   <ItemGroup>
@@ -34,6 +35,14 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\images\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Pages\Artist\Delete.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Pages\Artist\Delete.razor" />
   </ItemGroup>
 
 </Project>

@@ -35,7 +35,7 @@ else
     [Parameter, EditorRequired]
     public EventCallback OnSubmitted { get; set; }
 
-    private CreateArtistFormModel? _model;
+    private ArtistFormModel? _model;
 
     protected override async Task OnInitializedAsync()
     {
@@ -55,7 +55,7 @@ else
 
         if (artistServiceResult.Data is { } artistResult)
         {
-            _model = new CreateArtistFormModel
+            _model = new ArtistFormModel
                 {
                     Name = artistResult.Name,
                     Description = artistResult.Description,
@@ -64,7 +64,7 @@ else
         }
     }
 
-    private async Task Submit(CreateArtistFormModel _model)
+    private async Task Submit(ArtistFormModel _model)
     {
         if (ArtistId <= 0)
         {

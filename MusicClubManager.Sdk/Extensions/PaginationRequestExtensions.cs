@@ -2,7 +2,7 @@
 
 namespace MusicClubManager.Sdk.Extensions
 {
-    internal static class PaginationRequestExtensions
+   public static class PaginationRequestExtensions
     {
         public static string ToQueryString(this PaginationRequest paginationRequest)
         {

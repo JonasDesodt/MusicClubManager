@@ -1,61 +1,56 @@
 ﻿@page "/artists"
 
-@layout LineupLayout
+@layout ArtistLayout
 
 @inject IArtistService ArtistApiService
 @inject ILineupService LineupApiService
+@inject NavigationManager NavigationManager
 
-<h3>Artists</h3>
+<SubTitle ReturnUrl="@($"/")" ReturnTitle="Home">
+    Index
+</SubTitle>
 
 <Navigation>
-    <li><NavLink href="artists/create">Create new</NavLink></li>
+    <li><NavLink href="@($"artists/create{query}")">Create</NavLink></li>
+
+    <li><NavLink href="@($"artists/filters{query}")">Filters</NavLink></li>
 </Navigation>
 
-@if (_pagedServiceResult is not null && LineupContext is not null)
+@if (_pagedServiceResult is not null)
 {
-    if (_pagedServiceResult.Data is not null)
-    {
-        <PagedList PagedServiceResult="_pagedServiceResult" Context="artistResult" OnPageChanged="(context) => FetchArtists(new PaginationRequest { Page = (uint)LineupContext.Pagination.Page, PageSize = (uint)LineupContext.Pagination.PageSize}, new ArtistFilter ())">
-            <ItemTemplate>
-                <ArtistItem Model="artistResult">
-                    <Buttons>
-                        <li><NavLink href="@($"artists/{artistResult.Id}")">Edit</NavLink></li>
+    <PagedList PagedServiceResult="_pagedServiceResult" Context="artistResult" OnPageChanged="(context) => FetchArtists(new PaginationRequest { Page = (uint)context.Page, PageSize = (uint)context.PageSize }, new ArtistFilter ())">
+        <ItemTemplate>
+            <ArtistItem Model="artistResult">
+                <Buttons>
+                    <li><NavLink href="@($"artists/{artistResult.Id}{query}")">Edit</NavLink></li>
 
-                        <li><NavLink>Delete</NavLink></li>
-                    </Buttons>
-                </ArtistItem>
-            </ItemTemplate>
-        </PagedList>
-    }
-    else
-    {
-        <p>Error</p>
-    }
+                    <li><NavLink href="@($"artists/delete/{artistResult.Id}{query}")">Delete</NavLink></li>
+                </Buttons>
+            </ArtistItem>
+        </ItemTemplate>
+    </PagedList>
 }
 else
 {
-    <p>Loading...</p>
+    <Spinner />
 }
 
 @code {
-    [CascadingParameter]
-    public LineupContext? LineupContext { get; set; }
-
     private PagedServiceResult<IList<ArtistResult>>? _pagedServiceResult;
+
+    private string? query;
 
     protected override async Task OnInitializedAsync()
     {
-        if(LineupContext is null) {
-            return;
-        }
-
-        await FetchArtists(new PaginationRequest { Page = (uint)LineupContext.Pagination.Page, PageSize = (uint)LineupContext.Pagination.PageSize }, new ArtistFilter());
+        await FetchArtists(NavigationManager.GetPaginationRequest() ?? new PaginationRequest { Page = 1, PageSize = 12 }, new ArtistFilter());
 
         await base.OnInitializedAsync();
     }
 
     private async Task FetchArtists(PaginationRequest paginationRequest, ArtistFilter artistFilter)
     {
+        query = '?' + paginationRequest.ToQueryString();
+
         _pagedServiceResult = await ArtistApiService.GetAll(paginationRequest, new ArtistFilter());
     }
 }

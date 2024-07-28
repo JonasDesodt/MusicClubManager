@@ -1,15 +1,115 @@
-﻿@page "/artists/{artistId:int}"
+﻿@page "/artists/{id:int}"
 
-@layout LineupLayout
+@layout EditArtistLayout
 
-@inject ILineupService LineupApiService
+@inject IArtistService ArtistApiService
+@inject ImageApiService ImageApiService
 @inject NavigationManager NavigationManager
 
-<h3>Edit artist</h3>
+<SubTitle ReturnTitle="Index" ReturnUrl="@($"artists{query}")">
+    Edit
+</SubTitle>
 
-<ArtistEditForm ArtistId="ArtistId" OnSubmitted="@(() => NavigationManager.NavigateTo($"artists"))" />
+@if (Model is { } model)
+{
+    <Form TModel="ArtistFormModel" Model="model" OnValidSubmit="() => Submit(model)">
+        <Template>
+            <ArtistInputs Model="model"></ArtistInputs>
+
+            <div>
+                <label for="image">Image</label>
+                @if (imageServiceResult?.Data is { } imageResult)
+                {
+                    Model.ImageId = imageResult.Id; //use hidden input??
+
+                    <ImageItem Model="imageResult" />
+
+                    <Navigation>
+                        <li><button type="button" @onclick="() => { Model.ImageId = null; imageServiceResult = null;}">Clear selection</button></li>
+                    </Navigation>
+                }
+                else
+                {
+                    <p>There is no image selected</p>
+
+                    <Navigation>
+                        <li><NavLink href="@($"artists/create/create-image{query}")">Create image</NavLink></li>
+
+                        <li><NavLink href="@($"artists/create/select-image{query}")">Select image</NavLink></li>
+                    </Navigation>
+                }
+            </div>
+
+            <Buttons>
+                <li><button type="submit">Save</button></li>
+
+                <li><button type="button" @onclick="() => FetchArtist(Id)" class="warning">Undo changes</button></li>
+            </Buttons>
+        </Template>
+    </Form>
+}
+else
+{
+    <Spinner />
+}
 
 @code {
+    [CascadingParameter]
+    public ArtistFormModel? Model { get; set; }
+
     [Parameter]
-    public int ArtistId { get; set; }
+    public int Id { get; set; }
+
+    private ServiceResult<ImageResult>? imageServiceResult;
+
+    private string query => NavigationManager.GetQuery();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await FetchArtist(Id);
+
+        if (Model?.ImageId is { } imageId)
+        {
+            imageServiceResult = await ImageApiService.Get(imageId);
+        }
+
+        await base.OnInitializedAsync();
+    }
+
+    private async Task FetchArtist(int id)
+    {
+        var artistServiceResult = await ArtistApiService.Get(id);
+
+        if (artistServiceResult?.Data is { } artistResult)
+        {
+            Model = new ArtistFormModel
+                {
+                    Description = artistResult.Description,
+                    ImageId = artistResult.ImageResult?.Id,
+                    Name = artistResult.Name
+                };
+        }
+    }
+
+    private async Task Submit(ArtistFormModel _model)
+    {
+        if (string.IsNullOrWhiteSpace(_model.Name))
+        {
+            return;
+        }
+
+        var request = new ArtistRequest
+            {
+                Name = _model.Name,
+                Description = _model.Description,
+                ImageId = _model.ImageId
+            };
+
+        if ((await ArtistApiService.Update(Id, request)).Data is not { } artistResult)
+        {
+            return;
+        }
+
+        NavigationManager.NavigateTo($"artists{query}");
+    }
 }
