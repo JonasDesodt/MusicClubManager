@@ -4,4 +4,14 @@
 
 <h2>Artists</h2>
 
-@Body
+<CascadingValue Value="Pagination">
+    <CascadingValue Value="Filter">
+        @Body
+    </CascadingValue>
+</CascadingValue>
+
+@code {
+    public Pagination Pagination { get; set; } = new() { Page = 1, PageSize = 1 };
+
+    public ArtistFilter Filter { get; set; } = new();
+}

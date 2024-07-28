@@ -6,9 +6,10 @@
 @inject ImageApiService ImageApiService
 @inject NavigationManager NavigationManager
 
-<SubTitle ReturnTitle="Index" ReturnUrl="@($"artists{query}")">
+<SubTitle ReturnTitle="Index" ReturnUrl="artists">
     Edit
 </SubTitle>
+
 
 @if (Model is { } model)
 {
@@ -33,9 +34,9 @@
                     <p>There is no image selected</p>
 
                     <Navigation>
-                        <li><NavLink href="@($"artists/create/create-image{query}")">Create image</NavLink></li>
+                        <li><NavLink href="artists/create/create-image">Create image</NavLink></li>
 
-                        <li><NavLink href="@($"artists/create/select-image{query}")">Select image</NavLink></li>
+                        <li><NavLink href="artists/create/select-image">Select image</NavLink></li>
                     </Navigation>
                 }
             </div>
@@ -61,8 +62,6 @@ else
     public int Id { get; set; }
 
     private ServiceResult<ImageResult>? imageServiceResult;
-
-    private string query => NavigationManager.GetQuery();
 
     protected override async Task OnInitializedAsync()
     {
@@ -110,6 +109,6 @@ else
             return;
         }
 
-        NavigationManager.NavigateTo($"artists{query}");
+        NavigationManager.NavigateTo("artists");
     }
 }

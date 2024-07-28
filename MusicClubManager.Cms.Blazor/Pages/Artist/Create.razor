@@ -6,7 +6,7 @@
 @inject ImageApiService ImageApiService
 @inject NavigationManager NavigationManager
 
-<SubTitle ReturnUrl="@($"artists{query}")" ReturnTitle="Index">
+<SubTitle ReturnUrl="@("artists")" ReturnTitle="Index">
     Create
 </SubTitle>
 
@@ -31,9 +31,9 @@
                 <p>There is no image selected</p>
 
                 <Navigation>
-                    <li><NavLink>Create image</NavLink></li>
+                    <li><NavLink href="artists/create/create-image">Create</NavLink></li>
 
-                    <li><NavLink href="@($"artists/create/select-image{query}")">Select image</NavLink></li>
+                    <li><NavLink href="artists/create/select-image">Select</NavLink></li>
                 </Navigation>
             }
         </div>
@@ -47,8 +47,6 @@
 </Form>
 
 @code {
-    private string query => NavigationManager.GetQuery();
-
     private ServiceResult<ImageResult>? imageServiceResult;
 
     [CascadingParameter, EditorRequired]
@@ -81,7 +79,7 @@
 
         if(serviceResult?.Data is not null)
         {
-            NavigationManager.NavigateTo($"artists{query}");
+            NavigationManager.NavigateTo("artists");
         }
     }
 }

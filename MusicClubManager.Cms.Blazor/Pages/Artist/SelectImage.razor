@@ -5,22 +5,20 @@
 @inject ImageApiService ImageApiService
 @inject NavigationManager NavigationManager
 
-<SubTitle ReturnUrl="@($"artists/create{query}")" ReturnTitle="Create">
+<SubTitle ReturnUrl="artists/create" ReturnTitle="Create">
     Create: select image
 </SubTitle>
 
-@* <Navigation>
-    <li><NavLink href="@($"artists/create{RemoveImageId(query)}")">Clear image selection</NavLink></li>
-</Navigation> *@
+<Navigation>
+    <li><NavLink href="artists/create/select-image/filters">Filters</NavLink></li>
+</Navigation>
 
 @if (_pagedServiceResult is { } pagedServiceResult)
 {
     <PagedList PagedServiceResult="pagedServiceResult" Context="imageResult" OnPageChanged="(pagination) => FetchImages(pagination)">
         <ItemTemplate>
             <ImageItem Model="imageResult">
-                <Buttons>
-@*                     <li><NavLink href="@($"artists/create{(string.IsNullOrWhiteSpace(query) ? '?' : query + '&' )}imageId={imageResult.Id}")">Select</NavLink></li>
- *@                
+                <Buttons>              
                     <li><button @onclick="() => Select(imageResult.Id)">Select</button></li>
                 </Buttons>
             </ImageItem>
@@ -36,8 +34,6 @@ else
     [CascadingParameter, EditorRequired]
     public required ArtistFormModel Model { get; set; }
 
-    private string query => new Uri(NavigationManager.Uri).Query;
-
     private PagedServiceResult<IList<ImageResult>>? _pagedServiceResult;
 
     protected override async Task OnInitializedAsync()
@@ -52,16 +48,9 @@ else
         _pagedServiceResult = await ImageApiService.GetAll(new PaginationRequest { Page = (uint)pagination.Page, PageSize = (uint)pagination.PageSize });
     }
 
-    private string RemoveImageId(string query)
-    {
-        var queryDictionary = QueryHelpers.ParseQuery(query);
-        queryDictionary.Remove("imageId");
-        return QueryHelpers.AddQueryString("", queryDictionary);
-    }
-
     private void Select(int id)
     {
         Model.ImageId = id;
-        NavigationManager.NavigateTo($"artists/create{query}");
+        NavigationManager.NavigateTo("artists/create");
     }
 }

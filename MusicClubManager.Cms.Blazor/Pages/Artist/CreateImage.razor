@@ -1,0 +1,59 @@
+﻿@page "/artists/create/create-image"
+
+@layout CreateArtistLayout
+
+@using System.Text.Json
+@using System.Text
+
+@inject ImageApiService ImageApiService
+@inject NavigationManager NavigationManager
+
+<SubTitle ReturnUrl="artists/create" ReturnTitle="Create">
+    Create
+</SubTitle>
+
+<Form TModel="CreateImageFormModel" Model="createImageModel" OnValidSubmit="() => Submit(createImageModel)">
+    <Template>
+        <ImageInputs Model="createImageModel" />
+
+        <Buttons>
+            <li><button type="submit">Create</button></li>
+
+            <li><button type="reset" class="warning">Reset</button></li>
+        </Buttons>
+    </Template>
+</Form>
+
+@code {
+    [CascadingParameter, EditorRequired]
+    public required ArtistFormModel ArtistFormModel { get; set; }
+
+    private CreateImageFormModel createImageModel = new();
+
+    private async Task Submit(CreateImageFormModel model)
+    {
+        if (createImageModel.BrowserFile is not { Size: > 0 } file)
+        {
+            return;
+        }
+
+        var content = new MultipartFormDataContent();
+        var fileContent = new StreamContent(file.OpenReadStream());
+        fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType);
+        content.Add(fileContent, "file", file.Name);
+
+        content.Add(new StringContent(model.Alt ?? file.Name), "Alt");
+        content.Add(new StringContent(file.ContentType), "ContentType");
+
+        var serviceResult = await ImageApiService.Create(content);
+
+        if (serviceResult?.Data is null)
+        {
+            return;
+        }
+
+        ArtistFormModel.ImageId = serviceResult.Data.Id;
+
+        NavigationManager.NavigateTo("artists/create");
+    }
+}
