@@ -1,0 +1,57 @@
+﻿@page "/artists/create"
+@page "/artists/edit/{id:int}"
+
+@inject IArtistService ArtistApiService
+@inject ImageApiService ImageApiService
+@inject NavigationManager NavigationManager
+
+<SubTitle ReturnUrl="artists" ReturnTitle="Index">
+    @route
+</SubTitle>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    [CascadingParameter]
+    public ArtistFormModel? Model { get; set; }
+
+    private string route => NavigationManager.Uri.Split('/')[4]; // == "create" or "edit"
+
+    private ServiceResult<ImageResult>? imageServiceResult;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Model?.ImageId is { } imageId)
+        {
+            imageServiceResult = await ImageApiService.Get(imageId);
+        }
+
+        if(route.Equals("edit"))
+        {
+            Model = await GetArtistFormModel(Id);
+        } else
+        {
+            Model = new();
+        }
+
+        base.OnInitialized();
+    }
+
+    private async Task<ArtistFormModel?> GetArtistFormModel(int id)
+    {
+        var artistServiceResult = await ArtistApiService.Get(id);
+
+        if (artistServiceResult?.Data is { } artistResult)
+        {
+            return new ArtistFormModel
+                {
+                    Description = artistResult.Description,
+                    ImageId = artistResult.ImageResult?.Id,
+                    Name = artistResult.Name
+                };
+        }
+
+        return null;
+    }
+}

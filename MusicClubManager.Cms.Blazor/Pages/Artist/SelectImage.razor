@@ -1,12 +1,13 @@
 ﻿@page "/artists/create/select-image"
+@page "/artists/edit/{artistId:int}/select-image"
 
 @layout CreateArtistLayout
 
 @inject ImageApiService ImageApiService
 @inject NavigationManager NavigationManager
 
-<SubTitle ReturnUrl="artists/create" ReturnTitle="Create">
-    Create: select image
+<SubTitle ReturnUrl="@($"artists/{route}" + (route.Equals("edit") ? "/" + ArtistId : ""))" ReturnTitle="@route">
+    @route: select image
 </SubTitle>
 
 <Navigation>
@@ -31,8 +32,13 @@ else
 }
 
 @code {
+    [Parameter]
+    public int ArtistId { get; set; }
+
     [CascadingParameter, EditorRequired]
     public required ArtistFormModel Model { get; set; }
+
+    private string route => NavigationManager.Uri.Split('/')[4]; // == "create" or "edit"
 
     private PagedServiceResult<IList<ImageResult>>? _pagedServiceResult;
 
@@ -51,6 +57,6 @@ else
     private void Select(int id)
     {
         Model.ImageId = id;
-        NavigationManager.NavigateTo("artists/create");
+        NavigationManager.NavigateTo($"artists/{route}" + (route.Equals("edit") ? "/" + ArtistId : ""));
     }
 }

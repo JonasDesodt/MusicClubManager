@@ -1,4 +1,4 @@
-﻿@page "/artists/{id:int}"
+﻿@page "/artists/edit/{id:int}"
 
 @layout EditArtistLayout
 
@@ -34,9 +34,9 @@
                     <p>There is no image selected</p>
 
                     <Navigation>
-                        <li><NavLink href="artists/create/create-image">Create image</NavLink></li>
+                        <li><NavLink href="@($"artists/edit/{Id}/create-image")">Create image</NavLink></li>
 
-                        <li><NavLink href="artists/create/select-image">Select image</NavLink></li>
+                        <li><NavLink href="@($"artists/edit/{Id}/select-image")">Select image</NavLink></li>
                     </Navigation>
                 }
             </div>

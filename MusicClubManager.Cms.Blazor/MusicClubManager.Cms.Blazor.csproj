@@ -14,12 +14,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Remove="Layout\CreateEditArtistLayout.razor" />
+    <Content Remove="Pages\Artist\CreateEdit.razor" />
     <Content Remove="Pages\Artist\Delete.razor" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="Components\Lineup\CreateEditPerformance.razor" />
     <None Include="Components\Lineup\LineupDetails.razor" />
+    <None Include="Layout\CreateEditArtistLayout.razor" />
+    <None Include="Pages\Artist\CreateEdit.razor" />
     <None Include="Pages\Artist\Delete.razor" />
   </ItemGroup>
 
@@ -42,7 +46,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <_ContentIncludedByDefault Remove="Layout\CreateEditArtistLayout.razor" />
+    <_ContentIncludedByDefault Remove="Pages\Artist\CreateEdit.razor" />
     <_ContentIncludedByDefault Remove="Pages\Artist\Delete.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Pages\Artist\CreateEdit.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Layout\CreateEditArtistLayout.razor" />
   </ItemGroup>
 
 </Project>
