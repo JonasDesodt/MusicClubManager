@@ -192,3 +192,8 @@ h3 {
     outline: 1px dotted red;
 }
 */
+
+/* CONTEXT LAYOUT */
+h2.title {
+    color: blue;
+}

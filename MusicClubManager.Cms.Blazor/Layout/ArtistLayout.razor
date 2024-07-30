@@ -1,16 +1,8 @@
-﻿@inherits Context
+﻿@inherits ContextLayout<ArtistFilter>
 
 @ParentContent
 
-<CascadingValue Value="Pagination">
-    <CascadingValue Value="Filter">
-        @Body
-    </CascadingValue>
-</CascadingValue>
-
 @code {
-    public ArtistFilter Filter { get; set; } = new();
-
     public ArtistLayout() : base()
     {
         Title = "Artists";

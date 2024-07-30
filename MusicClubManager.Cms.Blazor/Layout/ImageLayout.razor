@@ -1,10 +1,6 @@
-﻿@inherits Context
+﻿@inherits ContextLayout<ImageFilter> 
 
 @ParentContent
-
-<CascadingValue Value="Pagination">
-    @Body
-</CascadingValue>
 
 @code {
     public ImageLayout() : base()

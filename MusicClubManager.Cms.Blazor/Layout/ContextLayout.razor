@@ -1,0 +1,36 @@
+﻿@inherits LayoutComponentBase
+
+@layout MainLayout
+
+@typeparam TFilter where TFilter : new()
+
+@code {
+    protected string? Title { get; set; }
+
+    protected Pagination Pagination { get; set; } = new() { Page = 1, PageSize = 12 };
+
+    protected TFilter Filter { get; set; } = new();
+
+    protected RenderFragment ParentContent { get; private set; }
+
+    public ContextLayout() : base()
+    {
+        ParentContent = builder =>
+        {
+            builder.OpenElement(0, "h2");
+            builder.AddAttribute(1, "class", "title");
+            builder.AddContent(2, Title);
+            builder.CloseElement();
+            builder.OpenComponent<CascadingValue<Pagination>>(3);
+            builder.AddAttribute(4, "Value", Pagination);
+            builder.AddAttribute(5, "ChildContent", (RenderFragment)((b) =>
+            {
+                b.OpenComponent<CascadingValue<TFilter>>(6);
+                b.AddAttribute(7, "Value", Filter);
+                b.AddAttribute(8, "ChildContent", Body);
+                b.CloseComponent();
+            }));
+            builder.CloseComponent();
+        };
+    }
+}

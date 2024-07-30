@@ -39,10 +39,15 @@ else
     [CascadingParameter]
     public required Pagination Pagination { get; set; }
 
+    [CascadingParameter]
+    public required ArtistFilter Filter { get; set; }
+
     private PagedServiceResult<IList<ArtistResult>>? _pagedServiceResult;
 
     protected override async Task OnInitializedAsync()
     {
+        var test = Filter;
+
         await FetchArtists(new PaginationRequest { Page = (uint)Pagination.Page, PageSize = (uint)Pagination.PageSize }, new ArtistFilter());
 
         await base.OnInitializedAsync();
