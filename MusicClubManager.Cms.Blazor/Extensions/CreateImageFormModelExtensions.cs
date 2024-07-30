@@ -1,10 +1,10 @@
-﻿using MusicClubManager.Cms.Blazor.Models.FormModels;
+﻿using MusicClubManager.Cms.Blazor.Interfaces;
 
 namespace MusicClubManager.Cms.Blazor.Extensions
 {
     public static class CreateImageFormModelExtensions
     {
-        public static MultipartFormDataContent? ToMultipartFormDataContent(this CreateImageFormModel model)
+        public static MultipartFormDataContent? ToMultipartFormDataContent(this IImageFormModel model)
         {
             if (model.BrowserFile is not { Size: > 0 } file)
             {
@@ -17,7 +17,7 @@ namespace MusicClubManager.Cms.Blazor.Extensions
             content.Add(fileContent, "file", file.Name);
 
             content.Add(new StringContent(model.Alt ?? file.Name), "Alt");
-            content.Add(new StringContent(file.ContentType), "ContentType");
+            //content.Add(new StringContent(file.ContentType), "ContentType");
 
             return content;
         }

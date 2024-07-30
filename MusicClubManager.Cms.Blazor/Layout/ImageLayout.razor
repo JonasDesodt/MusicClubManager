@@ -1,11 +1,14 @@
-﻿@inherits LayoutComponentBase
+﻿@inherits Context
 
-@layout MainLayout
+@ParentContent
 
-<h2>Images</h2>
-
-@Body
+<CascadingValue Value="Pagination">
+    @Body
+</CascadingValue>
 
 @code {
-
+    public ImageLayout() : base()
+    {
+        Title = "Images";
+    }
 }

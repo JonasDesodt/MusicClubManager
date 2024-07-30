@@ -1,8 +1,6 @@
-﻿@inherits LayoutComponentBase
+﻿@inherits Context
 
-@layout MainLayout
-
-<h2>Artists</h2>
+@ParentContent
 
 <CascadingValue Value="Pagination">
     <CascadingValue Value="Filter">
@@ -11,7 +9,10 @@
 </CascadingValue>
 
 @code {
-    public Pagination Pagination { get; set; } = new() { Page = 1, PageSize = 1 };
-
     public ArtistFilter Filter { get; set; } = new();
+
+    public ArtistLayout() : base()
+    {
+        Title = "Artists";
+    }
 }

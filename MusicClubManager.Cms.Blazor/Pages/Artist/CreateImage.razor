@@ -32,27 +32,17 @@
 
     private async Task Submit(CreateImageFormModel model)
     {
-        if (createImageModel.BrowserFile is not { Size: > 0 } file)
+        if (model.ToMultipartFormDataContent() is not { } content)
         {
             return;
         }
 
-        var content = new MultipartFormDataContent();
-        var fileContent = new StreamContent(file.OpenReadStream());
-        fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType);
-        content.Add(fileContent, "file", file.Name);
-
-        content.Add(new StringContent(model.Alt ?? file.Name), "Alt");
-        content.Add(new StringContent(file.ContentType), "ContentType");
-
-        var serviceResult = await ImageApiService.Create(content);
-
-        if (serviceResult?.Data is null)
-        {
+        if ((await ImageApiService.Create(content))?.Data is not { } imageResult)
+    {
             return;
         }
 
-        ArtistFormModel.ImageId = serviceResult.Data.Id;
+        ArtistFormModel.ImageId = imageResult.Id;
 
         NavigationManager.NavigateTo("artists/create");
     }

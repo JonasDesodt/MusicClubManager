@@ -25,7 +25,8 @@
             </Buttons>
         </Template>
     </Form>
-} else
+}
+else
 {
     <Spinner />
 }
@@ -49,28 +50,18 @@
 
     private async Task Submit(IImageFormModel model)
     {
-        var content = new MultipartFormDataContent();
-
-        if (model.BrowserFile is { Size: > 0 } file)
+        //ToMultipartFormDataContent returns null if there is no file
+        if (model.ToMultipartFormDataContent() is { } content)
         {
-            var fileContent = new StreamContent(file.OpenReadStream());
-            fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType);
-            content.Add(fileContent, "formFile", file.Name);
-
-            content.Add(new StringContent(model.Alt ?? file.Name), "Alt");
-
             var serviceResult = await ImageApiService.Update(Id, content);
 
             if (serviceResult?.Data is null)
             {
                 return; //todo: errormessages?
             }
-
         }
         else if (!string.IsNullOrWhiteSpace(model.Alt))
         {
-            content.Add(new StringContent(model.Alt), "Alt");
-
             var serviceResult = await ImageApiService.UpdateProperties(Id, new ImageRequest
                 {
                     Alt = model.Alt
@@ -89,12 +80,8 @@
     {
         if ((await ImageApiService.Get(id)).Data is { } imageResult)
         {
-            return new EditImageFormModel
-                {
-                    Alt = imageResult.Alt,
-                    Id = imageResult.Id
-                };
-        };
+            return imageResult.ToEditImageFormModel();
+        }
 
         return null;
     }

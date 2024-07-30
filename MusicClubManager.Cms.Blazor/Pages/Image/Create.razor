@@ -2,17 +2,14 @@
 
 @layout ImageLayout
 
-@using System.Text.Json
-@using System.Text
-
 @inject ImageApiService ImageApiService
 @inject NavigationManager NavigationManager
 
-<SubTitle ReturnUrl="/images" ReturnTitle="Index">
+<SubTitle ReturnUrl="images" ReturnTitle="Index">
     Create
 </SubTitle>
 
-<Form TModel="CreateImageFormModel" Model="_model" OnValidSubmit="() => Submit(_model)" >
+<Form TModel="IImageFormModel" Model="_model" OnValidSubmit="() => Submit(_model)" >
     <Template>
         <ImageInputs Model="_model" />
 
@@ -25,20 +22,18 @@
 </Form>
 
 @code {
-    private CreateImageFormModel _model = new();
+    private IImageFormModel _model = new CreateImageFormModel();
 
     private string query => new Uri(NavigationManager.Uri).Query;
 
-    private async Task Submit(CreateImageFormModel model)
+    private async Task Submit(IImageFormModel model)
     {
         if(model.ToMultipartFormDataContent() is not { } content)
         {
             return;
         }
 
-        var serviceResult = await ImageApiService.Create(content);
-
-        if(serviceResult?.Data is null)
+        if ((await ImageApiService.Create(content))?.Data is null)
         {
             return;
         }

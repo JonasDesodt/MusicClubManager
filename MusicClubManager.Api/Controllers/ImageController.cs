@@ -119,9 +119,9 @@ namespace MusicClubManager.Api.Controllers
         }
 
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> Update([FromRoute] int id, [FromForm] ImageRequest properties, IFormFile formFile)
+        public async Task<IActionResult> Update([FromRoute] int id, [FromForm] ImageRequest properties, IFormFile file)
         {
-            if (formFile is not { Length: > 0 } file)
+            if (file is not { Length: > 0 } formFile)
             {
                 return BadRequest("No file uploaded."); //return serviceresult?
             }
@@ -134,7 +134,7 @@ namespace MusicClubManager.Api.Controllers
 
             using (var memoryStream = new MemoryStream())
             {
-                await file.CopyToAsync(memoryStream);
+                await formFile.CopyToAsync(memoryStream);
 
                 // Upload the file if less than 2 MB
                 if (memoryStream.Length < 2097152)
@@ -142,7 +142,7 @@ namespace MusicClubManager.Api.Controllers
                     image.Content = memoryStream.ToArray();
 
                     image.Alt = properties.Alt;
-                    image.ContentType = file.ContentType;
+                    image.ContentType = formFile.ContentType;
                     image.Updated = DateTime.UtcNow;
 
                     await dbContext.SaveChangesAsync();

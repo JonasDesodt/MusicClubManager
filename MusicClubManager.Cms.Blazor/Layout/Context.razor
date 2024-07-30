@@ -1,0 +1,21 @@
+﻿@inherits LayoutComponentBase
+
+@layout MainLayout
+
+@code {
+    protected string? Title { get; set; }
+
+    protected Pagination Pagination { get; set; } = new() { Page = 1, PageSize = 12 };
+
+    protected RenderFragment ParentContent { get; private set; }
+
+    public Context() : base()
+    {
+        ParentContent = builder =>
+        {
+            builder.OpenElement(0, "h2");
+            builder.AddContent(1, Title);
+            builder.CloseElement();
+        };
+    }
+}
