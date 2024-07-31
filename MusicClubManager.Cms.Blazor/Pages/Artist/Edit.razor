@@ -11,11 +11,11 @@
 </SubTitle>
 
 
-@if (Model is { } model)
+@if (Model is not null)
 {
-    <Form TModel="ArtistFormModel" Model="model" OnValidSubmit="() => Submit(model)">
+    <Form TModel="ArtistFormModel" Model="Model" OnValidSubmit="() => Submit(Model)">
         <Template>
-            <ArtistInputs Model="model"></ArtistInputs>
+            <ArtistInputs Model="Model"></ArtistInputs>
 
             <div>
                 <label for="image">Image</label>
@@ -55,8 +55,8 @@ else
 }
 
 @code {
-    [CascadingParameter]
-    public ArtistFormModel? Model { get; set; }
+    [CascadingParameter, EditorRequired]
+    public required ArtistFormModel Model { get; set; }
 
     [Parameter]
     public int Id { get; set; }
@@ -67,7 +67,7 @@ else
     {
         await FetchArtist(Id);
 
-        if (Model?.ImageId is { } imageId)
+        if (Model.ImageId is { } imageId)
         {
             imageServiceResult = await ImageApiService.Get(imageId);
         }
@@ -81,12 +81,17 @@ else
 
         if (artistServiceResult?.Data is { } artistResult)
         {
-            Model = new ArtistFormModel
-                {
-                    Description = artistResult.Description,
-                    ImageId = artistResult.ImageResult?.Id,
-                    Name = artistResult.Name
-                };
+
+            Model.Description = artistResult.Description;
+            Model.ImageId ??= artistResult.ImageResult?.Id;
+            Model.Name = artistResult.Name;
+
+            // Model = new ArtistFormModel
+            // {
+            //     Description = artistResult.Description,
+            //     ImageId = artistResult.ImageResult?.Id,
+            //     Name = artistResult.Name
+            // };
         }
     }
 

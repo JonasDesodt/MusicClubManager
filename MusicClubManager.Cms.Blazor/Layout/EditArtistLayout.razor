@@ -2,12 +2,10 @@
 
 @layout ArtistLayout
 
-@inject IArtistService ArtistApiService
-
 <CascadingValue Value="Model">
     @Body
 </CascadingValue>
 
 @code {
-    public ArtistFormModel? Model { get; set; }
+    public ArtistFormModel Model { get; set; } = new();
 }

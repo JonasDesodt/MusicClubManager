@@ -1,0 +1,50 @@
+﻿@inject ImageApiService ImageApiService
+@inject NavigationManager NavigationManager
+
+<SubTitle ReturnUrl="@ReturnUrl" ReturnTitle="@ReturnTitle">
+    @ReturnTitle: select image
+</SubTitle>
+
+<Navigation>
+    <li><NavLink href="@($"{NavigationManager.Uri}/filters")">Filters</NavLink></li>
+</Navigation>
+
+@if (pagedServiceResult is not null)
+{
+    <PagedList PagedServiceResult="pagedServiceResult" Context="imageResult" OnPageChanged="async (pagination) => pagedServiceResult = await ImageApiService.GetAll(pagination.ToPaginationRequest())">
+        <ItemTemplate>
+            <ImageItem Model="imageResult">
+                <Buttons>
+                    <li>@Selector(imageResult.Id)</li>
+                </Buttons>
+            </ImageItem>
+        </ItemTemplate>
+    </PagedList>
+}
+else
+{
+    <Spinner />
+}
+
+@code {
+    public PagedServiceResult<IList<ImageResult>>? pagedServiceResult { get; set; }
+
+    [Parameter]
+    public EventCallback<int> OnSelect { get; set; }
+
+    [Parameter, EditorRequired]
+    public required RenderFragment<int> Selector { get; set; }
+
+    private string[] Uri => NavigationManager.Uri.Split('/');
+
+    private string ReturnUrl => Uri[3] + '/' + Uri[4];
+
+    private string ReturnTitle => Uri[4];
+
+    protected override async Task OnInitializedAsync()
+    {
+        pagedServiceResult = await ImageApiService.GetAll(new PaginationRequest { Page = 1, PageSize = 12 });
+
+        await base.OnInitializedAsync();
+    }
+}

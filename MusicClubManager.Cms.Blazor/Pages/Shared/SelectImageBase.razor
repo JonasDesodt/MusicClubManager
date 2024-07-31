@@ -5,14 +5,14 @@
     [CascadingParameter, EditorRequired]
     public required ArtistFormModel Model { get; set; }
 
-    protected PagedServiceResult<IList<ImageResult>>? pagedServiceResult;
+    // protected PagedServiceResult<IList<ImageResult>>? pagedServiceResult;
 
-    protected override async Task OnInitializedAsync()
-    {
-        pagedServiceResult = await ImageApiService.GetAll(new PaginationRequest { Page = 1, PageSize = 12 });
+    // protected override async Task OnInitializedAsync()
+    // {
+    //     pagedServiceResult = await ImageApiService.GetAll(new PaginationRequest { Page = 1, PageSize = 12 });
 
-        await base.OnInitializedAsync();
-    }
+    //     await base.OnInitializedAsync();
+    // }
 
     protected void Select(int id, string route)
     {
