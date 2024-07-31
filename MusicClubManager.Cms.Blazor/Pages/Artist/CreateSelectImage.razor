@@ -1,0 +1,32 @@
+﻿@page "/artists/create/select-image"
+
+@inherits SelectImageBase
+
+@layout CreateArtistLayout
+
+@inject ImageApiService ImageApiService
+
+<SubTitle ReturnUrl="artists/create" ReturnTitle="Create">
+    Create: select image
+</SubTitle>
+
+<Navigation>
+    <li><NavLink href="artists/create/select-image/filters">Filters</NavLink></li>
+</Navigation>
+
+@if (pagedServiceResult is not null)
+{
+    <PagedList PagedServiceResult="pagedServiceResult" Context="imageResult" OnPageChanged="async (pagination) => pagedServiceResult = await ImageApiService.GetAll(pagination.ToPaginationRequest())">
+        <ItemTemplate>
+            <ImageItem Model="imageResult">
+                <Buttons>
+                    <li><button @onclick="@(() => Select(imageResult.Id, "artists/create"))">Select</button></li>
+                </Buttons>
+            </ImageItem>
+        </ItemTemplate>
+    </PagedList>
+}
+else
+{
+    <Spinner />
+}

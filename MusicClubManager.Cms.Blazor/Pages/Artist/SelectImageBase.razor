@@ -1,0 +1,22 @@
+﻿@inject ImageApiService ImageApiService
+@inject NavigationManager NavigationManager
+
+@code {
+    [CascadingParameter, EditorRequired]
+    public required ArtistFormModel Model { get; set; }
+
+    protected PagedServiceResult<IList<ImageResult>>? pagedServiceResult;
+
+    protected override async Task OnInitializedAsync()
+    {
+        pagedServiceResult = await ImageApiService.GetAll(new PaginationRequest { Page = 1, PageSize = 12 });
+
+        await base.OnInitializedAsync();
+    }
+
+    protected void Select(int id, string route)
+    {
+        Model.ImageId = id;
+        NavigationManager.NavigateTo(route);
+    }
+}
