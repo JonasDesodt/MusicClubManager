@@ -2,7 +2,7 @@
 @inject NavigationManager NavigationManager
 
 <SubTitle ReturnUrl="@ReturnUrl" ReturnTitle="@ReturnTitle">
-    @ReturnTitle: select image
+    @(!ReturnTitle.Equals("Home") ? ReturnTitle + ": select image" : "Index")
 </SubTitle>
 
 <Navigation>
@@ -15,7 +15,7 @@
         <ItemTemplate>
             <ImageItem Model="imageResult">
                 <Buttons>
-                    <li>@Selector(imageResult.Id)</li>
+                    @Buttons(imageResult.Id)
                 </Buttons>
             </ImageItem>
         </ItemTemplate>
@@ -33,13 +33,13 @@ else
     public EventCallback<int> OnSelect { get; set; }
 
     [Parameter, EditorRequired]
-    public required RenderFragment<int> Selector { get; set; }
+    public required RenderFragment<int> Buttons { get; set; }
 
     private string[] Uri => NavigationManager.Uri.Split('/');
 
-    private string ReturnUrl => Uri[3] + '/' + Uri[4];
+    private string ReturnUrl => Uri.Length >= 5 ? Uri[3] + '/' + Uri[4] : "/";
 
-    private string ReturnTitle => Uri[4];
+    private string ReturnTitle => (Uri.Length >= 5 ? Uri[4] : "Home");
 
     protected override async Task OnInitializedAsync()
     {

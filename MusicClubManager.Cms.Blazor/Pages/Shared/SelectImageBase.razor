@@ -3,7 +3,7 @@
 
 @code {
     [CascadingParameter, EditorRequired]
-    public required ArtistFormModel Model { get; set; }
+    public required CreateEditArtistContext Context { get; set; }
 
     // protected PagedServiceResult<IList<ImageResult>>? pagedServiceResult;
 
@@ -15,8 +15,11 @@
     // }
 
     protected void Select(int id, string route)
-    {
-        Model.ImageId = id;
-        NavigationManager.NavigateTo(route);
+    {      
+        if(Context.Model is not null)
+        {
+            Context.Model.ImageId = id;
+            NavigationManager.NavigateTo(route);
+        }
     }
 }

@@ -10,51 +10,55 @@
     Create
 </SubTitle>
 
-<Form TModel="ArtistFormModel" Model="Model" OnValidSubmit="() => Submit(Model)">
-    <Template>
-        <ArtistInputs Model="Model"></ArtistInputs>
+@if(Context.Model is not null)
+{
+    <Form TModel="IArtistFormModel" Model="Context.Model" OnValidSubmit="() => Submit(Context.Model)">
+        <Template>
+            <ArtistInputs Model="Context.Model"></ArtistInputs>
 
-        <div>
-            <label for="image">Image</label>
-            @if (imageServiceResult?.Data is { } imageResult)
-            {
-                Model.ImageId = imageResult.Id; //use hidden input??
+            <div>
+                <label for="image">Image</label>
+                @if (imageServiceResult?.Data is { } imageResult)
+                {
+                    Context.Model.ImageId = imageResult.Id; //use hidden input??
 
-                <ImageItem Model="imageResult" />
+                    <ImageItem Model="imageResult" />
 
-                <Navigation>
-                    <li><button type="button" @onclick="() => { Model.ImageId = null; imageServiceResult = null;}">Clear selection</button></li>
-                </Navigation>
-            }
-            else
-            {
-                <p>There is no image selected</p>
+                    <Navigation>
+                        <li><button type="button" @onclick="() => { Context.Model.ImageId = null; imageServiceResult = null;}">Clear selection</button></li>
+                    </Navigation>
+                }
+                else
+                {
+                    <p>There is no image selected</p>
 
-                <Navigation>
-                    <li><NavLink href="artists/create/create-image">Create</NavLink></li>
+                    <Navigation>
+                        <li><NavLink href="artists/create/create-image">Create</NavLink></li>
 
-                    <li><NavLink href="artists/create/select-image">Select</NavLink></li>
-                </Navigation>
-            }
-        </div>
+                        <li><NavLink href="artists/create/select-image">Select</NavLink></li>
+                    </Navigation>
+                }
+            </div>
 
-        <Buttons>
-            <li><button type="submit">Create</button></li>
+            <Buttons>
+                <li><button type="submit">Create</button></li>
 
-            <li><button type="reset" class="warning">Reset</button></li>
-        </Buttons>
-    </Template>
-</Form>
+                <li><button type="reset" class="warning">Reset</button></li>
+            </Buttons>
+        </Template>
+    </Form>
+}
+
 
 @code {
     private ServiceResult<ImageResult>? imageServiceResult;
 
     [CascadingParameter, EditorRequired]
-    public required ArtistFormModel Model { get; set; }
+    public required CreateEditArtistContext Context { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        if (Model.ImageId is { } imageId)
+        if (Context.Model?.ImageId is { } imageId)
         {
             imageServiceResult = await ImageApiService.Get(imageId);
         }
@@ -62,7 +66,7 @@
         base.OnInitialized();
     }
 
-    private async Task Submit(ArtistFormModel model)
+    private async Task Submit(IArtistFormModel model)
     {
         if(model.Name is null)
         {

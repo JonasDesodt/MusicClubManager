@@ -1,9 +1,21 @@
 ﻿@page "/images"
 
+@inherits SelectImageBase
+
 @layout ImageLayout
 
 @inject ImageApiService ImageApiService
 @inject NavigationManager NavigationManager
+
+<SelectImage>
+    <Buttons Context="id">
+        <li><NavLink href="@($"images/{id}")">Edit</NavLink></li>
+
+        <li><NavLink href="@($"images/{id}/delete")" class="warning">Delete</NavLink></li>
+    </Buttons>
+</SelectImage>
+
+@* 
 
 <SubTitle ReturnUrl="@($"/")" ReturnTitle="Home">
     Index
@@ -64,3 +76,4 @@ else
         _pagedServiceResult = await ImageApiService.GetAll(new PaginationRequest { Page = (uint)pagination.Page, PageSize = (uint)pagination.PageSize });
     }
 }
+ *@

@@ -2,10 +2,10 @@
 
 @layout ArtistLayout
 
-<CascadingValue Value="Model">
+<CascadingValue Value="Context">
     @Body
 </CascadingValue>
 
 @code {
-    public ArtistFormModel Model { get; set; } = new();
+    public CreateEditArtistContext Context { get; set; } = new() { Model = new ArtistFormModel () };
 }

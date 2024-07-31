@@ -5,7 +5,7 @@
 @layout CreateArtistLayout
 
 <SelectImage>
-    <Selector Context="id">
-        <button @onclick="@(() => Select(id, "artists/create"))">Select</button>
-    </Selector>
+    <Buttons Context="id">
+        <li><button @onclick="@(() => Select(id, "artists/create"))">Select</button></li>
+    </Buttons>
 </SelectImage>
