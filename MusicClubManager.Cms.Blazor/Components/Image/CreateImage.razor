@@ -1,15 +1,8 @@
-﻿@page "/artists/create/create-image"
-
-@layout CreateArtistLayout
-
-@using System.Text.Json
-@using System.Text
-
-@inject ImageApiService ImageApiService
+﻿@inject ImageApiService ImageApiService
 @inject NavigationManager NavigationManager
 
-<SubTitle ReturnUrl="artists/create" ReturnTitle="Create">
-    Create
+<SubTitle ReturnUrl="@ReturnUrl" ReturnTitle="@ReturnTitle">
+    @Title
 </SubTitle>
 
 <Form TModel="CreateImageFormModel" Model="createImageModel" OnValidSubmit="() => Submit(createImageModel)">
@@ -25,10 +18,19 @@
 </Form>
 
 @code {
-    [CascadingParameter, EditorRequired]
-    public required CreateEditArtistContext Context { get; set; }
+    [Parameter]
+    public EventCallback<int> OnSubmit { get; set; }
 
     private CreateImageFormModel createImageModel = new();
+
+    [Parameter, EditorRequired]
+    public required string ReturnUrl { get; set; }
+
+    [Parameter, EditorRequired]
+    public required string ReturnTitle { get; set; }
+
+    [Parameter, EditorRequired]
+    public required string Title { get; set; }
 
     private async Task Submit(CreateImageFormModel model)
     {
@@ -42,11 +44,6 @@
             return;
         }
 
-        if(Context.Model is not null)
-        {
-            Context.Model.ImageId = imageResult.Id;
-
-            NavigationManager.NavigateTo("artists/create");
-        }
+        await OnSubmit.InvokeAsync(imageResult.Id);
     }
 }

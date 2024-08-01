@@ -1,0 +1,28 @@
+﻿@page "/artists/edit/{artistId:int}/select-image/create"
+
+@layout EditArtistLayout
+
+@inject NavigationManager NavigationManager
+
+<CreateImage OnSubmit="HandleOnSubmit"
+             ReturnTitle="Edit"
+             ReturnUrl="@($"artists/edit/{ArtistId}")"
+             Title="Edit: create image" />
+
+@code {
+    [CascadingParameter, EditorRequired]
+    public required CreateEditArtistContext Context { get; set; }
+
+    [Parameter]
+    public int ArtistId { get; set; }
+
+    private void HandleOnSubmit(int id)
+    {
+        if (Context.Model is not null)
+        {
+            Context.Model.ImageId = id;
+
+            NavigationManager.NavigateTo($"artists/edit/{ArtistId}");
+        }
+    }
+}

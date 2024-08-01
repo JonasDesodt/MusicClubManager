@@ -5,15 +5,6 @@
     [CascadingParameter, EditorRequired]
     public required CreateEditArtistContext Context { get; set; }
 
-    // protected PagedServiceResult<IList<ImageResult>>? pagedServiceResult;
-
-    // protected override async Task OnInitializedAsync()
-    // {
-    //     pagedServiceResult = await ImageApiService.GetAll(new PaginationRequest { Page = 1, PageSize = 12 });
-
-    //     await base.OnInitializedAsync();
-    // }
-
     protected void Select(int id, string route)
     {      
         if(Context.Model is not null)

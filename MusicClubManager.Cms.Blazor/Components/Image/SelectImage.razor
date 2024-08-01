@@ -6,12 +6,14 @@
 </SubTitle>
 
 <Navigation>
+    <li><NavLink href="@($"{NavigationManager.Uri}/create")">Create</NavLink></li>
+
     <li><NavLink href="@($"{NavigationManager.Uri}/filters")">Filters</NavLink></li>
 </Navigation>
 
 @if (pagedServiceResult is not null)
 {
-    <PagedList PagedServiceResult="pagedServiceResult" Context="imageResult" OnPageChanged="async (pagination) => pagedServiceResult = await ImageApiService.GetAll(pagination.ToPaginationRequest())">
+    <PagedList PagedServiceResult="pagedServiceResult" Context="imageResult" OnPageChanged="HandleOnPageChanged">
         <ItemTemplate>
             <ImageItem Model="imageResult">
                 <Buttons>
@@ -30,6 +32,9 @@ else
     public PagedServiceResult<IList<ImageResult>>? pagedServiceResult { get; set; }
 
     [Parameter]
+    public Pagination? Pagination { get; set; }
+
+    [Parameter]
     public EventCallback<int> OnSelect { get; set; }
 
     [Parameter, EditorRequired]
@@ -43,8 +48,19 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        pagedServiceResult = await ImageApiService.GetAll(new PaginationRequest { Page = 1, PageSize = 12 });
+        pagedServiceResult = await ImageApiService.GetAll(Pagination?.ToPaginationRequest() ?? new PaginationRequest { Page = 1, PageSize = 12 });
 
         await base.OnInitializedAsync();
+    }
+
+    private async Task HandleOnPageChanged(Pagination pagination)
+    {
+        pagedServiceResult = await ImageApiService.GetAll(pagination.ToPaginationRequest());
+
+        if (Pagination is not null)
+        {
+            Pagination.Page = pagination.Page;
+            Pagination.PageSize = pagination.PageSize;
+        }
     }
 }

@@ -18,7 +18,7 @@
 
 @if (_pagedServiceResult is not null)
 {
-    <PagedList PagedServiceResult="_pagedServiceResult" Context="artistResult" OnPageChanged="(context) => FetchArtists(new PaginationRequest { Page = (uint)context.Page, PageSize = (uint)context.PageSize }, new ArtistFilter ())">
+    <PagedList PagedServiceResult="_pagedServiceResult" Context="artistResult" OnPageChanged="(context) => FetchArtists(context.ToPaginationRequest(), new ArtistFilter ())">
         <ItemTemplate>
             <ArtistItem Model="artistResult">
                 <Buttons>

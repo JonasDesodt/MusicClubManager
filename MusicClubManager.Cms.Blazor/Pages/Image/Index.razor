@@ -1,79 +1,20 @@
 ﻿@page "/images"
 
-@inherits SelectImageBase
-
+@* @inherits SelectImageBase
+ *@
 @layout ImageLayout
 
-@inject ImageApiService ImageApiService
-@inject NavigationManager NavigationManager
 
-<SelectImage>
-    <Buttons Context="id">
-        <li><NavLink href="@($"images/{id}")">Edit</NavLink></li>
+    <SelectImage Pagination="Pagination">
+        <Buttons Context="id">
+            <li><NavLink href="@($"images/{id}")">Edit</NavLink></li>
 
-        <li><NavLink href="@($"images/{id}/delete")" class="warning">Delete</NavLink></li>
-    </Buttons>
-</SelectImage>
+            <li><NavLink href="@($"images/{id}/delete")" class="warning">Delete</NavLink></li>
+        </Buttons>
+    </SelectImage>
 
-@* 
-
-<SubTitle ReturnUrl="@($"/")" ReturnTitle="Home">
-    Index
-</SubTitle>
-
-<Navigation>
-    <li><NavLink href="images/create">Create</NavLink></li>
-</Navigation>
-
-@if (_pagedServiceResult is { } pagedServiceResult)
-{
-    <PagedList PagedServiceResult="pagedServiceResult" Context="imageResult" OnPageChanged="(pagination) => FetchImages(pagination)">
-        <ItemTemplate>
-            <ImageItem Model="imageResult">
-                <Buttons>
-                    <li><NavLink href="@($"images/{imageResult.Id}{query}")">Edit</NavLink></li>
-
-                    <li><NavLink href="@($"images/{imageResult.Id}/delete{query}")" class="warning">Delete</NavLink></li>
-                </Buttons>
-            </ImageItem>
-        </ItemTemplate>
-    </PagedList>
-}
-else
-{
-    <Spinner />
-}
 
 @code {
-    private PagedServiceResult<IList<ImageResult>>? _pagedServiceResult;
-
-    private string? query;
-
-    protected override async Task OnInitializedAsync()
-    {
-        // // Get the current URI
-        // var uri = NavigationManager.Uri;
-
-        // // Parse the query string parameters
-        // var query = new Uri(uri).Query;
-        var parsedQuery = QueryHelpers.ParseQuery(new Uri(NavigationManager.Uri).Query);
-
-        if (parsedQuery.TryGetValue("page", out StringValues pageValue) && int.TryParse(pageValue, out int page) && parsedQuery.TryGetValue("pageSize", out StringValues pageSizeValue) && int.TryParse(pageSizeValue, out int pageSize))
-        {
-            await FetchImages(new Pagination { Page = page, PageSize = pageSize });
-        } else
-        {
-            await FetchImages(new Pagination { Page = 1, PageSize = 12 });
-        }
-
-        await base.OnInitializedAsync();
-    }
-
-    private async Task FetchImages(Pagination pagination)
-    {
-        query = $"?page={pagination.Page}&pageSize={pagination.PageSize}";
-
-        _pagedServiceResult = await ImageApiService.GetAll(new PaginationRequest { Page = (uint)pagination.Page, PageSize = (uint)pagination.PageSize });
-    }
+    [CascadingParameter]
+    public Pagination? Pagination { get; set; }
 }
- *@
