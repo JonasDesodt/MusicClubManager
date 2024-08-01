@@ -1,17 +1,14 @@
 ﻿@page "/images"
 
-@* @inherits SelectImageBase
- *@
 @layout ImageLayout
 
+<SelectImage Pagination="Pagination">
+    <Buttons Context="id">
+        <li><NavLink href="@($"images/{id}")">Edit</NavLink></li>
 
-    <SelectImage Pagination="Pagination">
-        <Buttons Context="id">
-            <li><NavLink href="@($"images/{id}")">Edit</NavLink></li>
-
-            <li><NavLink href="@($"images/{id}/delete")" class="warning">Delete</NavLink></li>
-        </Buttons>
-    </SelectImage>
+        <li><NavLink href="@($"images/{id}/delete")" class="warning">Delete</NavLink></li>
+    </Buttons>
+</SelectImage>
 
 
 @code {
