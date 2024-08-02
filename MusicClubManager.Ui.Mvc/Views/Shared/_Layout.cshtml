@@ -1,0 +1,42 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - MusicClubManager.Ui.Mvc</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/MusicClubManager.Ui.Mvc.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <div>
+            <h1><a asp-controller="Home">Music Club</a></h1>
+
+            <button type="button">
+                <span>&#9776;</span>
+                <span>&#10006;</span>
+            </button>
+        </div>
+
+        <nav>
+            <ul>
+                <li><a asp-controller="Agenda">Agenda</a></li>
+                <li><a asp-controller="About">About</a></li>
+                <li><a asp-controller="Contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main role="main">
+        @RenderBody()
+    </main>
+
+    <footer>
+        <div>
+            &copy; 2024 - MusicClubManager.Ui.Mvc - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/js/site.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

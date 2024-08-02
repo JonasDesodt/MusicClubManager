@@ -22,10 +22,18 @@ namespace MusicClubManager.Cms.Wpf
 
             Publisher.TextFrame nameFrame = doc.Pages[1].Shapes["TextBox1"].TextFrame;
 
-            nameFrame.TextRange.Text = "Koekoek";
+                foreach(Publisher.Shape tet in doc.Pages[1].Shapes)
+            {
+                var text = tet.TextFrame.TextRange.Text;
+
+            }
+            nameFrame.TextRange.Text = "Koekoek2";
 
             string outputPath = @"C:\Users\jonas\OneDrive\Documents\test2.pub";
             doc.SaveAs(outputPath);
+
+            doc.Close();
+            publisherApp.Quit();
         }
     }
 }

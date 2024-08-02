@@ -1,0 +1,53 @@
+html {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+
+* {
+    box-sizing: border-box;
+    font-family: helvetica, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+    body.menu > header {
+        flex-grow: 1;
+    }
+
+        body.menu > header > div > button > span:first-of-type {
+            display: none;
+        }
+
+        body.menu > header > div > button > span:last-of-type {
+            display: inline;
+        }
+
+        body.menu > header > nav {
+            display: flex;
+        }
+
+    body.menu > main, body.menu > footer {
+        display: none;
+    }
+
+@media (min-width: 768px) {
+    body.menu > header {
+        flex-grow: 0;
+    }
+
+    body.menu > main, body.menu > footer {
+        display: flex;
+    }
+}
