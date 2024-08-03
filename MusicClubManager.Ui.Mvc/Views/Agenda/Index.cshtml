@@ -1,0 +1,17 @@
+﻿@model PagedServiceResult<IList<LineupResult>>
+
+@{
+    ViewData["Title"] = "Agenda";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+@if (Model.Data is { } lineupResults)
+{
+    <ul>
+        @foreach (var lineupResult in lineupResults)
+        {
+            <Partial name="_LineupPartial" Model="@lineupResult" />
+        }
+    </ul>
+}

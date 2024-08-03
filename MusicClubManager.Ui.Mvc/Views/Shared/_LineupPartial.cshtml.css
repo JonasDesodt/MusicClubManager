@@ -1,0 +1,61 @@
+﻿li > ::deep a {
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
+    padding: 2em 0;
+    text-decoration: none;
+}
+
+li > ::deep a {
+    border-bottom: 1px solid rgb(150,150,150);
+}
+
+    li > ::deep a:hover > div > *, li > ::deep a:hover > div > ul > li {
+        color: rgb(40,140,240);
+    }
+
+    li > ::deep a > img {
+        aspect-ratio: 3/2;
+        object-fit: cover;
+    }
+
+    li > ::deep a > div {
+        display: flex;
+        flex-direction: column;
+        gap: 1em;
+    }
+
+        li > ::deep a > div > h3 {
+            color: rgb(0,250,0);
+            font-size: 1em;
+            text-transform: uppercase;
+        }
+
+        li > ::deep a > div > h4 {
+            color: rgb(250,0,0);
+            font-size: 1.25em;
+        }
+
+        li > ::deep a > div > ul {
+            display: flex;
+            flex-direction: column;
+            gap: .5em;
+            list-style-type: none;
+        }
+
+            li > ::deep a > div > ul > li {
+                color: rgb(0,0,0);
+                font-weight: bold;
+                font-size: 1.5em;
+                text-transform: uppercase;
+            }
+
+@media (min-width: 768px) {
+    li > ::deep a {
+        flex-direction: row;
+    }
+
+        li > ::deep a > img {
+            width: 25%;
+        }
+}

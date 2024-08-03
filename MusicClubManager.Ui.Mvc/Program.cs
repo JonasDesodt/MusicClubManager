@@ -1,7 +1,17 @@
+using MusicClubManager.Abstractions;
+using MusicClubManager.Sdk;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddHttpClient("MusicClubManagerApi", httpClient =>
+{
+    httpClient.BaseAddress = new Uri("https://localhost:7188");
+});
+
+builder.Services.AddScoped<ILineupService, LineupApiService>();
 
 var app = builder.Build();
 

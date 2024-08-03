@@ -1,0 +1,47 @@
+﻿@model ServiceResult<LineupResult>
+
+@{
+    ViewData["Title"] = "Lineup";
+}
+
+@if (Model.Data is { } lineupResult)
+{
+    if (!string.IsNullOrEmpty(lineupResult.Name))
+    {
+        ViewData["Title"] = lineupResult.Name;
+    }
+    else
+    {
+        var names = lineupResult.PagedLineupPerformanceResult.Data?.Select(x => x.ArtistResult.Name);
+        if (names is not null)
+        {
+            ViewData["Title"] = string.Join(" + ", names.Take(3)) + (names.Count() > 3 ? $" + {names.Count() - 3} more" : "");
+        }
+        else
+        {
+            ViewData["Title"] = "tba";
+        }
+    }
+
+    <article>
+        <h2>@ViewData["Title"]</h2>
+
+        <ul>
+            <li>@lineupResult.Doors.ToLongDateString()</li>
+        </ul>
+
+        @foreach (var lineupPerformanceResult in lineupResult.PagedLineupPerformanceResult.Data ?? [])
+        {
+            <section>
+                <img src="@($"https://localhost:7188/image/download/{lineupPerformanceResult.ArtistResult.ImageResult?.Id}")" />
+
+                <h3>@lineupPerformanceResult.ArtistResult.Name</h3>
+
+                <p>@lineupPerformanceResult.ArtistResult.Description</p>
+            </section>
+        }
+    </article>
+}
+
+
+
