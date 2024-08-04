@@ -151,6 +151,15 @@ namespace MusicClubManager.Services
                         Data = lineup.Performances.Select(p => new LineupPerformanceResult
                         {
                             Id = p.Id,
+                            BandcampId = p.BandcampId,
+                            BandcampLink = p.BandcampLink,
+                            Description = p.Description,
+                            Name = p.Name,
+                            Spotify = p.Spotify,
+                            YouTube = p.YouTube,
+                            Duration = p.Duration,
+                            Start = p.Start,
+                            Type = p.Type,
                             ArtistResult = p.Artist != null
                             ? new ArtistResult
                             {
@@ -225,6 +234,15 @@ namespace MusicClubManager.Services
                             .Select(p => new LineupPerformanceResult
                             {
                                 Id = p.Id,
+                                BandcampId = p.BandcampId,
+                                BandcampLink = p.BandcampLink,
+                                Description = p.Description,
+                                Name = p.Name,
+                                Spotify = p.Spotify,
+                                YouTube = p.YouTube,
+                                Duration = p.Duration,
+                                Start = p.Start,
+                                Type = p.Type,
                                 ArtistResult = p.Artist != null ?
                                             new ArtistResult
                                             {
@@ -305,7 +323,13 @@ namespace MusicClubManager.Services
                         Id = p.Id,
                         Duration = p.Duration,
                         Start = p.Start,
-                        Type = p.Type
+                        Type = p.Type,
+                        BandcampId = p.BandcampId,
+                        BandcampLink = p.BandcampLink,
+                        Description = p.Description,
+                        Name = p.Name,
+                        Spotify = p.Spotify,
+                        YouTube = p.YouTube
                     }).ToList()
                 }
             }).ToListAsync();

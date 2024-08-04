@@ -360,14 +360,29 @@ namespace MusicClubManager.Core.Migrations
                     b.Property<int>("ArtistId")
                         .HasColumnType("int");
 
+                    b.Property<long?>("BandcampId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("BandcampLink")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("Duration")
                         .HasColumnType("int");
 
                     b.Property<int>("LineupId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Spotify")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("Start")
                         .HasColumnType("datetime2");
@@ -377,6 +392,9 @@ namespace MusicClubManager.Core.Migrations
 
                     b.Property<DateTime>("Updated")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("YouTube")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

@@ -15,7 +15,8 @@
         public required int ArtistId { get; set; }
         public Artist? Artist { get; set; }
 
-        public string? Bandcamp { get; set; }
+        public long? BandcampId { get; set; }
+        public string? BandcampLink { get; set; }
 
         public string? YouTube { get; set; }
 

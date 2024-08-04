@@ -61,7 +61,8 @@ namespace MusicClubManager.Services
                 Updated = now,
                 ArtistId = request.ArtistId,
                 LineupId = request.LineupId,
-                Bandcamp = request.Bandcamp,
+                BandcampId = request.BandcampId,
+                BandcampLink = request.BandcampLink,
                 Description = request.Description,
                 Name = request.Name,
                 Spotify = request.Spotify,
@@ -80,7 +81,8 @@ namespace MusicClubManager.Services
                     Duration = performance.Duration,
                     Start = performance.Start,
                     Type = performance.Type,
-                    Bandcamp = performance.Bandcamp,
+                    BandcampId = performance.BandcampId,
+                    BandcampLink = performance.BandcampLink,
                     Description = performance.Description,
                     Name = performance.Name,
                     Spotify = performance.Spotify,
@@ -189,7 +191,8 @@ namespace MusicClubManager.Services
                     Id = performance.Id,
                     Duration = performance.Duration,
                     Start = performance.Start,
-                    Bandcamp = performance.Bandcamp,
+                    BandcampId = performance.BandcampId,
+                    BandcampLink = performance.BandcampLink,
                     Description = performance.Description,
                     Name = performance.Name,
                     Spotify = performance.Spotify,
@@ -250,7 +253,8 @@ namespace MusicClubManager.Services
                             Start = performance.Start,
                             //Duration = performance.Duration, => bugged: bigint in db 
                             Type = performance.Type,
-                            Bandcamp = performance.Bandcamp,
+                            BandcampId = performance.BandcampId,
+                            BandcampLink = performance.BandcampLink,
                             Description = performance.Description,
                             Name = performance.Name,
                             Spotify = performance.Spotify,
@@ -311,7 +315,8 @@ namespace MusicClubManager.Services
                             Start = performance.Start,
                             //Duration = performance.Duration, => bugged: bigint in db 
                             Type = performance.Type,
-                            Bandcamp = performance.Bandcamp,
+                            BandcampId = performance.BandcampId,
+                            BandcampLink = performance.BandcampLink,
                             Description = performance.Description,
                             Name = performance.Name,
                             Spotify = performance.Spotify,
@@ -418,7 +423,8 @@ namespace MusicClubManager.Services
             performance.Description = request.Description;
             performance.Name = request.Name;
             performance.Type = request.Type;
-            performance.Bandcamp = request.Bandcamp;
+            performance.BandcampId = request.BandcampId;
+            performance.BandcampLink = request.BandcampLink;
             performance.YouTube = request.YouTube;  
             performance.Spotify = request.Spotify;
 
@@ -433,7 +439,8 @@ namespace MusicClubManager.Services
                     Id = lineup.Id,
                     Duration = performance.Duration,
                     Start = performance.Start,
-                    Bandcamp = performance.Bandcamp,
+                    BandcampId = performance.BandcampId,
+                    BandcampLink = performance.BandcampLink,
                     Description = performance.Description,
                     Name = performance.Name,
                     Spotify = performance.Spotify,

@@ -71,7 +71,8 @@
                 Start = performanceResult.Start,
                 Type = performanceResult.Type,
                 Name = performanceResult.Name,
-                Bandcamp = performanceResult.Bandcamp,
+                BandcampId = performanceResult.BandcampId,
+                BandcampLink = performanceResult.BandcampLink,
                 Description = performanceResult.Description,
                 Spotify = performanceResult.Spotify,
                 YouTube = performanceResult.YouTube
@@ -102,7 +103,7 @@
             return;
         }
 
-        var serviceResult = await PerformanceApiService.Update(PerformanceId, new PerformanceRequest { ArtistId = artistId, LineupId = lineupId, Duration = _model.Duration, Start = _model.Start, Type = _model.Type, Bandcamp = _model.Bandcamp, Description = _model.Description, Name = _model.Name, Spotify = _model.Spotify, YouTube = _model.YouTube });
+        var serviceResult = await PerformanceApiService.Update(PerformanceId, new PerformanceRequest { ArtistId = artistId, LineupId = lineupId, Duration = _model.Duration, Start = _model.Start, Type = _model.Type, BandcampId = _model.BandcampId, BandcampLink = _model.BandcampLink, Description = _model.Description, Name = _model.Name, Spotify = _model.Spotify, YouTube = _model.YouTube });
         if (serviceResult.Messages is null)
         {
             NavigationManager.NavigateTo($"lineups/{lineupId}/performances");

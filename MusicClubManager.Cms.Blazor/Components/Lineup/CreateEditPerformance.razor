@@ -17,9 +17,15 @@
 </div>
 
 <div>
-    <label for="bandcamp">Bandcamp</label>
+    <label for="bandcamp_id">Bandcamp: id</label>
 
-    <InputText @bind-Value="Model.Bandcamp" id="bandcamp" />
+    <InputNumber @bind-Value="Model.BandcampId" id="bandcamp_id" />
+</div>
+
+<div>
+    <label for="bandcamp_link">Bandcamp: link</label>
+
+    <InputText @bind-Value="Model.BandcampLink" id="bandcamp_link" />
 </div>
 
 <div>

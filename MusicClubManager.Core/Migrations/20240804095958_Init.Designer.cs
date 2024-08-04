@@ -12,8 +12,8 @@ using MusicClubManager.Core;
 namespace MusicClubManager.Core.Migrations
 {
     [DbContext(typeof(MusicClubManagerDbContext))]
-    [Migration("20240725090844_init")]
-    partial class init
+    [Migration("20240804095958_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -363,14 +363,29 @@ namespace MusicClubManager.Core.Migrations
                     b.Property<int>("ArtistId")
                         .HasColumnType("int");
 
+                    b.Property<long?>("BandcampId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("BandcampLink")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("Duration")
                         .HasColumnType("int");
 
                     b.Property<int>("LineupId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Spotify")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("Start")
                         .HasColumnType("datetime2");
@@ -380,6 +395,9 @@ namespace MusicClubManager.Core.Migrations
 
                     b.Property<DateTime>("Updated")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("YouTube")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

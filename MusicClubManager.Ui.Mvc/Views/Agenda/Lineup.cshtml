@@ -38,6 +38,11 @@
                 <h3>@lineupPerformanceResult.ArtistResult.Name</h3>
 
                 <p>@lineupPerformanceResult.ArtistResult.Description</p>
+
+                @if (lineupPerformanceResult.BandcampId is not null && lineupPerformanceResult.BandcampId > 0 &&  !string.IsNullOrWhiteSpace(lineupPerformanceResult.BandcampLink))
+                {
+                    <Partial name="_BandcampPartial" Model=@lineupPerformanceResult />
+                }
             </section>
         }
     </article>

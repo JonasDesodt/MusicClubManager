@@ -85,7 +85,7 @@
             return;
         }
 
-        var serviceResult = await PerformanceApiService.Create(new PerformanceRequest { ArtistId = artistId, LineupId = lineupId, Duration = _model.Duration, Start = _model.Start, Type = _model.Type, Bandcamp = _model.Bandcamp, Description = _model.Description, Name = _model.Name, Spotify = _model.Spotify, YouTube = _model.YouTube  });
+        var serviceResult = await PerformanceApiService.Create(new PerformanceRequest { ArtistId = artistId, LineupId = lineupId, Duration = _model.Duration, Start = _model.Start, Type = _model.Type, BandcampId = _model.BandcampId, BandcampLink = _model.BandcampLink, Description = _model.Description, Name = _model.Name, Spotify = _model.Spotify, YouTube = _model.YouTube  });
         if (serviceResult.Messages is null)
         {
             NavigationManager.NavigateTo($"lineups/{LineupId}/performances");
