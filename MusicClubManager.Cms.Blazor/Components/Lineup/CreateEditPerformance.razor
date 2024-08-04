@@ -16,6 +16,23 @@
     <InputText @bind-Value="Model.Type" id="type" />
 </div>
 
+<div>
+    <label for="bandcamp">Bandcamp</label>
+
+    <InputText @bind-Value="Model.Bandcamp" id="bandcamp" />
+</div>
+
+<div>
+    <label for="youtube">YouTube</label>
+
+    <InputText @bind-Value="Model.YouTube" id="youtube" />
+</div>
+
+<div>
+    <label for="spotify">Spotify</label>
+
+    <InputText @bind-Value="Model.Spotify" id="spotify" />
+</div>
 
 @code {
     [Parameter, EditorRequired]

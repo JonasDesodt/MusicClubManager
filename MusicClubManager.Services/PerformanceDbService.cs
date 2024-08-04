@@ -61,6 +61,11 @@ namespace MusicClubManager.Services
                 Updated = now,
                 ArtistId = request.ArtistId,
                 LineupId = request.LineupId,
+                Bandcamp = request.Bandcamp,
+                Description = request.Description,
+                Name = request.Name,
+                Spotify = request.Spotify,
+                YouTube = request.YouTube
             };
 
             await dbContext.Performances.AddAsync(performance);
@@ -75,6 +80,11 @@ namespace MusicClubManager.Services
                     Duration = performance.Duration,
                     Start = performance.Start,
                     Type = performance.Type,
+                    Bandcamp = performance.Bandcamp,
+                    Description = performance.Description,
+                    Name = performance.Name,
+                    Spotify = performance.Spotify,
+                    YouTube = performance.YouTube,                    
                     ArtistResult = new ArtistResult
                     {
                         Id = artist.Id,
@@ -179,6 +189,11 @@ namespace MusicClubManager.Services
                     Id = performance.Id,
                     Duration = performance.Duration,
                     Start = performance.Start,
+                    Bandcamp = performance.Bandcamp,
+                    Description = performance.Description,
+                    Name = performance.Name,
+                    Spotify = performance.Spotify,
+                    YouTube = performance.YouTube,
                     ArtistResult = new ArtistResult
                     {
                         Id = performance.Artist.Id,
@@ -235,6 +250,11 @@ namespace MusicClubManager.Services
                             Start = performance.Start,
                             //Duration = performance.Duration, => bugged: bigint in db 
                             Type = performance.Type,
+                            Bandcamp = performance.Bandcamp,
+                            Description = performance.Description,
+                            Name = performance.Name,
+                            Spotify = performance.Spotify,
+                            YouTube = performance.YouTube,
                             ArtistResult = new ArtistResult
                             {
                                 Id = artist.Id,
@@ -291,6 +311,11 @@ namespace MusicClubManager.Services
                             Start = performance.Start,
                             //Duration = performance.Duration, => bugged: bigint in db 
                             Type = performance.Type,
+                            Bandcamp = performance.Bandcamp,
+                            Description = performance.Description,
+                            Name = performance.Name,
+                            Spotify = performance.Spotify,
+                            YouTube = performance.YouTube,
                             ArtistResult = new ArtistResult
                             {
                                 Id = artist.Id,
@@ -390,6 +415,12 @@ namespace MusicClubManager.Services
             performance.ArtistId = request.ArtistId;
             performance.LineupId = request.LineupId;
             performance.Updated = DateTime.UtcNow;
+            performance.Description = request.Description;
+            performance.Name = request.Name;
+            performance.Type = request.Type;
+            performance.Bandcamp = request.Bandcamp;
+            performance.YouTube = request.YouTube;  
+            performance.Spotify = request.Spotify;
 
             dbContext.Lineups.Update(lineup);
 
@@ -402,6 +433,11 @@ namespace MusicClubManager.Services
                     Id = lineup.Id,
                     Duration = performance.Duration,
                     Start = performance.Start,
+                    Bandcamp = performance.Bandcamp,
+                    Description = performance.Description,
+                    Name = performance.Name,
+                    Spotify = performance.Spotify,
+                    YouTube = performance.YouTube,
                     ArtistResult = new ArtistResult
                     {
                         Id = artist.Id,
