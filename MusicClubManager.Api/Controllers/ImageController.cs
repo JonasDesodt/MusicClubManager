@@ -31,13 +31,15 @@ namespace MusicClubManager.Api.Controllers
             }
 
             // Create a MemoryStream from the byte array
-            var memoryStream = new MemoryStream(image.Content);
+           var memoryStream = new MemoryStream(image.Content);
+
+            return File(memoryStream, image.ContentType);
 
             // Return the file as a PhysicalFileResult
-            return new FileStreamResult(memoryStream, image.ContentType)
-            {
-                FileDownloadName = image.Alt
-            };
+            //return new FileStreamResult(memoryStream, image.ContentType);
+            //{
+            //    FileDownloadName = image.Alt
+            //};
         }
 
         [HttpPost("Upload")]
