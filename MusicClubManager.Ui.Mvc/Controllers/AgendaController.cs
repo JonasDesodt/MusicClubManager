@@ -7,13 +7,14 @@ namespace MusicClubManager.Ui.Mvc.Controllers
 {
     public class AgendaController(ILineupService lineupApiService) : Controller
     {
+        [Route("")]
         public async Task<IActionResult> Index()
         {
             return View(await lineupApiService.GetAll(new PaginationRequest { Page = 1, PageSize = 4 }, new LineupFilter()));
         }
 
         [Route("Agenda/{id:int}")]
-        public async Task<IActionResult> Index(int id)
+        public async Task<IActionResult> Lineup(int id)
         {
             return View("Lineup", await lineupApiService.Get(id, new PaginationRequest {  Page = 1, PageSize = 4} ));
         }

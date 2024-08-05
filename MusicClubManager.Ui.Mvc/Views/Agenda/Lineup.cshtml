@@ -37,12 +37,18 @@
 
                 <h3>@lineupPerformanceResult.ArtistResult.Name</h3>
 
-                <p>@lineupPerformanceResult.ArtistResult.Description</p>
+                <p>@(lineupPerformanceResult.ArtistResult.Description ?? "Stay tuned...")</p>
 
                 @if (lineupPerformanceResult.BandcampId is not null && lineupPerformanceResult.BandcampId > 0 &&  !string.IsNullOrWhiteSpace(lineupPerformanceResult.BandcampLink))
                 {
                     <Partial name="_BandcampPartial" Model=@lineupPerformanceResult />
                 }
+
+                @if (!string.IsNullOrWhiteSpace(lineupPerformanceResult.YouTube))
+                {
+                    <Partial name="_YouTubePartial" Model="@lineupPerformanceResult" />
+                }
+
             </section>
         }
     </article>
