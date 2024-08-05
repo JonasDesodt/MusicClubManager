@@ -12,6 +12,9 @@
         public string? Type { get; set; }
         public string? Description { get; set; }
 
+        public int? ImageId { get; set; }
+        public Image? Image { get; set; }
+
         public required int ArtistId { get; set; }
         public Artist? Artist { get; set; }
 

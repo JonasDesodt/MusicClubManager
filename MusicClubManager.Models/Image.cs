@@ -25,5 +25,9 @@ namespace MusicClubManager.Models
 
 
         public IList<Artist> Artists { get; set; } = [];
+
+        public IList<Performance> Performances { get; set; } = [];
+
+        public IList<Lineup> Lineups { get; set; } = [];
     }
 }

@@ -82,11 +82,13 @@ main {
     flex-direction: column;
     flex-grow: 1;
     gap: 2em;
-    padding: 1em;
+    padding: 2em 1em;
 }
 
 footer {
-    background-color: rgb(245,245,245);
+    background-color: rgb(75,75,75);
+    color: rgb(250,250,250);
+    padding: 1em;
 }
 
 @media (min-width: 768px) {

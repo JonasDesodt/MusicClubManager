@@ -25,6 +25,12 @@ namespace MusicClubManager.Core
                 .HasForeignKey(l => l.EventId)
                 .IsRequired(false);
 
+            builder.Entity<Lineup>()
+                .HasOne(l => l.Image)
+                .WithMany(i => i.Lineups)
+                .HasForeignKey(l => l.ImageId)
+                .IsRequired(false);
+
             builder.Entity<Performance>()
                 .HasOne(p => p.Artist)
                 .WithMany(a => a.Performances)
@@ -36,6 +42,12 @@ namespace MusicClubManager.Core
                 .WithMany(l => l.Performances)
                 .HasForeignKey(p => p.LineupId)
                 .IsRequired(true);
+
+            builder.Entity<Performance>()
+                .HasOne(p => p.Image)
+                .WithMany(i => i.Performances)
+                .HasForeignKey(p => p.ImageId)
+                .IsRequired(false);
 
             builder.Entity<Artist>()
                 .HasOne(a => a.Image)

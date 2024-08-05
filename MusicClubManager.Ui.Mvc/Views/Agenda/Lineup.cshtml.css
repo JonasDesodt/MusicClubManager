@@ -10,21 +10,27 @@ article {
 
     article > ul {
         display: flex;
+        flex-direction: column;
         gap: .5em;
         list-style-type: none;
     }
 
+        article > ul > li:first-of-type {
+            font-weight: bold;
+        }
+
+            article > ul > li:first-of-type:first-letter {
+                text-transform: uppercase;
+            }
+
+    article > img {
+        max-width: 100%;
+    }
+
     article > section {
-        border-bottom: 1px solid rgb(200,200,200);
+        background-color: rgb(235,235,235);
         display: flex;
         flex-direction: column;
-        gap: 1em;
-    }
-
-    article > section:not(:first-of-type) {
-        padding: 1em 0;
-    }
-
-    article > section:first-of-type {
-        padding: 0 0 1em 0;
+        gap: 2em;
+        padding: 1em;
     }

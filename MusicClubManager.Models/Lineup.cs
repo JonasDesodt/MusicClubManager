@@ -8,6 +8,9 @@
         public required DateTime Doors { get; set; }
         public bool IsSoldOut { get; set; }
 
+        public int? ImageId { get; set; }
+        public Image? Image { get; set; }
+
         public int? EventId { get; set; }
         public Event? Event { get; set; }
 

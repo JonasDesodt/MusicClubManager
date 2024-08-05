@@ -23,7 +23,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MusicClubManager.Cms.Blazor
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MusicClubManager.Cms.Wpf", "MusicClubManager.Cms.Wpf\MusicClubManager.Cms.Wpf.csproj", "{2F2FB8F6-3501-4253-9C52-138047243ABA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MusicClubManager.Ui.Mvc", "MusicClubManager.Ui.Mvc\MusicClubManager.Ui.Mvc.csproj", "{2980736F-6F0F-4F78-B0ED-15F8296A29E6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MusicClubManager.Ui.Mvc", "MusicClubManager.Ui.Mvc\MusicClubManager.Ui.Mvc.csproj", "{2980736F-6F0F-4F78-B0ED-15F8296A29E6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
