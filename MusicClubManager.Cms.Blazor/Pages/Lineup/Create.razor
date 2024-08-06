@@ -10,7 +10,7 @@
     Create
 </SubTitle>
 
-<Form TModel="LineupFormModel" Model="Context.Model" OnValidSubmit="Submit" Context="model">
+<Form TModel="LineupFormModel" Model="(LineupFormModel)Context.Model" OnValidSubmit="Submit" Context="model">
     <Template>
         <div>
             <div>
@@ -58,7 +58,7 @@
 
 @code {
     [CascadingParameter, EditorRequired]
-    public required CreateEditLineupContext Context { get; set; }
+    public required ISelectImageContext Context { get; set; }
 
     private ServiceResult<ImageResult>? imageServiceResult;
 

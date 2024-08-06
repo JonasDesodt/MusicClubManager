@@ -7,5 +7,5 @@
 </CascadingValue>
 
 @code {
-    public CreateEditArtistContext Context { get; set; } = new() { Model = new ArtistFormModel () };
+    public ISelectImageContext Context { get; set; } = new CreateEditArtistContext () { Model = new ArtistFormModel() };
 }

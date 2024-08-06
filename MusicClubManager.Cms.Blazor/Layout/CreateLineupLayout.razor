@@ -7,5 +7,5 @@
 </CascadingValue>
 
 @code {
-    public CreateEditLineupContext Context { get; set; } = new() { Model = new LineupFormModel() };
+    public ISelectImageContext Context { get; set; } = new CreateEditLineupContext () { Model = new LineupFormModel() };
 }

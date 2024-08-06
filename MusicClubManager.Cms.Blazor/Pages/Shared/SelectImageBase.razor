@@ -3,7 +3,7 @@
 
 @code {
     [CascadingParameter, EditorRequired]
-    public required CreateEditArtistContext Context { get; set; }
+    public required ISelectImageContext Context { get; set; }
 
     protected void Select(int id, string route)
     {      

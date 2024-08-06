@@ -2,8 +2,8 @@
 
 namespace MusicClubManager.Cms.Blazor.Models.Contexts
 {
-    public class CreateEditArtistContext
+    public class CreateEditArtistContext : ISelectImageContext
     {
-        public IArtistFormModel? Model { get; set; }
+        public ISelectImageFormModel? Model { get; set; }
     }
 }

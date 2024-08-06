@@ -1,8 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using MusicClubManager.Cms.Blazor.Interfaces;
 
 namespace MusicClubManager.Cms.Blazor.Models.FormModels
 {
-    public class LineupFormModel
+    public class LineupFormModel : ISelectImageFormModel
     {
         public string? Name { get; set; }
 

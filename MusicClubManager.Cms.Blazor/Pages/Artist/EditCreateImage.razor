@@ -11,7 +11,7 @@
 
 @code {
     [CascadingParameter, EditorRequired]
-    public required CreateEditArtistContext Context { get; set; }
+    public required ISelectImageContext Context { get; set; }
 
     [Parameter]
     public int ArtistId { get; set; }

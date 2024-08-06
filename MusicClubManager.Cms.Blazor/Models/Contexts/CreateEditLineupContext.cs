@@ -1,9 +1,9 @@
-﻿using MusicClubManager.Cms.Blazor.Models.FormModels;
+﻿using MusicClubManager.Cms.Blazor.Interfaces;
 
 namespace MusicClubManager.Cms.Blazor.Models.Contexts
 {
-    public class CreateEditLineupContext
+    public class CreateEditLineupContext : ISelectImageContext
     {
-        public LineupFormModel? Model { get; set; }
+        public ISelectImageFormModel? Model { get; set; }
     }
 }

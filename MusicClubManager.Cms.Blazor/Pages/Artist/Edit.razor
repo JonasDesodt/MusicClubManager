@@ -13,9 +13,9 @@
 
 @if (Context.Model is not null)
 {
-    <Form TModel="IArtistFormModel" Model="Context.Model" OnValidSubmit="() => Submit(Context.Model)">
+    <Form TModel="IArtistFormModel" Model="(IArtistFormModel)Context.Model" OnValidSubmit="() => Submit((IArtistFormModel)Context.Model)">
         <Template>
-            <ArtistInputs Model="Context.Model"></ArtistInputs>
+            <ArtistInputs Model="(IArtistFormModel)Context.Model"></ArtistInputs>
 
             <div>
                 <label for="image">Image</label>
