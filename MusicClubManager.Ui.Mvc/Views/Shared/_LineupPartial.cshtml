@@ -2,7 +2,14 @@
 
 <li>
     <a asp-controller="Agenda" asp-action="Lineup" asp-route-id="@Model.Id">
-        <img src="@($"https://localhost:7188/image/download/10")" alt="Demo image" />
+        @if (Model.ImageResult is not null)
+        {
+            <img src="@($"https://localhost:7188/image/download/{Model.ImageResult.Id}")" alt="@Model.ImageResult.Alt" />
+        } else
+        {
+            <img style="width: 100%; "/>
+        }
+
 
         <div>
             <h3>@Model.Doors.ToLongDateString()</h3>

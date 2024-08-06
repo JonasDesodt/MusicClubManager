@@ -1,0 +1,11 @@
+﻿@inherits LayoutComponentBase
+
+@layout LineupLayout
+
+<CascadingValue Value="Context">
+    @Body
+</CascadingValue>
+
+@code {
+    public CreateEditLineupContext Context { get; set; } = new() { Model = new LineupFormModel() };
+}

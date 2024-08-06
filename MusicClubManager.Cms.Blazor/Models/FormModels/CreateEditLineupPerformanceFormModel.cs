@@ -16,6 +16,7 @@ namespace MusicClubManager.Cms.Blazor.Models.FormModels
         public string? YouTube { get; set; }
         public string? Spotify { get; set; }
 
+        public int? ImageId { get; set; }
 
         [Required(ErrorMessage = "Selecting an artist is required.")]
         public int? ArtistId { get; set; }

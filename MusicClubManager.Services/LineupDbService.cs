@@ -23,6 +23,7 @@ namespace MusicClubManager.Services
                 Name = request.Name,
                 IsSoldOut = request.IsSoldOut,
                 EventId = request.EventId,
+                ImageId = request.ImageId,
                 Created = now,
                 Updated = now
             };
@@ -119,7 +120,7 @@ namespace MusicClubManager.Services
 
             var lineup = await dbContext.Lineups
                 .Include(l => l.Event)
-
+                .Include(l => l.Image)
                 .Include(l => (l.Performances.AsQueryable().Skip(0).Take(5).Include(p => p.Artist).ThenInclude(a => a != null ? a.Image : null)))
                 .FirstOrDefaultAsync(l => l.Id == id);
 
@@ -141,6 +142,8 @@ namespace MusicClubManager.Services
                     Id = lineup.Id,
                     Doors = lineup.Doors,
                     Name = lineup.Name,
+                    IsSoldOut = lineup.IsSoldOut,
+                    ImageResult = lineup.Image == null ? null : new ImageResult { Alt = lineup.Image.Alt, ContentType = lineup.Image.ContentType, Created = lineup.Image.Created, Id = lineup.Image.Id, Updated = lineup.Image.Updated},
                     Event = lineup.Event == null ? null : new EventResult
                     {
                         Id = lineup.Event.Id,
@@ -198,10 +201,12 @@ namespace MusicClubManager.Services
 
             var lineupResult = await dbContext.Lineups
                 .Include(l => l.Event)
+                .Include(l => l.Image)
                 .Select(l => new LineupResult
                 {
                     Doors = l.Doors,
                     Event = l.Event != null ? new EventResult { Id = l.Event.Id, Name = l.Event.Name } : null,
+                    ImageResult = l.Image == null ? null : new ImageResult { Alt = l.Image.Alt, ContentType = l.Image.ContentType, Created = l.Image.Created, Id = l.Image.Id, Updated = l.Image.Updated },
                     Id = l.Id,
                     Name = l.Name,
                     IsSoldOut = l.IsSoldOut,
@@ -284,6 +289,7 @@ namespace MusicClubManager.Services
             };
 
             var lineups = dbContext.Lineups
+                .Include(l => l.Image)
                 .Include(l => l.Performances)
                 .ThenInclude(p => p.Artist).ThenInclude(a => a != null ? a.Image : null)
                 .Select(l => l)
@@ -297,6 +303,7 @@ namespace MusicClubManager.Services
                 Id = l.Id,
                 IsSoldOut = l.IsSoldOut,
                 Name = l.Name,
+                ImageResult = l.Image == null ? null : new ImageResult { Alt = l.Image.Alt, ContentType = l.Image.ContentType, Created = l.Image.Created, Id = l.Image.Id, Updated = l.Image.Updated },
                 PagedLineupPerformanceResult = new PagedResult<IList<LineupPerformanceResult>>
                 {
                     PageSize = 5,
@@ -346,7 +353,9 @@ namespace MusicClubManager.Services
 
         public async Task<ServiceResult<LineupResult>> Update(int id, LineupRequest request)
         {
-            var lineup = await dbContext.Lineups.FirstOrDefaultAsync(l => l.Id == id);
+            var lineup = await dbContext.Lineups
+                .Include(l => l.Image)
+                .FirstOrDefaultAsync(l => l.Id == id);
             if (lineup is null)
             {
                 return new ServiceResult<LineupResult>
@@ -389,6 +398,7 @@ namespace MusicClubManager.Services
                     Name = lineup.Name,
                     Doors = lineup.Doors,
                     IsSoldOut = request.IsSoldOut,
+                    ImageResult = lineup.Image == null ? null : new ImageResult { Alt = lineup.Image.Alt, ContentType = lineup.Image.ContentType, Created = lineup.Image.Created, Id = lineup.Image.Id, Updated = lineup.Image.Updated },
                     Event = lineup.Event != null
                     ? new EventResult
                     {

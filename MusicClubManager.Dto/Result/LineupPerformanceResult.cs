@@ -22,6 +22,8 @@ namespace MusicClubManager.Dto.Result
         public string? YouTube { get; set; }
         public string? Spotify { get; set; }
 
+        public ImageResult? ImageResult { get; set; }
+
         public required ArtistResult ArtistResult { get; set; }
     }
 }

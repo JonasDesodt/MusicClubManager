@@ -192,29 +192,6 @@ namespace MusicClubManager.Core.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Lineups",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Doors = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsSoldOut = table.Column<bool>(type: "bit", nullable: false),
-                    EventId = table.Column<int>(type: "int", nullable: true),
-                    Created = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Updated = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Lineups", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Lineups_Events_EventId",
-                        column: x => x.EventId,
-                        principalTable: "Events",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Artists",
                 columns: table => new
                 {
@@ -237,6 +214,35 @@ namespace MusicClubManager.Core.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Lineups",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Doors = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsSoldOut = table.Column<bool>(type: "bit", nullable: false),
+                    ImageId = table.Column<int>(type: "int", nullable: true),
+                    EventId = table.Column<int>(type: "int", nullable: true),
+                    Created = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Updated = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Lineups", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Lineups_Events_EventId",
+                        column: x => x.EventId,
+                        principalTable: "Events",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Lineups_Images_ImageId",
+                        column: x => x.ImageId,
+                        principalTable: "Images",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Performances",
                 columns: table => new
                 {
@@ -247,6 +253,7 @@ namespace MusicClubManager.Core.Migrations
                     Duration = table.Column<int>(type: "int", nullable: true),
                     Type = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ImageId = table.Column<int>(type: "int", nullable: true),
                     ArtistId = table.Column<int>(type: "int", nullable: false),
                     BandcampId = table.Column<long>(type: "bigint", nullable: true),
                     BandcampLink = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -265,6 +272,11 @@ namespace MusicClubManager.Core.Migrations
                         principalTable: "Artists",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Performances_Images_ImageId",
+                        column: x => x.ImageId,
+                        principalTable: "Images",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Performances_Lineups_LineupId",
                         column: x => x.LineupId,
@@ -323,9 +335,19 @@ namespace MusicClubManager.Core.Migrations
                 column: "EventId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Lineups_ImageId",
+                table: "Lineups",
+                column: "ImageId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Performances_ArtistId",
                 table: "Performances",
                 column: "ArtistId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Performances_ImageId",
+                table: "Performances",
+                column: "ImageId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Performances_LineupId",
@@ -367,10 +389,10 @@ namespace MusicClubManager.Core.Migrations
                 name: "Lineups");
 
             migrationBuilder.DropTable(
-                name: "Images");
+                name: "Events");
 
             migrationBuilder.DropTable(
-                name: "Events");
+                name: "Images");
         }
     }
 }

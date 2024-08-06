@@ -1,5 +1,27 @@
-﻿<h3>CreateCreateImage</h3>
+﻿@page "/lineups/create/select-image/create"
+
+@layout CreateLineupLayout
+
+@inject NavigationManager NavigationManager
+
+<h3>CreateCreateImage</h3>
+
+<CreateImage OnSubmit="HandleOnSubmit"
+             ReturnTitle="Create"
+             ReturnUrl="lineups/create"
+             Title="Create: create image" />
 
 @code {
+    [CascadingParameter, EditorRequired]
+    public required CreateEditLineupContext Context { get; set; }
 
+    private void HandleOnSubmit(int id)
+    {
+        if (Context.Model is not null)
+        {
+            Context.Model.ImageId = id;
+
+            NavigationManager.NavigateTo("lineups/create");
+        }
+    }
 }

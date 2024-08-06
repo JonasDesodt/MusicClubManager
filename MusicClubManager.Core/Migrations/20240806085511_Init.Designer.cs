@@ -12,7 +12,7 @@ using MusicClubManager.Core;
 namespace MusicClubManager.Core.Migrations
 {
     [DbContext(typeof(MusicClubManagerDbContext))]
-    [Migration("20240804095958_Init")]
+    [Migration("20240806085511_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -336,6 +336,9 @@ namespace MusicClubManager.Core.Migrations
                     b.Property<int?>("EventId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("ImageId")
+                        .HasColumnType("int");
+
                     b.Property<bool>("IsSoldOut")
                         .HasColumnType("bit");
 
@@ -348,6 +351,8 @@ namespace MusicClubManager.Core.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("EventId");
+
+                    b.HasIndex("ImageId");
 
                     b.ToTable("Lineups");
                 });
@@ -378,6 +383,9 @@ namespace MusicClubManager.Core.Migrations
                     b.Property<int?>("Duration")
                         .HasColumnType("int");
 
+                    b.Property<int?>("ImageId")
+                        .HasColumnType("int");
+
                     b.Property<int>("LineupId")
                         .HasColumnType("int");
 
@@ -402,6 +410,8 @@ namespace MusicClubManager.Core.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ArtistId");
+
+                    b.HasIndex("ImageId");
 
                     b.HasIndex("LineupId");
 
@@ -474,7 +484,13 @@ namespace MusicClubManager.Core.Migrations
                         .WithMany("Lineups")
                         .HasForeignKey("EventId");
 
+                    b.HasOne("MusicClubManager.Models.Image", "Image")
+                        .WithMany("Lineups")
+                        .HasForeignKey("ImageId");
+
                     b.Navigation("Event");
+
+                    b.Navigation("Image");
                 });
 
             modelBuilder.Entity("MusicClubManager.Models.Performance", b =>
@@ -485,6 +501,10 @@ namespace MusicClubManager.Core.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("MusicClubManager.Models.Image", "Image")
+                        .WithMany("Performances")
+                        .HasForeignKey("ImageId");
+
                     b.HasOne("MusicClubManager.Models.Lineup", "Lineup")
                         .WithMany("Performances")
                         .HasForeignKey("LineupId")
@@ -492,6 +512,8 @@ namespace MusicClubManager.Core.Migrations
                         .IsRequired();
 
                     b.Navigation("Artist");
+
+                    b.Navigation("Image");
 
                     b.Navigation("Lineup");
                 });
@@ -509,6 +531,10 @@ namespace MusicClubManager.Core.Migrations
             modelBuilder.Entity("MusicClubManager.Models.Image", b =>
                 {
                     b.Navigation("Artists");
+
+                    b.Navigation("Lineups");
+
+                    b.Navigation("Performances");
                 });
 
             modelBuilder.Entity("MusicClubManager.Models.Lineup", b =>

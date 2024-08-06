@@ -1,5 +1,11 @@
-﻿<h3>CreateSelectImage</h3>
+﻿@page "/lineups/create/select-image"
 
-@code {
+@inherits SelectImageBase
 
-}
+@layout CreateArtistLayout
+
+<SelectImage>
+    <Buttons Context="id">
+        <li><button @onclick="@(() => Select(id, "lineups/create"))">Select</button></li>
+    </Buttons>
+</SelectImage>

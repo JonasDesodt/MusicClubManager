@@ -16,7 +16,6 @@
   <ItemGroup>
     <Content Remove="Layout\CreateEditArtistLayout.razor" />
     <Content Remove="Pages\Artist\Delete.razor" />
-    <Content Remove="Pages\Lineup\CreateCreateImage.razor" />
   </ItemGroup>
 
   <ItemGroup>
@@ -24,7 +23,6 @@
     <None Include="Components\Lineup\LineupDetails.razor" />
     <None Include="Layout\CreateEditArtistLayout.razor" />
     <None Include="Pages\Artist\Delete.razor" />
-    <None Include="Pages\Lineup\CreateCreateImage.razor" />
   </ItemGroup>
 
   <ItemGroup>
@@ -48,15 +46,10 @@
   <ItemGroup>
     <_ContentIncludedByDefault Remove="Layout\CreateEditArtistLayout.razor" />
     <_ContentIncludedByDefault Remove="Pages\Artist\Delete.razor" />
-    <_ContentIncludedByDefault Remove="Pages\Lineup\CreateCreateImage.razor" />
   </ItemGroup>
 
   <ItemGroup>
     <UpToDateCheckInput Remove="Layout\CreateEditArtistLayout.razor" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <UpToDateCheckInput Remove="Pages\Lineup\CreateCreateImage.razor" />
   </ItemGroup>
 
 </Project>

@@ -14,6 +14,8 @@
         public string? YouTube { get; set; }
         public string? Spotify { get; set; }
 
+        public int? ImageId { get; set; }
+
         public required int ArtistId { get; set; }
 
         public required int LineupId { get; set; }

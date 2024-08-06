@@ -1,15 +1,16 @@
 ﻿@page "/lineups/create"
 
-@layout LineupLayout
+@layout CreateLineupLayout
 
 @inject ILineupService LineupApiService
+@inject ImageApiService ImageApiService
 @inject NavigationManager NavigationManager
 
 <SubTitle ReturnUrl="lineups" ReturnTitle="Lineups">
     Create
 </SubTitle>
 
-<Form TModel="CreateLineupPropertiesFormModel" Model="_model" OnValidSubmit="Submit" Context="model">
+<Form TModel="LineupFormModel" Model="Context.Model" OnValidSubmit="Submit" Context="model">
     <Template>
         <div>
             <div>
@@ -23,6 +24,28 @@
 
                 <InputDate Type="InputDateType.DateTimeLocal" @bind-Value="model.Doors" id="doors" />
             </div>
+
+            <label for="image">Image</label>
+            @if (imageServiceResult?.Data is { } imageResult)
+            {
+                model.ImageId = imageResult.Id; //use hidden input??
+
+                <ImageItem Model="imageResult" />
+
+                <Navigation>
+                    <li><button type="button" @onclick="() => { model.ImageId = null; imageServiceResult = null;}">Clear selection</button></li>
+                </Navigation>
+            }
+            else
+            {
+                <p>There is no image selected</p>
+
+                <Navigation>
+                    <li><NavLink href="lineups/create/select-image">Select</NavLink></li>
+                </Navigation>
+            }
+
+
         </div>
 
         <Buttons>
@@ -34,9 +57,22 @@
 </Form>
 
 @code {
-    private CreateLineupPropertiesFormModel _model = new();
+    [CascadingParameter, EditorRequired]
+    public required CreateEditLineupContext Context { get; set; }
 
-    private async Task Submit(CreateLineupPropertiesFormModel model)
+    private ServiceResult<ImageResult>? imageServiceResult;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Context.Model?.ImageId is { } imageId)
+        {
+            imageServiceResult = await ImageApiService.Get(imageId);
+        }
+
+        base.OnInitialized();
+    }
+
+    private async Task Submit(LineupFormModel model)
     {
         if(model.Doors is not {} doors)
         {
@@ -48,6 +84,7 @@
                 Doors = doors,
                 IsSoldOut = model.IsSoldOut,
                 Name = model.Name,
+                ImageId = model.ImageId
             });
 
         NavigationManager.NavigateTo("lineups");
