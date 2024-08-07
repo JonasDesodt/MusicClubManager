@@ -2,9 +2,12 @@
 
 @{
     ViewData["Title"] = "Lineup";
+
+    var pge = ViewContext.HttpContext.Request.Query["page"];
+    var pgeSize = ViewContext.HttpContext.Request.Query["pageSize"];
 }
 
-<a asp-controller="Agenda" asp-action="Index" class="return">← Agenda</a>
+<a asp-controller="Agenda" asp-action="Index" asp-route-page="@pge" asp-route-pgeSize="@pgeSize" class="return">← Agenda</a>
 
 @if (Model.Data is { } lineupResult)
 {
