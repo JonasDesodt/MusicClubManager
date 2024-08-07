@@ -2,15 +2,18 @@
 using MusicClubManager.Abstractions;
 using MusicClubManager.Dto.Filters;
 using MusicClubManager.Dto.Transfer;
+using MusicClubManager.Ui.Mvc.Models;
 
 namespace MusicClubManager.Ui.Mvc.Controllers
 {
     public class AgendaController(ILineupService lineupApiService) : Controller
     {
-        [Route("")]
-        public async Task<IActionResult> Index()
+        [Route("Agenda")]
+        public async Task<IActionResult> Index([FromQuery] Pagination? pagination = null)
         {
-            return View(await lineupApiService.GetAll(new PaginationRequest { Page = 1, PageSize = 4 }, new LineupFilter()));
+            pagination ??= new Pagination ();
+
+            return View(await lineupApiService.GetAll(new PaginationRequest { Page = (uint)pagination.Page, PageSize = (uint)pagination.PageSize }, new LineupFilter()));
         }
 
         [Route("Agenda/{id:int}")]

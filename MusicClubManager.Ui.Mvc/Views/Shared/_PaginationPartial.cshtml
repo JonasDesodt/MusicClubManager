@@ -1,0 +1,49 @@
+﻿@model Pagination
+
+<div>
+    @if (Model.TotalCount > 1)
+    {
+        <ul class="left">
+            @if (Model.Page > 1)
+            {
+                <li class="previous">
+                    <a asp-route-page="@(Model.Page - 1)" asp-route-pageSize="@Model.PageSize">
+                        &#10229;
+                    </a>
+                </li>
+            }
+            else if (Model.TotalPages > 1)
+            {
+                <li><span>&#10229;</span></li>
+            }
+        </ul>
+        <ul class="center">
+            @for (var pge = Model.StartPage; pge <= Model.EndPage; pge++)
+            {
+                var currentPage = pge;
+
+                <li>
+                    <a asp-route-page="@currentPage" asp-route-pageSize="@Model.PageSize" class="@(currentPage == Model.Page ? "active" : "")">
+                        @currentPage
+                    </a>
+                </li>
+            }
+
+        </ul>
+        <ul class="right">
+
+            @if (Model.Page < Model.TotalPages)
+            {
+                <li class="next">
+                    <a asp-route-page="@(Model.Page + 1)" asp-route-pageSize="@Model.PageSize">
+                        &#10230;
+                    </a>
+                </li>
+            }
+            else if (Model.TotalPages > 1 )
+            {
+                <li><span>&#10230;</span></li>
+            }
+        </ul>
+    }
+</div>

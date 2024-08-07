@@ -1,18 +1,22 @@
 ﻿li > ::deep a {
+    /*   background-color: rgb(225,250,225);*/
+    background-color: rgb(245,245,250);
     display: flex;
     flex-direction: column;
     gap: 2em;
-    padding: 2em 0;
+    padding: 2em;
     text-decoration: none;
 }
 
-li > ::deep a {
-    border-bottom: 1px solid rgb(150,150,150);
-}
-
-    li > ::deep a:hover > div > *, li > ::deep a:hover > div > ul > li {
-        color: rgb(40,140,240);
+    li > ::deep a:hover {
+        background-color: rgb(40,140,240);
     }
+        /*li > ::deep a {
+    border-bottom: 1px solid rgb(150,150,150);
+}*/
+        li > ::deep a:hover > div > *, li > ::deep a:hover > div > ul > li {
+            color: rgb(250,250,250);
+        }
 
     li > ::deep a > img {
         aspect-ratio: 3/2;
@@ -26,13 +30,14 @@ li > ::deep a {
     }
 
         li > ::deep a > div > h3 {
-            color: rgb(0,250,0);
+            color: rgb(0,0,250);
             font-size: 1em;
             text-transform: uppercase;
         }
 
         li > ::deep a > div > h4 {
-            color: rgb(250,0,0);
+            /*     color: rgb(250,0,0);*/
+            color: rgb(0,0,0);
             font-size: 1.25em;
         }
 

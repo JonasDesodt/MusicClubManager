@@ -1,0 +1,40 @@
+﻿div {
+    align-self: flex-end;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+    div > ul {
+        display: flex;
+        flex-direction: row;
+        list-style-type: none;
+    }
+
+        div > ul > li {
+            background-color: lightgrey;
+            display: flex;
+        }
+
+            div > ul > li > ::deep a {
+                background-color: green;
+            }
+
+            div > ul > li > ::deep a, div > ul > li > span {
+                color: rgb(250,250,250);
+                display: flex;
+                font-weight: bold;
+                padding: 1em;
+                min-width: 2em;
+                text-decoration: none;
+                text-transform: uppercase;
+            }
+
+                div > ul > li > ::deep a:hover {
+                    background-color: darkgreen;
+                }
+
+                div > ul > li > ::deep a.active {
+                    background-color: rgb(40,140,240);
+                    color: rgb(250,250,250);
+                }

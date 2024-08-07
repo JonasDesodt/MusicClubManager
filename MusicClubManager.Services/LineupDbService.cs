@@ -297,49 +297,54 @@ namespace MusicClubManager.Services
 
             var totalCount = await lineups.CountAsync();
 
-            var lineupResults = await lineups.Select(l => new LineupResult
-            {
-                Doors = l.Doors,
-                Id = l.Id,
-                IsSoldOut = l.IsSoldOut,
-                Name = l.Name,
-                ImageResult = l.Image == null ? null : new ImageResult { Alt = l.Image.Alt, ContentType = l.Image.ContentType, Created = l.Image.Created, Id = l.Image.Id, Updated = l.Image.Updated },
-                PagedLineupPerformanceResult = new PagedResult<IList<LineupPerformanceResult>>
+            var skip = (paginationRequest.Page - 1) * paginationRequest.PageSize;
+
+            var lineupResults = await lineups
+                .Skip((int)skip)
+                .Take((int)paginationRequest.PageSize)
+                .Select(l => new LineupResult
                 {
-                    PageSize = 5,
-                    Page = 1,
-                    TotalCount = (uint)l.Performances.Count(),
-                    Data = l.Performances.Take(5).Select(p => new LineupPerformanceResult
+                    Doors = l.Doors,
+                    Id = l.Id,
+                    IsSoldOut = l.IsSoldOut,
+                    Name = l.Name,
+                    ImageResult = l.Image == null ? null : new ImageResult { Alt = l.Image.Alt, ContentType = l.Image.ContentType, Created = l.Image.Created, Id = l.Image.Id, Updated = l.Image.Updated },
+                    PagedLineupPerformanceResult = new PagedResult<IList<LineupPerformanceResult>>
                     {
-                        ArtistResult = p.Artist != null ? new ArtistResult
+                        PageSize = 5,
+                        Page = 1,
+                        TotalCount = (uint)l.Performances.Count(),
+                        Data = l.Performances.Take(5).Select(p => new LineupPerformanceResult
                         {
-                            Id = p.Artist.Id,
-                            Name = p.Artist.Name,
-                            Description = p.Artist.Description,
-                            ImageResult = p.Artist.Image != null
-                                                            ? new ImageResult
-                                                            {
-                                                                Alt = p.Artist.Image.Alt,
-                                                                ContentType = p.Artist.Image.ContentType,
-                                                                Created = p.Artist.Image.Created,
-                                                                Id = p.Artist.Image.Id,
-                                                                Updated = p.Artist.Image.Updated
-                                                            }
-                                                            : null
-                        } : null!, //temp hack, the artist in a performace should never be null
-                        Id = p.Id,
-                        Duration = p.Duration,
-                        Start = p.Start,
-                        Type = p.Type,
-                        BandcampId = p.BandcampId,
-                        BandcampLink = p.BandcampLink,
-                        Description = p.Description,
-                        Name = p.Name,
-                        Spotify = p.Spotify,
-                        YouTube = p.YouTube
-                    }).ToList()
-                }
-            }).ToListAsync();
+                            ArtistResult = p.Artist != null ? new ArtistResult
+                            {
+                                Id = p.Artist.Id,
+                                Name = p.Artist.Name,
+                                Description = p.Artist.Description,
+                                ImageResult = p.Artist.Image != null
+                                                                ? new ImageResult
+                                                                {
+                                                                    Alt = p.Artist.Image.Alt,
+                                                                    ContentType = p.Artist.Image.ContentType,
+                                                                    Created = p.Artist.Image.Created,
+                                                                    Id = p.Artist.Image.Id,
+                                                                    Updated = p.Artist.Image.Updated
+                                                                }
+                                                                : null
+                            } : null!, //temp hack, the artist in a performace should never be null
+                            Id = p.Id,
+                            Duration = p.Duration,
+                            Start = p.Start,
+                            Type = p.Type,
+                            BandcampId = p.BandcampId,
+                            BandcampLink = p.BandcampLink,
+                            Description = p.Description,
+                            Name = p.Name,
+                            Spotify = p.Spotify,
+                            YouTube = p.YouTube
+                        }).ToList()
+                    }
+                }).ToListAsync();
 
             return new PagedServiceResult<IList<LineupResult>>()
             {

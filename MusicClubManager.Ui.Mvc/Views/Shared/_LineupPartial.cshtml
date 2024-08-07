@@ -7,7 +7,7 @@
             <img src="@($"https://localhost:7188/image/download/{Model.ImageResult.Id}")" alt="@Model.ImageResult.Alt" />
         } else
         {
-            <img style="width: 100%; "/>
+            <img style="max-width: 100%; aspect-ratio: 3/2;" />
         }
 
 
@@ -24,10 +24,6 @@
                 <ul>
                     @foreach (var performanceResult in lineupPerformanceResults)
                     {
-                        <li>@performanceResult.ArtistResult.Name</li>
-
-                        <!-- testing only -->
-                        <li>@performanceResult.ArtistResult.Name</li>
                         <li>@performanceResult.ArtistResult.Name</li>
                     }
                 </ul>

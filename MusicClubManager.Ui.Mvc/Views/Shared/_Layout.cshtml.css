@@ -23,7 +23,7 @@
             }
 
                 header > div > h1 > ::deep a:hover {
-                    background-color: rgb(0,0,0);
+                    background-color: rgb(40,140,240);
                 }
 
         header > div > button {
@@ -39,7 +39,7 @@
         }
 
             header > div > button:hover {
-                background-color: rgb(0,0,0);
+                background-color: rgb(40,140,240);
             }
 
             header > div > button > span:last-of-type {
@@ -115,7 +115,7 @@ footer {
                 }
 
     header {
-        padding: 0 10%;
+        padding: 0 calc(10% - 16px);
     }
     footer {
         padding: 1em 10%;
