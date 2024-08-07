@@ -9,8 +9,21 @@
 </head>
 <body>
     <header>
+        @{
+            var controller = ViewContext.RouteData.Values["controller"]?.ToString()?.ToLower();
+        }
+
         <div>
-            <h1><a asp-controller="Home" asp-action="Index">Music Club</a></h1>
+            <h1>
+                @if (controller?.Equals("home") is true)
+                {
+                    <a asp-controller="Home" asp-action="Index" class="active">Music Club</a>
+                }
+                else
+                {
+                    <a asp-controller="Home" asp-action="Index">Music Club</a>
+                }
+            </h1>
 
             <button type="button">
                 <span>&#9776;</span>
@@ -20,9 +33,37 @@
 
         <nav>
             <ul>
-                <li><a asp-controller="Agenda" asp-action="Index">Agenda</a></li>
-                <li><a asp-controller="About" asp-action="Index">About</a></li>
-                <li><a asp-controller="Contact" asp-action="Index">Contact</a></li>
+                <li>
+                    @if (controller?.Equals("agenda") is true)
+                    {
+                        <a asp-controller="Agenda" asp-action="Index" class="active">Agenda</a>
+                    }
+                    else
+                    {
+                        <a asp-controller="Agenda" asp-action="Index">Agenda</a>
+                    }
+                </li>
+                <li>
+                    @if (controller?.Equals("about") is true)
+                    {
+                        <a asp-controller="About" asp-action="Index" class="active">About</a>
+
+                    }
+                    else
+                    {
+                        <a asp-controller="About" asp-action="Index">About</a>
+                    }
+                </li>
+                <li>
+                    @if (controller?.Equals("contact") is true)
+                    {
+                        <a asp-controller="Contact" asp-action="Index" class="active">Contact</a>
+                    }
+                    else
+                    {
+                        <a asp-controller="Contact" asp-action="Index">Contact</a>
+                    }
+                </li>
             </ul>
         </nav>
     </header>

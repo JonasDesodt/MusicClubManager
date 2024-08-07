@@ -1,3 +1,9 @@
+:root {
+    --active-color: rgb(40,200,140);
+    --hover-color: rgb(40,140,240);
+}
+
+
 html {
     font-size: 14px;
 }
@@ -20,6 +26,7 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    overflow-y: scroll;
 }
 
     body.menu > header {
@@ -40,6 +47,18 @@ body {
 
     body.menu > main, body.menu > footer {
         display: none;
+    }
+
+a.return {
+    align-self: flex-start;
+    color: rgb(0,0,0);
+    font-weight: bold;
+    text-decoration: none;
+    text-transform: lowercase;
+}
+
+    a.return:hover {
+        color: var(--hover-color);
     }
 
 @media (min-width: 768px) {

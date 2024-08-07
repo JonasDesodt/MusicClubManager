@@ -4,6 +4,8 @@
     ViewData["Title"] = "Agenda";
 }
 
+<a asp-controller="Home" asp-action="Index" class="return">← Home</a>
+
 <h2>@ViewData["Title"]</h2>
 
 @if (Model.Data is { } lineupResults)

@@ -4,6 +4,8 @@
     ViewData["Title"] = "Lineup";
 }
 
+<a asp-controller="Agenda" asp-action="Index" class="return">← Agenda</a>
+
 @if (Model.Data is { } lineupResult)
 {
     if (!string.IsNullOrEmpty(lineupResult.Name))

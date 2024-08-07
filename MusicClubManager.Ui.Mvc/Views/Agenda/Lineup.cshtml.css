@@ -1,8 +1,4 @@
-﻿h2 {
-    text-transform: uppercase;
-}
-
-article {
+﻿article {
     display: flex;
     flex-direction: column;
     gap: 2em;
@@ -33,4 +29,8 @@ article {
         flex-direction: column;
         gap: 2em;
         padding: 1em;
+    }
+
+    article > section > h3 {
+        text-transform: uppercase;
     }
