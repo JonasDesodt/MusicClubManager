@@ -27,7 +27,7 @@ else
     {
         if ((this.Body?.Target as RouteView)?.RouteData.RouteValues?.TryGetValue("lineupId", out object? param) is true && param is int lineupId && lineupId > 0)
         {
-            _lineupServiceResult = await LineupApiService.Get(lineupId, new PaginationRequest { Page = 1, PageSize = 5 });
+            _lineupServiceResult = await LineupApiService.Get(lineupId);
         }
         else
         {

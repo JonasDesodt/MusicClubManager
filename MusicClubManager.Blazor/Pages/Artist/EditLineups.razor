@@ -50,9 +50,9 @@
                                 <li>Soldout: @lineupResult.IsSoldOut</li>
                             </ul>
 
-                            @if (lineupResult.PagedLineupPerformanceResult.Data is { } lineupPerformanceResults)
+                            @if (lineupResult.LineupPerformanceResults.Data is { } lineupPerformanceResults)
                             {
-                                var paginationContext = new PaginationContext { Page = (int)lineupResult.PagedLineupPerformanceResult.Page, PageSize = (int)lineupResult.PagedLineupPerformanceResult.PageSize, TotalCount = (int)lineupResult.PagedLineupPerformanceResult.TotalCount };
+                                var paginationContext = new PaginationContext { Page = (int)lineupResult.LineupPerformanceResults.Page, PageSize = (int)lineupResult.LineupPerformanceResults.PageSize, TotalCount = (int)lineupResult.LineupPerformanceResults.TotalCount };
 
                                 <div>
                                     <ul>

@@ -21,7 +21,7 @@
             <h5>Perfomances</h5>
 
             <ul>
-                @foreach (var performance in _lineupResult.PagedLineupPerformanceResult.Data)
+                @foreach (var performance in _lineupResult.LineupPerformanceResults.Data)
                 {
                     <li>
                         <span>@(performance.Start?.ToShortTimeString() ?? "--:--")</span>
@@ -30,7 +30,7 @@
                 }
             </ul>
 
-            <PaginationSlim Context="new PaginationContext { Page = (int)_lineupResult.PagedLineupPerformanceResult.Page, PageSize = (int)_lineupResult.PagedLineupPerformanceResult.PageSize, TotalCount = (int)_lineupResult.PagedLineupPerformanceResult.TotalCount}"
+            <PaginationSlim Context="new PaginationContext { Page = (int)_lineupResult.LineupPerformanceResults.Page, PageSize = (int)_lineupResult.LineupPerformanceResults.PageSize, TotalCount = (int)_lineupResult.LineupPerformanceResults.TotalCount}"
                             OnPageChanged="(context) => FetchLineup(_lineupResult.Id, context)" />
         </div>
     } else

@@ -61,7 +61,7 @@
         _model.ArtistId = artistResult.Id;
 
 
-        var lineupServiceResult = await LineupApiService.Get(LineupId, new PaginationRequest { Page = 1, PageSize = 5 });
+        var lineupServiceResult = await LineupApiService.Get(LineupId);
         if (lineupServiceResult.Data is not { } lineupResult)
         {
             return;

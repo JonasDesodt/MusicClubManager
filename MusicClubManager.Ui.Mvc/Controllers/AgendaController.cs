@@ -19,20 +19,20 @@ namespace MusicClubManager.Ui.Mvc.Controllers
         [Route("Agenda/{id:int}")]
         public async Task<IActionResult> Lineup(int id)
         {
-            return View("Lineup", await lineupApiService.Get(id, new PaginationRequest {  Page = 1, PageSize = 4} ));
+            return View("Lineup", await lineupApiService.Get(id));
         }
 
         [Route("Agenda/Previous/{id:int}")]
         public async Task<IActionResult> Previous(int id)
         {
-            return View("Lineup", await lineupApiService.Previous(id, new PaginationRequest { Page = 1, PageSize = 4 }));
+            return View("Lineup", await lineupApiService.Previous(id));
 
         }
 
         [Route("Agenda/Next/{id:int}")]
         public async Task<IActionResult> Next(int id)
         {
-            return View("Lineup", await lineupApiService.Next(id, new PaginationRequest { Page = 1, PageSize = 4 }));
+            return View("Lineup", await lineupApiService.Next(id));
 
         }
     }

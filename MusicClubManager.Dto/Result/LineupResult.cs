@@ -12,6 +12,6 @@
 
         public ImageResult? ImageResult { get; set; }
 
-        public required PagedResult<IList<LineupPerformanceResult>> PagedLineupPerformanceResult { get; set; }
+        public required IList<LineupPerformanceResult> LineupPerformanceResults { get; set; }
     }
 }

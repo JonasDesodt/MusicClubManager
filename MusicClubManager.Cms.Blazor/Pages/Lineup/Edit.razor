@@ -77,7 +77,7 @@ else
 
     private async Task<ServiceResult<LineupResult>> FetchLineup(int id)
     {
-        return await LineupApiService.Get(id, new PaginationRequest { Page = 1, PageSize = 5 });
+        return await LineupApiService.Get(id);
     }
 
     private async Task SetModel(int id)
@@ -92,7 +92,7 @@ else
                     Name = lineupResult.Name
                 };
 
-            _performancesCount = (int)lineupResult.PagedLineupPerformanceResult.TotalCount;
+            _performancesCount = (int)lineupResult.LineupPerformanceResults.Count;
         }
     }
 

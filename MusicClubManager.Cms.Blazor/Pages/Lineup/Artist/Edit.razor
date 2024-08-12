@@ -33,6 +33,6 @@
             return;
         }
 
-        _lineupServiceResult = await LineupApiService.Get((int)id, new PaginationRequest { Page = 1, PageSize = 5 });
+        _lineupServiceResult = await LineupApiService.Get((int)id);
     }
 }

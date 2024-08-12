@@ -67,7 +67,7 @@ else
             return null;
         }
 
-        return await LineupApiService.Get(id, new PaginationRequest { Page = 1, PageSize = 5 });
+        return await LineupApiService.Get(id);
     }
 
     private async Task<PagedServiceResult<IList<LineupPerformanceResult>>?> FetchPerformances(int lineupId, Pagination pagination, PerformanceFilter performanceFilter)

@@ -1,4 +1,4 @@
-﻿@if (Model is not null && Model.PagedLineupPerformanceResult.Data is { } performanceResults)
+﻿@if (Model is not null && Model.LineupPerformanceResults is { } performanceResults)
 {
     <h3>@(Model.Name ?? @Model.Doors.ToShortDateString())</h3>
 

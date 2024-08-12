@@ -19,7 +19,7 @@
                 <h4>@Model.Name</h4>
             }
 
-            @if (Model.PagedLineupPerformanceResult.Data is { } lineupPerformanceResults)
+            @if (Model.LineupPerformanceResults is { } lineupPerformanceResults)
             {
                 <ul>
                     @foreach (var performanceResult in lineupPerformanceResults)

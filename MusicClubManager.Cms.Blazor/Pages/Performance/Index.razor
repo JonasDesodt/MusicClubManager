@@ -44,7 +44,7 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        _lineupResult = await LineupApiService.Get(LineupId, new PaginationRequest { Page = 1, PageSize = 5 });
+        _lineupResult = await LineupApiService.Get(LineupId);
 
         _pagedServiceResult = await FetchPerformances(LineupId, new PaginationRequest { Page = 1, PageSize = 24 });
 

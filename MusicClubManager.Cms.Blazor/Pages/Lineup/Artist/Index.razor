@@ -53,16 +53,16 @@ else
 
     protected override async Task OnParametersSetAsync()
     {
-        _lineupServiceResult = await FetchLineup(LineupId, new PaginationRequest { Page = 1, PageSize = 5 });
+        _lineupServiceResult = await FetchLineup(LineupId);
 
         _pagedServiceResult = await FetchArtists(LineupId, new PaginationRequest { Page = 1, PageSize = 24 }, new ArtistFilter { });
 
         await base.OnParametersSetAsync();
     }
 
-    private async Task<ServiceResult<LineupResult>?> FetchLineup(int id, PaginationRequest paginationRequest)
+    private async Task<ServiceResult<LineupResult>?> FetchLineup(int id)
     {
-        return await LineupApiService.Get(id, paginationRequest);
+        return await LineupApiService.Get(id);
     }
 
     private async Task<PagedServiceResult<IList<ArtistResult>>?> FetchArtists(int id, PaginationRequest paginationRequest, ArtistFilter artistFilter)

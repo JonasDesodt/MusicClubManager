@@ -8,7 +8,6 @@ using MusicClubManager.Dto.Transfer;
 using MusicClubManager.Models;
 using MusicClubManager.Services.Extensions;
 using MusicClubManager.Services.Extensions.Filters;
-using System.Collections.Generic;
 
 
 namespace MusicClubManager.Services
@@ -18,6 +17,34 @@ namespace MusicClubManager.Services
         public async Task<ServiceResult<LineupResult>> Create(LineupRequest request)
         {
             var now = DateTime.UtcNow;
+
+            if (request.EventId is { } eventId)
+            {
+                if (await dbContext.Events.FindAsync(eventId) is null)
+                {
+                    return new ServiceResult<LineupResult>
+                    {
+                        Messages =
+                        [
+                            new () { Message = "The event can not be found."}
+                        ]
+                    };
+                }
+            }
+
+            if (request.ImageId is { } imageId)
+            {
+                if (await dbContext.Images.FindAsync(imageId) is null)
+                {
+                    return new ServiceResult<LineupResult>
+                    {
+                        Messages =
+                        [
+                            new () { Message = "The image can not be found."}
+                        ]
+                    };
+                }
+            }
 
             var lineup = new Lineup
             {
@@ -34,43 +61,22 @@ namespace MusicClubManager.Services
 
             await dbContext.SaveChangesAsync();
 
-            if (lineup.EventId is not null)
-            {
-                lineup.Event = await dbContext.Events.FindAsync(lineup.EventId);
+            lineup = await dbContext.Lineups.IncludeAll().FirstOrDefaultAsync();
 
-                if (lineup.Event is null)
+            if (lineup is null)
+            {
+                return new ServiceResult<LineupResult>
                 {
-                    return new ServiceResult<LineupResult>
-                    {
-                        Messages =
-                        [
-                            new () { Message = "The event can not be found."}
-                        ]
-                    };
-                }
+                    Messages =
+                    [
+                        new () { Message = "The lineup is not created." }
+                    ]
+                };
             }
 
             return new ServiceResult<LineupResult>
             {
-                Data = new LineupResult
-                {
-                    Id = lineup.Id,
-                    Doors = lineup.Doors,
-                    Name = lineup.Name,
-                    Event = lineup.Event == null ? null : new EventResult
-                    {
-                        Id = lineup.Event.Id,
-                        Name = lineup.Event.Name,
-                    },
-                    IsSoldOut = lineup.IsSoldOut,
-                    PagedLineupPerformanceResult = new PagedResult<IList<LineupPerformanceResult>>
-                    {
-                        Data = [],
-                        Page = 1,
-                        PageSize = 24,
-                        TotalCount = 0
-                    }
-                }
+                Data = lineup.ToLineupResult()
             };
         }
 
@@ -118,13 +124,8 @@ namespace MusicClubManager.Services
 
         public async Task<ServiceResult<LineupResult>> Get(int id)
         {
-            var performancesTotalCount = await dbContext.Performances.CountAsync(p => p.LineupId == id);
-
             var lineup = await dbContext.Lineups
-                //.Sort()
-                .Include(l => l.Event)
-                .Include(l => l.Image)
-                .Include(l => (l.Performances.AsQueryable().Skip(0).Take(5).Include(p => p.Artist).ThenInclude(a => a != null ? a.Image : null)))
+                .IncludeAll()
                 .FirstOrDefaultAsync(l => l.Id == id);
 
             if (lineup is null)
@@ -140,152 +141,13 @@ namespace MusicClubManager.Services
 
             return new ServiceResult<LineupResult>
             {
-                Data = new LineupResult
-                {
-                    Id = lineup.Id,
-                    Doors = lineup.Doors,
-                    Name = lineup.Name,
-                    IsSoldOut = lineup.IsSoldOut,
-                    ImageResult = lineup.Image == null ? null : new ImageResult { Alt = lineup.Image.Alt, ContentType = lineup.Image.ContentType, Created = lineup.Image.Created, Id = lineup.Image.Id, Updated = lineup.Image.Updated },
-                    Event = lineup.Event == null ? null : new EventResult
-                    {
-                        Id = lineup.Event.Id,
-                        Name = lineup.Event.Name,
-                    },
-                    PagedLineupPerformanceResult = new PagedResult<IList<LineupPerformanceResult>>
-                    {
-                        Data = lineup.Performances.Select(p => new LineupPerformanceResult
-                        {
-                            Id = p.Id,
-                            BandcampId = p.BandcampId,
-                            BandcampLink = p.BandcampLink,
-                            Description = p.Description,
-                            Name = p.Name,
-                            Spotify = p.Spotify,
-                            YouTube = p.YouTube,
-                            Duration = p.Duration,
-                            Start = p.Start,
-                            Type = p.Type,
-                            ArtistResult = p.Artist != null
-                            ? new ArtistResult
-                            {
-                                Id = p.Artist.Id,
-                                Name = p.Artist.Name,
-                                Description = p.Artist.Description,
-                                ImageResult = p.Artist.Image != null
-                                ? new ImageResult
-                                {
-                                    Alt = p.Artist.Image.Alt,
-                                    ContentType = p.Artist.Image.ContentType,
-                                    Created = p.Artist.Image.Created,
-                                    Id = p.Artist.Image.Id,
-                                    Updated = p.Artist.Image.Updated
-                                }
-                                : null
-                            }
-                            : null! //temp hack, the artist in a performace should never be null
-                        }).ToList(),
-                        Page = 1,
-                        PageSize = 5,
-                        TotalCount = (uint)performancesTotalCount // does this counts the performances after the skip/take or does it return the totalCount?
-                    }
-                }
+                Data = lineup.ToLineupResult()
+
             };
         }
 
-
-
-        public async Task<ServiceResult<LineupResult>> Get(int id, PaginationRequest paginationRequest)
+        public async Task<ServiceResult<LineupResult>> Previous(int id)
         {
-            var performancesTotalCount = await dbContext.Performances.CountAsync(p => p.LineupId == id);
-
-            uint skip = (paginationRequest.Page - 1) * paginationRequest.PageSize; ;
-            int take = 5;
-
-            var lineupResult = await dbContext.Lineups
-                //.Sort()
-                .Include(l => l.Event)
-                .Include(l => l.Image)
-                .Select(l => new LineupResult
-                {
-                    Doors = l.Doors,
-                    Event = l.Event != null ? new EventResult { Id = l.Event.Id, Name = l.Event.Name } : null,
-                    ImageResult = l.Image == null ? null : new ImageResult { Alt = l.Image.Alt, ContentType = l.Image.ContentType, Created = l.Image.Created, Id = l.Image.Id, Updated = l.Image.Updated },
-                    Id = l.Id,
-                    Name = l.Name,
-                    IsSoldOut = l.IsSoldOut,
-                    PagedLineupPerformanceResult = new PagedResult<IList<LineupPerformanceResult>>
-                    {
-                        Page = paginationRequest.Page,
-                        PageSize = paginationRequest.PageSize,
-                        TotalCount = (uint)performancesTotalCount
-
-                    }
-                })
-                .FirstOrDefaultAsync(l => l.Id == id);
-
-            if (lineupResult is null)
-            {
-                return new ServiceResult<LineupResult>
-                {
-                    Messages =
-                    [
-                        new () { Message = "The lineup could not be found." }
-                    ]
-                };
-            }
-
-            lineupResult.PagedLineupPerformanceResult.Data = await dbContext.Performances
-                            .Include(p => p.Artist).ThenInclude(a => a != null ? a.Image : null)
-                            .Where(p => p.LineupId == id)
-                            .Skip((int)skip)
-                            .Take(take)
-                            .Select(p => new LineupPerformanceResult
-                            {
-                                Id = p.Id,
-                                BandcampId = p.BandcampId,
-                                BandcampLink = p.BandcampLink,
-                                Description = p.Description,
-                                Name = p.Name,
-                                Spotify = p.Spotify,
-                                YouTube = p.YouTube,
-                                Duration = p.Duration,
-                                Start = p.Start,
-                                Type = p.Type,
-                                ArtistResult = p.Artist != null ?
-                                            new ArtistResult
-                                            {
-                                                Id = p.Artist.Id,
-                                                Description = p.Artist.Description,
-                                                ImageResult = p.Artist.Image != null
-                                                            ? new ImageResult
-                                                            {
-                                                                Alt = p.Artist.Image.Alt,
-                                                                ContentType = p.Artist.Image.ContentType,
-                                                                Created = p.Artist.Image.Created,
-                                                                Id = p.Artist.Image.Id,
-                                                                Updated = p.Artist.Image.Updated
-                                                            }
-                                                            : null,
-                                                Name = p.Artist.Name
-                                            }
-                                            : null! //temp hack, the artist in a performace should never be null
-                            })
-                            .ToListAsync();
-
-            return new ServiceResult<LineupResult>
-            {
-                Data = lineupResult
-            };
-        }
-
-        public async Task<ServiceResult<LineupResult>> Previous(int id, PaginationRequest paginationRequest)
-        {
-            var performancesTotalCount = await dbContext.Performances.CountAsync(p => p.LineupId == id);
-
-            uint skip = (paginationRequest.Page - 1) * paginationRequest.PageSize; 
-            int take = 5;
-
             var previous = await dbContext.Lineups.PreviousOrLast(id);
 
             if (previous is null)
@@ -301,57 +163,14 @@ namespace MusicClubManager.Services
 
             var lineupResult = previous.ToLineupResult();
 
-            lineupResult.PagedLineupPerformanceResult.Data = await dbContext.Performances
-                              .Include(p => p.Artist).ThenInclude(a => a != null ? a.Image : null)
-                              .Where(p => p.LineupId == id)
-                              .Skip((int)skip)
-                              .Take(take)
-                              .Select(p => new LineupPerformanceResult
-                              {
-                                  Id = p.Id,
-                                  BandcampId = p.BandcampId,
-                                  BandcampLink = p.BandcampLink,
-                                  Description = p.Description,
-                                  Name = p.Name,
-                                  Spotify = p.Spotify,
-                                  YouTube = p.YouTube,
-                                  Duration = p.Duration,
-                                  Start = p.Start,
-                                  Type = p.Type,
-                                  ArtistResult = p.Artist != null ?
-                                              new ArtistResult
-                                              {
-                                                  Id = p.Artist.Id,
-                                                  Description = p.Artist.Description,
-                                                  ImageResult = p.Artist.Image != null
-                                                              ? new ImageResult
-                                                              {
-                                                                  Alt = p.Artist.Image.Alt,
-                                                                  ContentType = p.Artist.Image.ContentType,
-                                                                  Created = p.Artist.Image.Created,
-                                                                  Id = p.Artist.Image.Id,
-                                                                  Updated = p.Artist.Image.Updated
-                                                              }
-                                                              : null,
-                                                  Name = p.Artist.Name
-                                              }
-                                              : null! //temp hack, the artist in a performace should never be null
-                              })
-                              .ToListAsync();
-
             return new ServiceResult<LineupResult>
             {
                 Data = lineupResult
             };
         }
 
-        public async Task<ServiceResult<LineupResult>> Next(int id, PaginationRequest paginationRequest)
+        public async Task<ServiceResult<LineupResult>> Next(int id)
         {
-            var performancesTotalCount = await dbContext.Performances.CountAsync(p => p.LineupId == id);
-
-            uint skip = (paginationRequest.Page - 1) * paginationRequest.PageSize; ;
-            int take = 5;
-
             var next = await dbContext.Lineups.NextOrFirst(id);
 
             if (next is null)
@@ -366,44 +185,6 @@ namespace MusicClubManager.Services
             }
 
             var lineupResult = next.ToLineupResult();
-
-            lineupResult.PagedLineupPerformanceResult.Data = await dbContext.Performances
-                              .Include(p => p.Artist).ThenInclude(a => a != null ? a.Image : null)
-                              .Where(p => p.LineupId == id)
-                              .Skip((int)skip)
-                              .Take(take)
-                              .Select(p => new LineupPerformanceResult
-                              {
-                                  Id = p.Id,
-                                  BandcampId = p.BandcampId,
-                                  BandcampLink = p.BandcampLink,
-                                  Description = p.Description,
-                                  Name = p.Name,
-                                  Spotify = p.Spotify,
-                                  YouTube = p.YouTube,
-                                  Duration = p.Duration,
-                                  Start = p.Start,
-                                  Type = p.Type,
-                                  ArtistResult = p.Artist != null ?
-                                              new ArtistResult
-                                              {
-                                                  Id = p.Artist.Id,
-                                                  Description = p.Artist.Description,
-                                                  ImageResult = p.Artist.Image != null
-                                                              ? new ImageResult
-                                                              {
-                                                                  Alt = p.Artist.Image.Alt,
-                                                                  ContentType = p.Artist.Image.ContentType,
-                                                                  Created = p.Artist.Image.Created,
-                                                                  Id = p.Artist.Image.Id,
-                                                                  Updated = p.Artist.Image.Updated
-                                                              }
-                                                              : null,
-                                                  Name = p.Artist.Name
-                                              }
-                                              : null! //temp hack, the artist in a performace should never be null
-                              })
-                              .ToListAsync();
 
             return new ServiceResult<LineupResult>
             {
@@ -427,9 +208,7 @@ namespace MusicClubManager.Services
 
             var lineups = dbContext.Lineups
                 .Sort()
-                .Include(l => l.Image)
-                .Include(l => l.Performances)
-                .ThenInclude(p => p.Artist).ThenInclude(a => a != null ? a.Image : null)
+                .IncludeAll()
                 .Select(l => l)
                 .AddFilter(filter);
 
@@ -440,49 +219,7 @@ namespace MusicClubManager.Services
             var lineupResults = await lineups
                 .Skip((int)skip)
                 .Take((int)paginationRequest.PageSize)
-                .Select(l => new LineupResult
-                {
-                    Doors = l.Doors,
-                    Id = l.Id,
-                    IsSoldOut = l.IsSoldOut,
-                    Name = l.Name,
-                    ImageResult = l.Image == null ? null : new ImageResult { Alt = l.Image.Alt, ContentType = l.Image.ContentType, Created = l.Image.Created, Id = l.Image.Id, Updated = l.Image.Updated },
-                    PagedLineupPerformanceResult = new PagedResult<IList<LineupPerformanceResult>>
-                    {
-                        PageSize = 5,
-                        Page = 1,
-                        TotalCount = (uint)l.Performances.Count(),
-                        Data = l.Performances.Take(5).Select(p => new LineupPerformanceResult
-                        {
-                            ArtistResult = p.Artist != null ? new ArtistResult
-                            {
-                                Id = p.Artist.Id,
-                                Name = p.Artist.Name,
-                                Description = p.Artist.Description,
-                                ImageResult = p.Artist.Image != null
-                                                                ? new ImageResult
-                                                                {
-                                                                    Alt = p.Artist.Image.Alt,
-                                                                    ContentType = p.Artist.Image.ContentType,
-                                                                    Created = p.Artist.Image.Created,
-                                                                    Id = p.Artist.Image.Id,
-                                                                    Updated = p.Artist.Image.Updated
-                                                                }
-                                                                : null
-                            } : null!, //temp hack, the artist in a performace should never be null
-                            Id = p.Id,
-                            Duration = p.Duration,
-                            Start = p.Start,
-                            Type = p.Type,
-                            BandcampId = p.BandcampId,
-                            BandcampLink = p.BandcampLink,
-                            Description = p.Description,
-                            Name = p.Name,
-                            Spotify = p.Spotify,
-                            YouTube = p.YouTube
-                        }).ToList()
-                    }
-                }).ToListAsync();
+                .Select(l => l.ToLineupResult()).ToListAsync();
 
             return new PagedServiceResult<IList<LineupResult>>()
             {
@@ -497,8 +234,9 @@ namespace MusicClubManager.Services
         public async Task<ServiceResult<LineupResult>> Update(int id, LineupRequest request)
         {
             var lineup = await dbContext.Lineups
-                .Include(l => l.Image)
+                .IncludeAll()
                 .FirstOrDefaultAsync(l => l.Id == id);
+
             if (lineup is null)
             {
                 return new ServiceResult<LineupResult>
@@ -526,31 +264,34 @@ namespace MusicClubManager.Services
                 }
             }
 
+            if (request.ImageId is not null)
+            {
+                lineup.Image = await dbContext.Images.FindAsync(request.ImageId);
+
+                if (lineup.Image is null)
+                {
+                    return new ServiceResult<LineupResult>
+                    {
+                        Messages =
+                        [
+                            new () { Message = "The lineup has not been updated. The image could not be found." }
+                        ]
+                    };
+                }
+            }
+
             lineup.Doors = request.Doors;
             lineup.IsSoldOut = request.IsSoldOut;
             lineup.Name = request.Name;
             lineup.Updated = DateTime.UtcNow;
+            lineup.ImageId = request.ImageId;
+            lineup.EventId = request.EventId;
 
             await dbContext.SaveChangesAsync();
 
             return new ServiceResult<LineupResult>
             {
-                Data = new LineupResult
-                {
-                    Id = lineup.Id,
-                    Name = lineup.Name,
-                    Doors = lineup.Doors,
-                    IsSoldOut = request.IsSoldOut,
-                    ImageResult = lineup.Image == null ? null : new ImageResult { Alt = lineup.Image.Alt, ContentType = lineup.Image.ContentType, Created = lineup.Image.Created, Id = lineup.Image.Id, Updated = lineup.Image.Updated },
-                    Event = lineup.Event != null
-                    ? new EventResult
-                    {
-                        Id = lineup.Event.Id,
-                        Name = lineup.Event.Name
-                    }
-                    : null,
-                    PagedLineupPerformanceResult = null! //TODO: temp hack
-                }
+                Data = lineup.ToLineupResult()
             };
         }
     }
