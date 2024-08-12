@@ -10,5 +10,8 @@ namespace MusicClubManager.Abstractions
         Task<ServiceResult<LineupResult>> Get(int id, PaginationRequest paginationRequest);
 
         Task<ServiceResult<LineupResult>> Previous(int id, PaginationRequest paginationRequest);
+
+        Task<ServiceResult<LineupResult>> Next(int id, PaginationRequest paginationRequest);
+
     }
 }

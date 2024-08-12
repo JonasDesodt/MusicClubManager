@@ -46,14 +46,14 @@ namespace MusicClubManager.Api.Controllers
         }
 
         [HttpGet("Next/{id:int}")]
-        public async Task<IActionResult> Next([FromRoute] int id, [FromQuery] PaginationRequest? paginationRequest)
+        public async Task<IActionResult> Next([FromRoute] int id, [FromQuery] PaginationRequest paginationRequest)
         {
-            if (paginationRequest is null)
-            {
-                return Ok(await lineupDbService.Get(id));
-            }
+            //if (paginationRequest is null)
+            //{
+            //    return Ok(await lineupDbService.Get(id));
+            //}
 
-            return Ok(await lineupDbService.Get(id, paginationRequest));
+            return Ok(await lineupDbService.Next(id, paginationRequest));
         }
 
         [HttpPost]
