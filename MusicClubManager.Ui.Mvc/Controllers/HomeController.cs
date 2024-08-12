@@ -1,21 +1,21 @@
 using Microsoft.AspNetCore.Mvc;
+using MusicClubManager.Abstractions;
+using MusicClubManager.Dto.Filters;
+using MusicClubManager.Dto.Transfer;
 using MusicClubManager.Ui.Mvc.Models;
+using MusicClubManager.Ui.Mvc.Models.ViewModels;
 using System.Diagnostics;
 
 namespace MusicClubManager.Ui.Mvc.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController(ILineupService lineupApiService, ILogger<HomeController> logger) : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        public async Task<IActionResult> Index()
         {
-            _logger = logger;
-        }
+            var confirmed = await lineupApiService.GetAll(new PaginationRequest { Page = 2, PageSize = 3 }, new LineupFilter());
+            var soon = await lineupApiService.GetAll(new PaginationRequest { Page = 1, PageSize = 3 }, new LineupFilter());
 
-        public IActionResult Index()
-        {
-            return View();
+            return View(new HomeViewModel { Confirmed = confirmed, Soon = soon });
         }
 
         public IActionResult Privacy()

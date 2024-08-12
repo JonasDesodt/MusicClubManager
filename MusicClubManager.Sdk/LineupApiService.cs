@@ -80,6 +80,24 @@ namespace MusicClubManager.Sdk
             return result;
         }
 
+        public async Task<ServiceResult<LineupResult>> Previous(int id, PaginationRequest paginationRequest)
+        {
+            var httpClient = httpClientFactory.CreateClient("MusicClubManagerApi");
+
+            var httpResponseMessage = await httpClient.GetAsync("Lineup/Previous/" + id + $"?{paginationRequest.ToQueryString()}");
+
+            if (!httpResponseMessage.IsSuccessStatusCode || await httpResponseMessage.Content.ReadFromJsonAsync<ServiceResult<LineupResult>>() is not { } result)
+            {
+                return new ServiceResult<LineupResult>
+                {
+                    Messages = [new ServiceMessage { Message = "Failed to fetch the lineup." }],
+                };
+            }
+
+            return result;
+        }
+
+
         public async Task<PagedServiceResult<IList<LineupResult>>> GetAll(PaginationRequest paginationRequest, LineupFilter lineupFilter)
         {
             var httpClient = httpClientFactory.CreateClient("MusicClubManagerApi");

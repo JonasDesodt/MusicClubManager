@@ -21,5 +21,12 @@ namespace MusicClubManager.Ui.Mvc.Controllers
         {
             return View("Lineup", await lineupApiService.Get(id, new PaginationRequest {  Page = 1, PageSize = 4} ));
         }
+
+        [Route("Agenda/Previous/{id:int}")]
+        public async Task<IActionResult> Previous(int id)
+        {
+            return View("Lineup", await lineupApiService.Previous(id, new PaginationRequest { Page = 1, PageSize = 4 }));
+
+        }
     }
 }

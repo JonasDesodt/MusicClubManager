@@ -1,8 +1,52 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model HomeViewModel
+
+@{
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h2 class="display-4">Welcome</h2>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<section>
+    <h2>News</h2>
+</section>
+
+<section>
+    <h2>Confirmed</h2>
+
+    @if (Model.Confirmed.Data is { Count: > 0 } confirmed)
+    {
+        <ul>
+            @foreach (var lineupResult in confirmed)
+            {
+                <partial name="_LineupPartial" model="lineupResult" />
+            }
+        </ul>
+    }
+    else
+    {
+        <p>There has nothing been confirmed recently.</p>
+    }
+
+    <a asp-controller="agenda" asp-action="index">Show all</a>
+</section>
+
+<section>
+    <h2>Soon</h2>
+
+    @if (Model.Soon.Data is { Count: > 0 } soon)
+    {
+        <ul>
+            @foreach (var lineupResult in soon)
+            {
+                <partial name="_LineupPartial" model="lineupResult" />
+            }
+        </ul>
+    }
+    else
+    {
+        <p>There is currently nothing planned.</p>
+    }
+
+    <a asp-controller="agenda" asp-action="index">Show all</a>
+</section>
+
+
+

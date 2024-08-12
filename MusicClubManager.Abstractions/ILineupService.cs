@@ -8,5 +8,7 @@ namespace MusicClubManager.Abstractions
     public interface ILineupService : IService<LineupRequest, LineupResult, LineupFilter> 
     {
         Task<ServiceResult<LineupResult>> Get(int id, PaginationRequest paginationRequest);
+
+        Task<ServiceResult<LineupResult>> Previous(int id, PaginationRequest paginationRequest);
     }
 }

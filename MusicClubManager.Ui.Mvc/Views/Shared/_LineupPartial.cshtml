@@ -1,12 +1,7 @@
 ﻿@model LineupResult
 
-@{
-    var pge = ViewContext.HttpContext.Request.Query["page"];
-    var pgeSize = ViewContext.HttpContext.Request.Query["pageSize"];
-}
-
 <li>
-    <a asp-controller="Agenda" asp-action="Lineup" asp-route-id="@Model.Id" asp-route-page="@pge" asp-route-pageSize="@pgeSize">
+    <a asp-controller="Agenda" asp-action="Lineup" asp-route-id="@Model.Id" asp-route-page="@this.GetQueryParam("page")" asp-route-pageSize="@this.GetQueryParam("pageSize")">
         @if (Model.ImageResult is not null)
         {
             <img src="@($"https://localhost:7188/image/download/{Model.ImageResult.Id}")" alt="@Model.ImageResult.Alt" />
