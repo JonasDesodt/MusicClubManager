@@ -1,4 +1,8 @@
-﻿using System;
+﻿using MusicClubManager.Abstractions;
+using MusicClubManager.Dto.Filters;
+using MusicClubManager.Dto.Transfer;
+using MusicClubManager.Sdk;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;

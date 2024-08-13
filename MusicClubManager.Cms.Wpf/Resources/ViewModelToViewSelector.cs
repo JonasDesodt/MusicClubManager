@@ -21,10 +21,17 @@ namespace MusicClubManager.Cms.Wpf.Resources
                 return base.SelectTemplate(item, container);
             }
 
-            //if (item is not Type viewModelType)
+            //if (item is AgendaViewModel agendaViewModel)
+            //{
+            //    agendaViewModel.PerformanceApiService = serviceProvider.GetRequiredService<IPerformanceService>();
+            //}
+
+            //if(item is not Type viewModelType)
             //{
             //    return base.SelectTemplate(item, container);
             //}
+
+            //item = serviceProvider.GetRequiredService(viewModelType);
 
             //var viewType = viewModelType.Name switch
             //{
@@ -41,13 +48,9 @@ namespace MusicClubManager.Cms.Wpf.Resources
 
             if (viewType != null)
             {
-                (item as AgendaViewModel).PerformanceApiService = serviceProvider.GetRequiredService<IPerformanceService>();
-
                 var view = serviceProvider.GetRequiredService(viewType) as FrameworkElement;
                 return new DataTemplate { VisualTree = new FrameworkElementFactory(view?.GetType())};
             }
-
-            //var viewModel = serviceProvider.GetRequiredService(viewModelType);
 
             return base.SelectTemplate(item, container);
         }

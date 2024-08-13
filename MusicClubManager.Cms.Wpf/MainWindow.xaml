@@ -8,9 +8,9 @@
         xmlns:views="clr-namespace:MusicClubManager.Cms.Wpf.Views"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Window.DataContext>
+    <!--<Window.DataContext>
         <vms:MainViewModel />
-    </Window.DataContext>
+    </Window.DataContext>-->
 
     <!--<Window.Resources>
         <DataTemplate DataType="{x:Type vms:AgendaViewModel}">
