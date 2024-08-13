@@ -10,10 +10,7 @@
 </SubTitle>
 
 <Navigation>
-    @{
-        var href = $"/lineups/{LineupId}/performances";
-    }
-    <li><NavLink href="@href">Peformances (@_performancesCount)</NavLink></li>
+    <li><NavLink href="@($"/lineups/{LineupId}/performances")">Peformances (@_performancesCount/24)</NavLink></li>
 </Navigation>
 
 @if (_model is { } model)

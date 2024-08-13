@@ -34,3 +34,18 @@
     article > section > h3 {
         text-transform: uppercase;
     }
+
+    article > ul.cycle-buttons {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    article > ul.cycle-buttons > li > ::deep a {
+        color: rgb(0,0,0);
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+        article > ul.cycle-buttons > li > ::deep a:hover {
+            color: var(--hover-color);
+        }

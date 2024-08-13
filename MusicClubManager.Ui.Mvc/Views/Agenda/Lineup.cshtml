@@ -67,9 +67,14 @@
             </section>
         }
 
-        <ul>
-            <a asp-controller="Agenda" asp-action="Previous" asp-route-id="@Model.Data.Id">Previous</a>
-            <a asp-controller="Agenda" asp-action="Next" asp-route-id="@Model.Data.Id">Next</a>
+        <ul class="cycle-buttons">
+            <li>
+                <a asp-controller="Agenda" asp-action="Previous" asp-route-id="@Model.Data.Id">Previous</a>
+            </li>
+
+            <li>
+                <a asp-controller="Agenda" asp-action="Next" asp-route-id="@Model.Data.Id">Next</a>
+            </li>
         </ul>  
     </article>
 }

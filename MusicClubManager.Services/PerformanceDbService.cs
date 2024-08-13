@@ -50,6 +50,19 @@ namespace MusicClubManager.Services
                 };
             }
 
+            //check if the performances count on the lineup is not bigger than 24
+            if(await dbContext.Performances.CountAsync(p => p.LineupId == request.LineupId ) == 24)
+            {
+                return new ServiceResult<PerformanceResult>
+                {
+                    Messages =
+                    [
+                        new () { Message = "The performance is not created. The associated lineup already has 24 performances." }
+                    ]
+                };
+            }
+
+
             var now = DateTime.UtcNow;
 
             var performance = new Performance
