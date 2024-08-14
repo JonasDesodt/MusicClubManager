@@ -3,7 +3,7 @@ using System.Windows.Input;
 
 namespace MusicClubManager.Cms.Wpf.Commands
 {
-    public class SelectCommand<TModel>(ISelect<TModel> viewModel) : ICommand
+    public class FilterCommand<TFilter>(IFilter<TFilter> viewModel) : ICommand
     {
         public event EventHandler? CanExecuteChanged;
 
@@ -12,11 +12,11 @@ namespace MusicClubManager.Cms.Wpf.Commands
             return true;
         }
 
-        public void Execute(object? parameter)
+        public async void Execute(object? parameter)
         {
-            if(parameter is TModel item)
+            if(parameter is TFilter filter)
             {
-                viewModel.Select(item);
+                await viewModel.Fetch(filter);
             }
         }
     }

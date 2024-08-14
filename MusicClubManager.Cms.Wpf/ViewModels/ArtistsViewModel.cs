@@ -8,7 +8,7 @@ using MusicClubManager.Cms.Wpf.Commands;
 
 namespace MusicClubManager.Cms.Wpf.ViewModels
 {
-    internal class ArtistsViewModel : ViewModelBase, ISelect<ArtistResult>, IUpdate<ArtistRequest>
+    internal class ArtistsViewModel : ViewModelBase, IUpdate<ArtistResult>, IFilter<ArtistFilter>
     {
         private readonly IArtistService _artistApiService;
 
@@ -18,22 +18,13 @@ namespace MusicClubManager.Cms.Wpf.ViewModels
             set => SetProperty(ref _pagedServiceResult, value);
         }
 
-        private ArtistResult? _selectedItem;
-        public ArtistResult? SelectedItem
-        {
-            get => _selectedItem;
-            set => SetProperty(ref _selectedItem, value);
-        }
-
-        public SelectCommand<ArtistResult> SelectCommand { get; set; }
-
         public ArtistsViewModel(IArtistService artistApiService)
         {
             _artistApiService = artistApiService;
 
-            SelectCommand = new SelectCommand<ArtistResult>(this);
+            FilterCommand = new FilterCommand<ArtistFilter>(this);
 
-            UpdateCommand = new UpdateCommand<ArtistRequest>(this);
+            UpdateCommand = new UpdateCommand<ArtistResult>(this);
 
             Fetch();
         }
@@ -43,31 +34,23 @@ namespace MusicClubManager.Cms.Wpf.ViewModels
             PagedServiceResult = await _artistApiService.GetAll(new PaginationRequest { Page = 1, PageSize = 24 }, new ArtistFilter { });
         }
 
-        public void Select(ArtistResult item)
+        public async Task Fetch(ArtistFilter filter)
         {
-            _selectedItem = item;
+            PagedServiceResult = await _artistApiService.GetAll(new PaginationRequest { Page = 1, PageSize = 24 }, filter);
         }
 
-        public UpdateCommand<ArtistRequest> UpdateCommand { get; set; }
+        public FilterCommand<ArtistFilter> FilterCommand { get; set; }
 
-        public ArtistRequest? GetRequest()
+        public UpdateCommand<ArtistResult> UpdateCommand { get; set; }
+
+        public async Task Update(ArtistResult result)
         {
-            if(_selectedItem is not ArtistResult result)
+            await _artistApiService.Update(result.Id, new ArtistRequest
             {
-                return null;
-            }
-
-            return new ArtistRequest
-            {
-                Name = _selectedItem.Name,
-                Description = _selectedItem.Description,
-                ImageId = _selectedItem.ImageResult?.Id
-            };
-        }
-
-        public async Task Update(int id, ArtistRequest request)
-        {
-            await _artistApiService.Update(id, request);
+                Name = result.Name,
+                Description = result.Description,
+                ImageId = result.ImageResult?.Id
+            });
 
             Fetch();
         }

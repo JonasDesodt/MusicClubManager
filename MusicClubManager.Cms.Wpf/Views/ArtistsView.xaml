@@ -9,22 +9,50 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <c:ImageConverter x:Key="ImageConverter"/>
+
+        <c:ArtistFilterConverter x:Key="ArtistFilterConverter" />
     </UserControl.Resources>
     <StackPanel Orientation="Horizontal" >
-        <ListView 
-            ItemsSource="{Binding PagedServiceResult.Data}" 
-            SelectedItem="{Binding SelectedItem}" 
-            DisplayMemberPath="Name">
-        </ListView>
-        
         <StackPanel>
-            <TextBox Text="{Binding SelectedItem.Name, UpdateSourceTrigger=PropertyChanged}" />
+            <StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Name"/>
+                    
+                    <TextBox x:Name="txtName" />
+                </StackPanel>
 
-            <Image Source="{Binding SelectedItem.ImageResult.Id, Converter={StaticResource ImageConverter}}" ></Image>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Description"/>
+                    
+                    <TextBox x:Name="txtDescription"/>
+                </StackPanel>
 
-            <Button Content="SAVE" Command="{Binding UpdateCommand}" CommandParameter="{Binding SelectedItem.Id}" />
-        </StackPanel>       
+                <Button Content="Filter" Command="{Binding FilterCommand}">
+                        <Button.CommandParameter>
+                            <MultiBinding Converter="{StaticResource ArtistFilterConverter}" >
+                                <Binding Path="Text" ElementName="txtName" BindsDirectlyToSource="False" />
+
+                                <Binding Path="Text" ElementName="txtDescription" />
+                            </MultiBinding>
+                        </Button.CommandParameter>    
+                </Button>
+            </StackPanel>
+            
+            <ListView 
+                ItemsSource="{Binding PagedServiceResult.Data}"         
+                DisplayMemberPath="Name"
+                x:Name="ListView">
+            </ListView>
+        </StackPanel>
+
+
+
+        <StackPanel>
+            <TextBox Text="{Binding Path=SelectedItem.Name, ElementName=ListView, UpdateSourceTrigger=PropertyChanged}" />
+
+            <Image Source="{Binding Path=SelectedItem.ImageResult.Id, ElementName=ListView, Converter={StaticResource ImageConverter}}" ></Image>
+
+            <Button Content="SAVE" Command="{Binding UpdateCommand}" CommandParameter="{Binding Path=SelectedItem, ElementName=ListView}" />
+        </StackPanel>
     </StackPanel>
-
-
 </UserControl>

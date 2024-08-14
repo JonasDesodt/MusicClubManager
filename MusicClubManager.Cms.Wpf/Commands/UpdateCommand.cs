@@ -3,7 +3,7 @@ using System.Windows.Input;
 
 namespace MusicClubManager.Cms.Wpf.Commands
 {
-    public class UpdateCommand<TRequest>(IUpdate<TRequest> viewModel) : ICommand
+    public class UpdateCommand<TResult>(IUpdate<TResult> viewModel) : ICommand
     {
         public event EventHandler? CanExecuteChanged;
 
@@ -12,11 +12,11 @@ namespace MusicClubManager.Cms.Wpf.Commands
             return true;
         }
 
-        public void Execute(object? parameter)
+        public async void Execute(object? parameter)
         {
-            if(parameter is int id && viewModel.GetRequest() is TRequest request)
+            if(parameter is TResult result)
             {
-                viewModel.Update(id, request);
+                await viewModel.Update(result);
             }
         }
     }
