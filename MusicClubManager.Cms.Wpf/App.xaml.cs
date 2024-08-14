@@ -29,10 +29,13 @@ namespace MusicClubManager.Cms.Wpf
             services.AddSingleton<MainWindow>();
             services.AddSingleton<MainViewModel>();
 
-            services.AddSingleton<ViewModelToViewSelector>();
+            //services.AddSingleton<ViewModelToViewSelector>();
 
             services.AddTransient<AgendaView>();
             services.AddTransient<AgendaViewModel>();
+
+            services.AddTransient<HomeView>();
+            services.AddTransient<HomeViewModel>();
 
             services.AddScoped<IPerformanceService, PerformanceApiService>();
 

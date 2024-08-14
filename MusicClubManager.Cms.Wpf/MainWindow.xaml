@@ -12,10 +12,21 @@
         <DataTemplate DataType="{x:Type vms:AgendaViewModel}">
             <views:AgendaView />
         </DataTemplate>
-    </Window.Resources>
 
-    <ContentControl 
-        Content="{Binding CurrentViewModel, UpdateSourceTrigger=PropertyChanged}" />
+        <DataTemplate DataType="{x:Type vms:HomeViewModel}">
+            <views:HomeView />
+        </DataTemplate>
+    </Window.Resources>
+    <StackPanel Orientation="Vertical">
+        <StackPanel Orientation="Horizontal">
+            <Button Content="Home" Command="{Binding NavigateCommand}" CommandParameter="Home" />
+
+            <Button Content="Agenda" Command="{Binding NavigateCommand}" CommandParameter="Agenda" />
+        </StackPanel>
+
+        <ContentControl Content="{Binding CurrentViewModel, UpdateSourceTrigger=PropertyChanged}" />
+    </StackPanel>
+
 
     <!--<ContentControl 
         Content="{Binding CurrentViewModel, UpdateSourceTrigger=PropertyChanged}"
