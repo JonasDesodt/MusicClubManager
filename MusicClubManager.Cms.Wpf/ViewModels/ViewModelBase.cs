@@ -24,10 +24,13 @@ namespace MusicClubManager.Cms.Wpf.ViewModels
         protected bool SetProperty<T>(ref T backingField, T value, [CallerMemberName] string? propertyName = null)
         {
             if (Equals(backingField, value))
+            {
                 return false;
+            }
 
             backingField = value;
             OnPropertyChanged(propertyName);
+
             return true;
         }
     }

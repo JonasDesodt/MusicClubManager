@@ -7,7 +7,7 @@
         xmlns:vms="clr-namespace:MusicClubManager.Cms.Wpf.ViewModels"
         xmlns:views="clr-namespace:MusicClubManager.Cms.Wpf.Views"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Music Club Manager" Height="450" Width="800">
     <Window.Resources>
         <DataTemplate DataType="{x:Type vms:AgendaViewModel}">
             <views:AgendaView />
@@ -16,19 +16,36 @@
         <DataTemplate DataType="{x:Type vms:HomeViewModel}">
             <views:HomeView />
         </DataTemplate>
+
+        <Style TargetType="Button" >
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Margin" Value="5" />
+            <Setter Property="Padding" Value="5" />
+
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                  
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </Window.Resources>
-    <StackPanel Orientation="Vertical">
+    <StackPanel Orientation="Vertical">       
         <StackPanel Orientation="Horizontal">
-            <Button Content="Home" Command="{Binding NavigateCommand}" CommandParameter="Home" />
+            <StackPanel.Style>
+                <Style TargetType="StackPanel">
+                    <Setter Property="Background" Value="SteelBlue" />
+                </Style>
+            </StackPanel.Style>
 
-            <Button Content="Agenda" Command="{Binding NavigateCommand}" CommandParameter="Agenda" />
+            <Button Content="HOME" Command="{Binding NavigateCommand}" CommandParameter="Home" />
+
+            <Button Content="AGENDA" Command="{Binding NavigateCommand}" CommandParameter="Agenda" />
         </StackPanel>
-
+        
         <ContentControl Content="{Binding CurrentViewModel, UpdateSourceTrigger=PropertyChanged}" />
     </StackPanel>
-
-
-    <!--<ContentControl 
-        Content="{Binding CurrentViewModel, UpdateSourceTrigger=PropertyChanged}"
-        ContentTemplateSelector="{DynamicResource ViewModelToViewSelector}"/>-->
 </Window>
