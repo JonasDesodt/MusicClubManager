@@ -7,7 +7,6 @@ using MusicClubManager.Sdk;
 using MusicClubManager.Cms.Wpf.ViewModels;
 using System;
 using System.ComponentModel;
-using MusicClubManager.Cms.Wpf.Navigators;
 using MusicClubManager.Cms.Wpf.Views;
 using MusicClubManager.Cms.Wpf.Resources;
 using System.Runtime.InteropServices.JavaScript;

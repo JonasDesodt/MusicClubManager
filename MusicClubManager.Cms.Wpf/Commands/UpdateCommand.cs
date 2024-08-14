@@ -1,10 +1,9 @@
 ﻿using MusicClubManager.Cms.Wpf.Interfaces;
-using MusicClubManager.Cms.Wpf.ViewModels;
 using System.Windows.Input;
 
 namespace MusicClubManager.Cms.Wpf.Commands
 {
-    public class NavigateCommand(INavigate viewModel) : ICommand
+    public class UpdateCommand<TRequest>(IUpdate<TRequest> viewModel) : ICommand
     {
         public event EventHandler? CanExecuteChanged;
 
@@ -15,10 +14,10 @@ namespace MusicClubManager.Cms.Wpf.Commands
 
         public void Execute(object? parameter)
         {
-            if(parameter is string route)
+            if(parameter is int id && viewModel.GetRequest() is TRequest request)
             {
-                viewModel.Navigate(route);
-            }       
+                viewModel.Update(id, request);
+            }
         }
     }
 }

@@ -10,7 +10,7 @@
     <UserControl.Resources>
         <c:ImageConverter x:Key="ImageConverter"/>
     </UserControl.Resources>
-    <StackPanel Orientation="Horizontal">
+    <StackPanel Orientation="Horizontal" >
         <ListView 
             ItemsSource="{Binding PagedServiceResult.Data}" 
             SelectedItem="{Binding SelectedItem}" 
@@ -18,10 +18,11 @@
         </ListView>
         
         <StackPanel>
-            <Label Content="{Binding SelectedItem.Name, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBox Text="{Binding SelectedItem.Name, UpdateSourceTrigger=PropertyChanged}" />
 
             <Image Source="{Binding SelectedItem.ImageResult.Id, Converter={StaticResource ImageConverter}}" ></Image>
-            
+
+            <Button Content="SAVE" Command="{Binding UpdateCommand}" CommandParameter="{Binding SelectedItem.Id}" />
         </StackPanel>       
     </StackPanel>
 

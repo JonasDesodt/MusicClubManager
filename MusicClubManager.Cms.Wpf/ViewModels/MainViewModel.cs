@@ -1,9 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using MusicClubManager.Cms.Wpf.Commands;
+using MusicClubManager.Cms.Wpf.Interfaces;
 
 namespace MusicClubManager.Cms.Wpf.ViewModels
 {
-    public class MainViewModel : ViewModelBase
+    public class MainViewModel : ViewModelBase, INavigate
     {
         private readonly IServiceProvider _serviceProvider;
 
@@ -25,7 +26,7 @@ namespace MusicClubManager.Cms.Wpf.ViewModels
 
         public NavigateCommand NavigateCommand { get; set; }
 
-        public void NavigateToAgenda(string route)
+        public void Navigate(string route)
         {
             switch (route)
             {
@@ -39,9 +40,7 @@ namespace MusicClubManager.Cms.Wpf.ViewModels
                 default:
                     CurrentViewModel = _serviceProvider.GetRequiredService<HomeViewModel>();
                     break;
-            }
-
-           
+            }           
         }
     }
 }
