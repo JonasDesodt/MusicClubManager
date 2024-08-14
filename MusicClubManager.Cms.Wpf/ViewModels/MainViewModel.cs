@@ -5,6 +5,7 @@ namespace MusicClubManager.Cms.Wpf.ViewModels
     public class MainViewModel : ViewModelBase
     {
         private readonly IServiceProvider _serviceProvider;
+
         public MainViewModel(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;

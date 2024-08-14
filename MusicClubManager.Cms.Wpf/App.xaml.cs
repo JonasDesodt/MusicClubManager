@@ -50,8 +50,8 @@ namespace MusicClubManager.Cms.Wpf
             var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
 
             // Get ViewModelToViewSelector from services and add it to MainWindow resources
-            var templateSelector = _serviceProvider.GetRequiredService<ViewModelToViewSelector>();
-            mainWindow.Resources.Add("ViewModelToViewSelector", templateSelector);
+            //var templateSelector = _serviceProvider.GetRequiredService<ViewModelToViewSelector>();
+            //mainWindow.Resources.Add("ViewModelToViewSelector", templateSelector);
 
             // Show the MainWindow
             mainWindow.Show();

@@ -21,28 +21,9 @@ namespace MusicClubManager.Cms.Wpf.Resources
                 return base.SelectTemplate(item, container);
             }
 
-            //if (item is AgendaViewModel agendaViewModel)
-            //{
-            //    agendaViewModel.PerformanceApiService = serviceProvider.GetRequiredService<IPerformanceService>();
-            //}
-
-            //if(item is not Type viewModelType)
-            //{
-            //    return base.SelectTemplate(item, container);
-            //}
-
-            //item = serviceProvider.GetRequiredService(viewModelType);
-
-            //var viewType = viewModelType.Name switch
-            //{
-            //    "AgendaViewModel" => typeof(AgendaView),
-            //    _ => null
-            //};
-
             var viewType = item switch
             {
                 AgendaViewModel => typeof(AgendaView),
-                // Add other ViewModel to View mappings here
                 _ => null
             };
 

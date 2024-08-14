@@ -24,23 +24,8 @@ namespace MusicClubManager.Cms.Wpf.ViewModels
             set => SetProperty(ref _data, value);
         }
 
-
-        //public IPerformanceService? PerformanceApiService
-        //{
-        //    get => _performanceApiService;
-        //    set
-        //    {
-        //        _performanceApiService = value;
-        //        Fetch();
-        //    }
-        //}
         private async void Fetch()
         {
-            //if (_performanceApiService is null)
-            //{
-            //    return;
-            //}
-
             Data = (await _performanceApiService.GetAll(new PaginationRequest { Page = 1, PageSize = 24 }, new PerformanceFilter { })).Data;
         }
     }
