@@ -1,0 +1,29 @@
+﻿<UserControl x:Class="MusicClubManager.Cms.Wpf.Views.ArtistsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MusicClubManager.Cms.Wpf.Views"
+             xmlns:c="clr-namespace:MusicClubManager.Cms.Wpf.Converters"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <c:ImageConverter x:Key="ImageConverter"/>
+    </UserControl.Resources>
+    <StackPanel Orientation="Horizontal">
+        <ListView 
+            ItemsSource="{Binding PagedServiceResult.Data}" 
+            SelectedItem="{Binding SelectedItem}" 
+            DisplayMemberPath="Name">
+        </ListView>
+        
+        <StackPanel>
+            <Label Content="{Binding SelectedItem.Name, UpdateSourceTrigger=PropertyChanged}" />
+
+            <Image Source="{Binding SelectedItem.ImageResult.Id, Converter={StaticResource ImageConverter}}" ></Image>
+            
+        </StackPanel>       
+    </StackPanel>
+
+
+</UserControl>

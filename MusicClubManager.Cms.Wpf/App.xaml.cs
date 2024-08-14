@@ -37,6 +37,10 @@ namespace MusicClubManager.Cms.Wpf
             services.AddTransient<HomeView>();
             services.AddTransient<HomeViewModel>();
 
+            services.AddTransient<ArtistsView>();
+            services.AddTransient<ArtistsViewModel>();
+
+            services.AddScoped<IArtistService, ArtistApiService>();
             services.AddScoped<IPerformanceService, PerformanceApiService>();
 
             services.AddHttpClient("MusicClubManagerApi", httpClient =>

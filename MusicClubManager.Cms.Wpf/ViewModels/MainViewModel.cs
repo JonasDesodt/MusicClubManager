@@ -32,6 +32,9 @@ namespace MusicClubManager.Cms.Wpf.ViewModels
                 case "Agenda":
                     CurrentViewModel = _serviceProvider.GetRequiredService<AgendaViewModel>();
                     break;
+                case "Artists":
+                    CurrentViewModel = _serviceProvider.GetRequiredService<ArtistsViewModel>();
+                    break;
                 case "Home":
                 default:
                     CurrentViewModel = _serviceProvider.GetRequiredService<HomeViewModel>();

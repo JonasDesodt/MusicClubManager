@@ -9,18 +9,22 @@
         mc:Ignorable="d"
         Title="Music Club Manager" Height="450" Width="800">
     <Window.Resources>
+        <DataTemplate DataType="{x:Type vms:HomeViewModel}">
+            <views:HomeView />
+        </DataTemplate>
+        
         <DataTemplate DataType="{x:Type vms:AgendaViewModel}">
             <views:AgendaView />
         </DataTemplate>
 
-        <DataTemplate DataType="{x:Type vms:HomeViewModel}">
-            <views:HomeView />
+        <DataTemplate DataType="{x:Type vms:ArtistsViewModel}">
+            <views:ArtistsView />
         </DataTemplate>
 
         <Style TargetType="Button" >
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="Foreground" Value="White" />
+            <!--<Setter Property="Foreground" Value="White" />-->
             <Setter Property="Cursor" Value="Hand" />
             <Setter Property="FontWeight" Value="Bold" />
             <Setter Property="Margin" Value="5" />
@@ -44,6 +48,8 @@
             <Button Content="HOME" Command="{Binding NavigateCommand}" CommandParameter="Home" />
 
             <Button Content="AGENDA" Command="{Binding NavigateCommand}" CommandParameter="Agenda" />
+
+            <Button Content="ARTISTS" Command="{Binding NavigateCommand}" CommandParameter="Artists" />
         </StackPanel>
         
         <ContentControl Content="{Binding CurrentViewModel, UpdateSourceTrigger=PropertyChanged}" />
