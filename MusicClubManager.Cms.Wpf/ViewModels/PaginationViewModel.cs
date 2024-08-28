@@ -40,7 +40,7 @@ namespace MusicClubManager.Cms.Wpf.ViewModels
 
             TotalPages = (int)Math.Ceiling(TotalCount / (decimal)PageSize);
 
-            PreviousPageCommand = new PreviousPageCommand(this); 
+            PreviousPageCommand = new PreviousPageCommand(this);
             NextPageCommand = new NextPageCommand(this);
         }
 

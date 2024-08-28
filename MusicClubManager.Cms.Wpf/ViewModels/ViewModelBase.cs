@@ -14,6 +14,14 @@ namespace MusicClubManager.Cms.Wpf.ViewModels
 {
     public abstract class ViewModelBase : INotifyPropertyChanged
     {
+        private bool _isReady = false;
+        public bool IsReady
+        {
+            get => _isReady;
+            set => SetProperty(ref _isReady, value);
+        }
+
+
         public event PropertyChangedEventHandler? PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)

@@ -13,7 +13,7 @@
             <views:HomeView />
         </DataTemplate>
         
-        <DataTemplate DataType="{x:Type vms:AgendaViewModel}">
+        <DataTemplate DataType="{x:Type vms:AgendaViewModel}" >
             <views:AgendaView />
         </DataTemplate>
 
@@ -21,13 +21,12 @@
             <views:ArtistsView />
         </DataTemplate>
 
-        <Style TargetType="Button" >
+        <Style TargetType="Button">
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="BorderThickness" Value="0" />
             <!--<Setter Property="Foreground" Value="White" />-->
             <Setter Property="Cursor" Value="Hand" />
             <Setter Property="FontWeight" Value="Bold" />
-            <Setter Property="Margin" Value="5" />
             <Setter Property="Padding" Value="5" />
 
             <Style.Triggers>
@@ -35,6 +34,14 @@
                   
                 </Trigger>
             </Style.Triggers>
+        </Style>
+
+        <Style TargetType="TextBox">
+            <Setter Property="Padding" Value="5" />
+        </Style>
+
+        <Style TargetType="TextBlock">
+            <Setter Property="Padding" Value="5" />
         </Style>
     </Window.Resources>
     <StackPanel Orientation="Vertical">       
@@ -51,7 +58,7 @@
 
             <Button Content="ARTISTS" Command="{Binding NavigateCommand}" CommandParameter="Artists" />
         </StackPanel>
-        
+
         <ContentControl Content="{Binding CurrentViewModel, UpdateSourceTrigger=PropertyChanged}" />
     </StackPanel>
 </Window>

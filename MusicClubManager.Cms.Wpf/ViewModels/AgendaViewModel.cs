@@ -31,19 +31,21 @@ namespace MusicClubManager.Cms.Wpf.ViewModels
             _performanceApiService = performanceApiService;
 
             Fetch(new PaginationRequest { Page = 1, PageSize = 1 });
-
-
         }
-
 
         private async void Fetch(PaginationRequest paginationRequest)
         {
+            if (IsReady is true) IsReady = false;
+
             PagedServiceResult = await _performanceApiService.GetAll(paginationRequest, new PerformanceFilter { });
 
             PaginationViewModel = new PaginationViewModel((int)PagedServiceResult.Page, (int)PagedServiceResult.PageSize, (int)PagedServiceResult.TotalCount)
             {
                 OnFetchRequest = Fetch,
+ 
             };
+
+            IsReady = true;
         }
     }
 }

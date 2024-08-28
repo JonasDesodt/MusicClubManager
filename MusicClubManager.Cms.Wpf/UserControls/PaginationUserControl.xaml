@@ -3,21 +3,38 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:b="clr-namespace:MusicClubManager.Cms.Wpf.Behaviors"
+             xmlns:v="clr-namespace:MusicClubManager.Cms.Wpf.ValidationRules"
+             xmlns:me="clr-namespace:MusicClubManager.Cms.Wpf.MarkupExtensions"
              xmlns:local="clr-namespace:MusicClubManager.Cms.Wpf.UserControls"
-             xmlns:vm="clr-namespace:MusicClubManager.Cms.Wpf.ViewModels"   
+             xmlns:vm="clr-namespace:MusicClubManager.Cms.Wpf.ViewModels" xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance Type=vm:PaginationViewModel}">
-    <StackPanel Orientation="Horizontal" >
-        <Button Command="{Binding PreviousPageCommand}">Previous</Button>
+    <StackPanel 
+            Orientation="Horizontal" 
+            HorizontalAlignment="Center" >
+        <Button Command="{Binding PreviousPageCommand}" Margin="5" >Previous</Button>
 
-        <TextBox Text="{Binding Page, UpdateSourceTrigger=LostFocus, Mode=TwoWay}"/>
+        <TextBox
+            Margin="0 5 0 5">
+            <i:Interaction.Behaviors>
+                <b:TextBoxOnEnterBehavior />
+            </i:Interaction.Behaviors>
 
-        <TextBlock>
+            <Binding Path="Page" UpdateSourceTrigger="LostFocus" Mode="TwoWay" x:Name="TotalPagesBinding">
+                <Binding.ValidationRules>
+                    <!--<v:PageValidationRule TotalPages="{me:BindingExtension Path=TotalPages}" />-->
+                    <v:PageValidationRule />
+                </Binding.ValidationRules>
+            </Binding>
+        </TextBox>
+
+        <TextBlock Margin="0 5 0 5">
             <Run>/</Run>
             
             <Run Text="{Binding TotalPages}"/>
         </TextBlock>
 
-        <Button Command="{Binding NextPageCommand}">Next</Button>
+        <Button Command="{Binding NextPageCommand}" Margin="5">Next</Button>
     </StackPanel>
 </UserControl>
