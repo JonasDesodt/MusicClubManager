@@ -7,7 +7,7 @@ using MusicClubManager.Dto.Transfer;
 
 namespace MusicClubManager.Cms.Blazor.Extensions
 {
-    public static class NavigationManangerExtensions
+    public static class NavigationManagerExtensions
     {
         public static PaginationRequest? GetPaginationRequest(this NavigationManager navigationManager)
         {

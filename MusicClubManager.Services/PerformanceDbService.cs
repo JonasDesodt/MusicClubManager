@@ -264,7 +264,7 @@ namespace MusicClubManager.Services
                         {
                             Id = performance.Id,
                             Start = performance.Start,
-                            //Duration = performance.Duration, => bugged: bigint in db 
+                            Duration = performance.Duration,// => bugged: bigint in db
                             Type = performance.Type,
                             BandcampId = performance.BandcampId,
                             BandcampLink = performance.BandcampLink,
@@ -326,7 +326,7 @@ namespace MusicClubManager.Services
                         {
                             Id = performance.Id,
                             Start = performance.Start,
-                            //Duration = performance.Duration, => bugged: bigint in db 
+                            Duration = performance.Duration,// => bugged: bigint in db 
                             Type = performance.Type,
                             BandcampId = performance.BandcampId,
                             BandcampLink = performance.BandcampLink,

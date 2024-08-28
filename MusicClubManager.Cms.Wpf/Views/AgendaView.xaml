@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MusicClubManager.Cms.Wpf.Views"
+             xmlns:uc="clr-namespace:MusicClubManager.Cms.Wpf.UserControls" 
              xmlns:vm="clr-namespace:MusicClubManager.Cms.Wpf.ViewModels" 
              xmlns:c="clr-namespace:MusicClubManager.Cms.Wpf.Converters"
              mc:Ignorable="d" 
@@ -12,53 +13,76 @@
     <UserControl.Resources>
         <c:ImageConverter x:Key="ImageConverter"/>
 
-        <CollectionViewSource x:Key='src' 
-                      Source="{Binding Data}">
-            <CollectionViewSource.GroupDescriptions>
-                <PropertyGroupDescription PropertyName="LineupResult.Doors" />
+        <c:PerformanceEndConverter x:Key="PerformanceEndConverter" />
+
+        <CollectionViewSource x:Key='Doors' Source="{Binding PagedServiceResult.Data}">
+            <CollectionViewSource.GroupDescriptions >
+                <PropertyGroupDescription PropertyName="LineupResult.Id"  />
             </CollectionViewSource.GroupDescriptions>
         </CollectionViewSource>
     </UserControl.Resources>
-    
-    <StackPanel Orientation="Horizontal" >
+
+    <StackPanel Orientation="Horizontal"  >
         <StackPanel>
-            <ListView ItemsSource="{Binding Source={StaticResource src}}" x:Name="ListView">
+            <ListView ItemsSource="{Binding Source={StaticResource Doors}}" x:Name="ListView" >
                 <ListView.GroupStyle>
                     <GroupStyle>
-                        <GroupStyle.HeaderTemplate>
-                            <DataTemplate>
-                                <TextBlock FontWeight="Bold" FontSize="14" Text="{Binding Name}"/>
-                            </DataTemplate>
-                        </GroupStyle.HeaderTemplate>
+                        <GroupStyle.ContainerStyle>
+                            <Style TargetType="{x:Type GroupItem}">
+                                <Setter Property="Margin" Value="0,0,0,5"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type GroupItem}">
+                                            <Expander IsExpanded="True" >
+                                                <Expander.Header>
+                                                    <TextBlock  FontWeight="Bold" FontSize="16">
+                                                        <Run Text="{Binding Path=Items[0].LineupResult.Doors, StringFormat=\{0:d\}}" />
+                                                        <Run Text="{Binding Path=Items[0].LineupResult.Name}" />
+                                                    </TextBlock>
+                                                </Expander.Header>
+                                                <Expander.Content>
+                                                    <ItemsPresenter />
+                                                </Expander.Content>
+                                            </Expander>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </GroupStyle.ContainerStyle>
                     </GroupStyle>
                 </ListView.GroupStyle>
 
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn Header="Date" DisplayMemberBinding="{Binding Start, StringFormat=\{0:dd.MM.yy\}}" />
+                        <GridViewColumn Header="Date" DisplayMemberBinding="{Binding Start, StringFormat=\{0:dddd\}}" />
 
                         <GridViewColumn Header="Start" DisplayMemberBinding="{Binding Start, StringFormat=\{0:HH:mm\}}" />
+
+                        <GridViewColumn Header="End" >
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock>
+                                        <TextBlock.Text>
+                                            <MultiBinding Converter="{StaticResource PerformanceEndConverter }">
+                                                <Binding Path="Start" />
+                                                <Binding Path="Duration" />
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
 
                         <GridViewColumn Header="Artist" DisplayMemberBinding="{Binding ArtistResult.Name}"/>
                     </GridView>
                 </ListView.View>
             </ListView>
 
-            <!--<ListView ItemsSource="{Binding Data}" x:Name="ListView">
-                <ListView.View>
-                    <GridView>
-                        <GridViewColumn Header="Date" DisplayMemberBinding="{Binding Start, StringFormat=\{0:dd.MM.yy\}}" />
-
-                        <GridViewColumn Header="Start" DisplayMemberBinding="{Binding Start, StringFormat=\{0:HH:mm\}}" />
-
-                        <GridViewColumn Header="Artist" DisplayMemberBinding="{Binding ArtistResult.Name}"/>
-                    </GridView>
-                </ListView.View>
-            </ListView>-->
+            <uc:PaginationUserControl DataContext="{Binding PaginationViewModel}"/>
         </StackPanel>
 
         <StackPanel>
-            <TextBox Text="{Binding Path=SelectedItem.ArtistResult.Name, ElementName=ListView, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBox Text="{Binding Path=SelectedItem.ArtistResult.Name, ElementName=ListView}" />
 
             <Image Source="{Binding Path=SelectedItem.ArtistResult.ImageResult.Id, ElementName=ListView, Converter={StaticResource ImageConverter}}" ></Image>
 

@@ -24,4 +24,8 @@
     <ProjectReference Include="..\MusicClubManager.Sdk\MusicClubManager.Sdk.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\" />
+  </ItemGroup>
+
 </Project>

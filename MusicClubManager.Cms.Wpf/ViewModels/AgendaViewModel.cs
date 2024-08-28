@@ -9,24 +9,41 @@ namespace MusicClubManager.Cms.Wpf.ViewModels
     {
         private readonly IPerformanceService _performanceApiService;
 
+
+        private PagedServiceResult<IList<PerformanceResult>>? _pagedServiceResult;
+        public PagedServiceResult<IList<PerformanceResult>>? PagedServiceResult
+        {
+            get => _pagedServiceResult;
+            set => SetProperty(ref _pagedServiceResult, value);
+        }
+
+
+        private PaginationViewModel? _paginationViewModel;
+        public PaginationViewModel? PaginationViewModel
+        {
+            get => _paginationViewModel;
+            set => SetProperty(ref _paginationViewModel, value);
+        }
+
+
         public AgendaViewModel(IPerformanceService performanceApiService)
         {
             _performanceApiService = performanceApiService;
 
-            Fetch();
+            Fetch(new PaginationRequest { Page = 1, PageSize = 1 });
+
+
         }
 
-        private IList<PerformanceResult>? _data;
-        public IList<PerformanceResult>? Data
-        {
-            get => _data;
 
-            set => SetProperty(ref _data, value);
-        }
-
-        private async void Fetch()
+        private async void Fetch(PaginationRequest paginationRequest)
         {
-            Data = (await _performanceApiService.GetAll(new PaginationRequest { Page = 1, PageSize = 24 }, new PerformanceFilter { })).Data;
+            PagedServiceResult = await _performanceApiService.GetAll(paginationRequest, new PerformanceFilter { });
+
+            PaginationViewModel = new PaginationViewModel((int)PagedServiceResult.Page, (int)PagedServiceResult.PageSize, (int)PagedServiceResult.TotalCount)
+            {
+                OnFetchRequest = Fetch,
+            };
         }
     }
 }
