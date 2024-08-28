@@ -1,8 +1,9 @@
-﻿using MusicClubManager.Dto.Transfer;
+﻿using MusicClubManager.Cms.Wpf.Commands;
+using MusicClubManager.Dto.Transfer;
 
 namespace MusicClubManager.Cms.Wpf.ViewModels
 {
-    public class PaginationViewModel: ViewModelBase
+    public class PaginationViewModel
     {
         private int _page;
         public int Page
@@ -16,42 +17,31 @@ namespace MusicClubManager.Cms.Wpf.ViewModels
 
                     OnFetchRequest(new PaginationRequest { Page = (uint)Page, PageSize = (uint)PageSize });
                 }
-
-                //SetProperty(ref _page, value);
             }
         }
 
-        private int _pageSize;
-        public int PageSize
-        {
-            get => _pageSize;
-            set => _pageSize = value;
-            //set => SetProperty(ref _pageSize, value);
-        }
+        public int PageSize { get; set; }
 
-        private int _totalCount;
-        public int TotalCount
-        {
-            get => _totalCount;
-            set => _totalCount = value;
-            //set => SetProperty(ref _totalCount, value);
-        }
+        public int TotalCount { get; set; }
 
-        private int _totalPages;
-        public int TotalPages
-        {
-            get => _totalPages;
-            set => _totalPages = value;
-        }
+        public int TotalPages { get; set; }
+
+
+        public PreviousPageCommand PreviousPageCommand { get; set; }
+        public NextPageCommand NextPageCommand { get; set; }
 
 
         public PaginationViewModel(int page, int pageSize, int totalCount)
         {
             _page = page;
-            _pageSize = pageSize;
-            _totalCount = totalCount;
 
-            _totalPages = (int)Math.Ceiling(TotalCount / (decimal)PageSize);
+            PageSize = pageSize;
+            TotalCount = totalCount;
+
+            TotalPages = (int)Math.Ceiling(TotalCount / (decimal)PageSize);
+
+            PreviousPageCommand = new PreviousPageCommand(this); 
+            NextPageCommand = new NextPageCommand(this);
         }
 
         public required Action<PaginationRequest> OnFetchRequest { get; set; }

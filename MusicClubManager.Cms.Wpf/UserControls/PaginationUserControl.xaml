@@ -8,7 +8,7 @@
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance Type=vm:PaginationViewModel}">
     <StackPanel Orientation="Horizontal" >
-        <Button>Previous</Button>
+        <Button Command="{Binding PreviousPageCommand}">Previous</Button>
 
         <TextBox Text="{Binding Page, UpdateSourceTrigger=LostFocus, Mode=TwoWay}"/>
 
@@ -17,7 +17,7 @@
             
             <Run Text="{Binding TotalPages}"/>
         </TextBlock>
-        
-        <Button>Next</Button>
+
+        <Button Command="{Binding NextPageCommand}">Next</Button>
     </StackPanel>
 </UserControl>
