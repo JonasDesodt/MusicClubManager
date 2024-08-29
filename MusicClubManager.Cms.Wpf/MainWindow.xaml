@@ -44,8 +44,13 @@
             <Setter Property="Padding" Value="5" />
         </Style>
     </Window.Resources>
-    <StackPanel Orientation="Vertical">       
-        <StackPanel Orientation="Horizontal">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        
+        <StackPanel Orientation="Horizontal" Grid.Row="0">
             <StackPanel.Style>
                 <Style TargetType="StackPanel">
                     <Setter Property="Background" Value="SteelBlue" />
@@ -59,6 +64,8 @@
             <Button Content="ARTISTS" Command="{Binding NavigateCommand}" CommandParameter="Artists" />
         </StackPanel>
 
-        <ContentControl Content="{Binding CurrentViewModel, UpdateSourceTrigger=PropertyChanged}" />
-    </StackPanel>
+        <ContentControl 
+            Grid.Row="1"
+            Content="{Binding CurrentViewModel, UpdateSourceTrigger=PropertyChanged}" />
+    </Grid>
 </Window>

@@ -1,6 +1,5 @@
 ﻿using System.Windows.Controls;
 using MusicClubManager.Cms.Wpf.ViewModels;
-using System.Windows.Data;
 using MusicClubManager.Cms.Wpf.ValidationRules;
 
 namespace MusicClubManager.Cms.Wpf.UserControls
@@ -16,7 +15,10 @@ namespace MusicClubManager.Cms.Wpf.UserControls
             
             DataContextChanged += (sender, args) =>
             {
-                ((PageValidationRule)TotalPagesBinding.ValidationRules[0]).TotalPages = ((PaginationViewModel)DataContext).TotalPages;
+                if(DataContext is PaginationViewModel viewModel)
+                {
+                    ((PageValidationRule)TotalPagesBinding.ValidationRules[0]).TotalPages = viewModel.TotalPages;
+                }
             };
         }  
     }

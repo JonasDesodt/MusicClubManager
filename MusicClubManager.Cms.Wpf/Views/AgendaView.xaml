@@ -25,13 +25,24 @@
     </UserControl.Resources>
 
     <Grid>
-        <TextBlock Text="Loading..." HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24"
-             Visibility="{Binding IsReady, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=True}"/>
-
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        
+        <TextBlock 
+            Background="Transparent"
+            Text="Loading..." 
+            VerticalAlignment="Center"
+            HorizontalAlignment="Center"
+            FontSize="24"
+            Visibility="{Binding IsReady, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=True}" Panel.ZIndex="1"
+            Grid.Row="0"
+            Padding="5"/>
+           
         <StackPanel 
             Visibility="{Binding IsReady, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=False}"
-            
-            Orientation="Horizontal"  >
+            Orientation="Horizontal"
+            Grid.Row="0">
             <StackPanel>
                 <ListView ItemsSource="{Binding Source={StaticResource Doors}}" x:Name="ListView" >
                     <ListView.GroupStyle>
@@ -99,6 +110,6 @@
             </StackPanel>
         </StackPanel>
     </Grid>
-    
+
 
 </UserControl>
