@@ -4,20 +4,38 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MusicClubManager.Cms.Wpf.UserControls"
+             xmlns:vm="clr-namespace:MusicClubManager.Cms.Wpf.ViewModels"
+             xmlns:c="clr-namespace:MusicClubManager.Cms.Wpf.Converters"
              mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance Type=vm:CalendarViewModel}"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
-        <Style TargetType="Border">
-            <Setter Property="BorderThickness" Value="1" />
+        <c:DateOnlyToDayOfMonthConverter x:Key="DateOnlyToDayOfWeekConverter"/>
+
+        <c:MonthConverter x:Key="MonthConverter"/>
+               
+        <Style TargetType="Border" x:Key="CellBorder">
+            <Setter Property="BorderThickness" Value="0 0 1 1" />
+            <Setter Property="Padding" Value="5" />
+            <Setter Property="BorderBrush" Value="Gray" />
+        </Style>
+
+        <Style TargetType="Border" x:Key="HeaderBorder">
+            <Setter Property="BorderThickness" Value="0 0 1 2" />
+            <Setter Property="Padding" Value="5" />
             <Setter Property="BorderBrush" Value="Gray" />
         </Style>
 
         <Style TargetType="StackPanel">
             <Setter Property="Orientation" Value="Vertical" />
         </Style>
+
+        <Style TargetType="ListView">
+            <Setter Property="BorderThickness" Value="0" />
+        </Style>
     </UserControl.Resources>
-    
-    <Border Margin="5" x:Name="Calendar">               
+
+    <Border Margin="5" x:Name="Calendar" BorderThickness="2 2 1 1" BorderBrush="Gray">
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" MinWidth="100"/>
@@ -38,168 +56,315 @@
                 <RowDefinition Height="*" MinHeight="100"/>
                 <RowDefinition Height="*" MinHeight="100"/>
                 <RowDefinition Height="*" MinHeight="100"/>
+                <RowDefinition Height="*" MinHeight="100"/>
             </Grid.RowDefinitions>
 
-            <Border Grid.Row="0" Grid.ColumnSpan="7" >
-                <TextBlock Text="Year" HorizontalAlignment="Center" FontWeight="Bold"/>
+            <Border Grid.Row="0" Grid.ColumnSpan="7" Style="{StaticResource HeaderBorder}">
+                <TextBlock Text="{Binding Year}" HorizontalAlignment="Center" FontWeight="Bold"/>
             </Border>
 
-            <Border Grid.Row="1" Grid.ColumnSpan="7" >
-                <TextBlock Text="Month" HorizontalAlignment="Center" FontWeight="Bold"/>
+            <Border Grid.Row="1" Grid.ColumnSpan="7" Style="{StaticResource HeaderBorder}">
+                <TextBlock Text="{Binding Month, Converter={StaticResource MonthConverter}}" HorizontalAlignment="Center" FontWeight="Bold"/>
             </Border>
 
-            <Border Grid.Row="2" Grid.Column="0">
+            <Border Grid.Row="2" Grid.Column="0" Style="{StaticResource HeaderBorder}">
                 <TextBlock Text="Monday" FontWeight="Bold"/>
             </Border>
-            <Border Grid.Row="2" Grid.Column="1">
+            <Border Grid.Row="2" Grid.Column="1" Style="{StaticResource HeaderBorder}">
                 <TextBlock Text="Tuesday" FontWeight="Bold"/>
             </Border>
-            <Border Grid.Row="2" Grid.Column="2">
+            <Border Grid.Row="2" Grid.Column="2" Style="{StaticResource HeaderBorder}">
                 <TextBlock Text="Wednesday" FontWeight="Bold"/>
             </Border>
-            <Border Grid.Row="2" Grid.Column="3">
+            <Border Grid.Row="2" Grid.Column="3" Style="{StaticResource HeaderBorder}">
                 <TextBlock Text="Thursday" FontWeight="Bold"/>
             </Border>
-            <Border Grid.Row="2" Grid.Column="4">
-                <TextBlock Text="Friday" FontWeight="Bold"/>
+            <Border Grid.Row="2" Grid.Column="4" Style="{StaticResource HeaderBorder}">
+                <TextBlock Text="Friday" FontWeight="Bold" />
             </Border>
-            <Border Grid.Row="2" Grid.Column="5">
+            <Border Grid.Row="2" Grid.Column="5" Style="{StaticResource HeaderBorder}">
                 <TextBlock Text="Saturday" FontWeight="Bold"/>
             </Border>
-            <Border Grid.Row="2" Grid.Column="6">
+            <Border Grid.Row="2" Grid.Column="6" Style="{StaticResource HeaderBorder}">
                 <TextBlock Text="Sunday" FontWeight="Bold"/>
             </Border>
 
-            <Border Grid.Row="2" Grid.Column="0">
-                <StackPanel />
+            <Border Grid.Row="3" Grid.Column="0" Style="{StaticResource CellBorder}">
+                <StackPanel>
+                    <TextBlock FontWeight="Bold" HorizontalAlignment="Right" Text="{Binding Cells[0].Date, Converter={StaticResource DateOnlyToDayOfWeekConverter}}"/>
+
+                    <ListView ItemsSource="{Binding Cells[0].PerformanceResults}" DisplayMemberPath="ArtistResult.Name"/>
+                </StackPanel>
             </Border>
-            <Border Grid.Row="2" Grid.Column="1">
-                <StackPanel />
+            <Border Grid.Row="3" Grid.Column="1" Style="{StaticResource CellBorder}">
+                <StackPanel>
+                    <TextBlock FontWeight="Bold" HorizontalAlignment="Right" Text="{Binding Cells[1].Date, Converter={StaticResource DateOnlyToDayOfWeekConverter}}"/>
+
+                    <ListView ItemsSource="{Binding Cells[1].PerformanceResults}" DisplayMemberPath="ArtistResult.Name"/>
+                </StackPanel>
             </Border>
-            <Border Grid.Row="2" Grid.Column="2">
-                <StackPanel />
+            <Border Grid.Row="3" Grid.Column="2" Style="{StaticResource CellBorder}">
+                <StackPanel>
+                    <TextBlock FontWeight="Bold" HorizontalAlignment="Right" Text="{Binding Cells[2].Date, Converter={StaticResource DateOnlyToDayOfWeekConverter}}"/>
+
+                    <ListView ItemsSource="{Binding Cells[2].PerformanceResults}" DisplayMemberPath="ArtistResult.Name"/>
+                </StackPanel>
             </Border>
-            <Border Grid.Row="2" Grid.Column="3">
-                <StackPanel />
+            <Border Grid.Row="3" Grid.Column="3" Style="{StaticResource CellBorder}">
+                <StackPanel>
+                    <TextBlock FontWeight="Bold" HorizontalAlignment="Right" Text="{Binding Cells[3].Date, Converter={StaticResource DateOnlyToDayOfWeekConverter}}"/>
+
+                    <ListView ItemsSource="{Binding Cells[3].PerformanceResults}" DisplayMemberPath="ArtistResult.Name"/>
+                </StackPanel>
             </Border>
-            <Border Grid.Row="2" Grid.Column="4">
-                <StackPanel />
+            <Border Grid.Row="3" Grid.Column="4" Style="{StaticResource CellBorder}">
+                <StackPanel>
+                    <TextBlock FontWeight="Bold" HorizontalAlignment="Right" Text="{Binding Cells[4].Date, Converter={StaticResource DateOnlyToDayOfWeekConverter}}"/>
+
+                    <ListView ItemsSource="{Binding Cells[4].PerformanceResults}" DisplayMemberPath="ArtistResult.Name"/>
+                </StackPanel>
             </Border>
-            <Border Grid.Row="2" Grid.Column="5">
-                <StackPanel />
+            <Border Grid.Row="3" Grid.Column="5" Style="{StaticResource CellBorder}">
+                <StackPanel>
+                    <TextBlock FontWeight="Bold" HorizontalAlignment="Right" Text="{Binding Cells[5].Date, Converter={StaticResource DateOnlyToDayOfWeekConverter}}"/>
+
+                    <ListView ItemsSource="{Binding Cells[5].PerformanceResults}" DisplayMemberPath="ArtistResult.Name"/>
+                </StackPanel>
             </Border>
-            <Border Grid.Row="2" Grid.Column="6">
-                <StackPanel />
+            <Border Grid.Row="3" Grid.Column="6" Style="{StaticResource CellBorder}">
+                <StackPanel>
+                    <TextBlock FontWeight="Bold" HorizontalAlignment="Right" Text="{Binding Cells[6].Date, Converter={StaticResource DateOnlyToDayOfWeekConverter}}"/>
+                    
+                    <ListView ItemsSource="{Binding Cells[6].PerformanceResults}" DisplayMemberPath="ArtistResult.Name"/>
+                </StackPanel>
             </Border>
 
-            <Border Grid.Row="3" Grid.Column="0">
-                <StackPanel />
+            <Border Grid.Row="4" Grid.Column="0" Style="{StaticResource CellBorder}">
+                <StackPanel>
+                    <TextBlock FontWeight="Bold" HorizontalAlignment="Right" Text="{Binding Cells[7].Date, Converter={StaticResource DateOnlyToDayOfWeekConverter}}"/>
+                    
+                    <ListView ItemsSource="{Binding Cells[7].PerformanceResults}" DisplayMemberPath="ArtistResult.Name"/>
+                </StackPanel>
             </Border>
-            <Border Grid.Row="3" Grid.Column="1">
-                <StackPanel />
+            <Border Grid.Row="4" Grid.Column="1" Style="{StaticResource CellBorder}">
+                <StackPanel>
+                    <TextBlock FontWeight="Bold" HorizontalAlignment="Right" Text="{Binding Cells[8].Date, Converter={StaticResource DateOnlyToDayOfWeekConverter}}"/>
+
+                    <ListView ItemsSource="{Binding Cells[8].PerformanceResults}" DisplayMemberPath="ArtistResult.Name"/>
+                </StackPanel>
             </Border>
-            <Border Grid.Row="3" Grid.Column="2">
-                <StackPanel />
+            <Border Grid.Row="4" Grid.Column="2" Style="{StaticResource CellBorder}">
+                <StackPanel>
+                    <TextBlock FontWeight="Bold" HorizontalAlignment="Right" Text="{Binding Cells[9].Date, Converter={StaticResource DateOnlyToDayOfWeekConverter}}"/>
+
+                    <ListView ItemsSource="{Binding Cells[9].PerformanceResults}" DisplayMemberPath="ArtistResult.Name"/>
+                </StackPanel>
             </Border>
-            <Border Grid.Row="3" Grid.Column="3">
-                <StackPanel />
+            <Border Grid.Row="4" Grid.Column="3" Style="{StaticResource CellBorder}">
+                <StackPanel>
+                    <TextBlock FontWeight="Bold" HorizontalAlignment="Right" Text="{Binding Cells[10].Date, Converter={StaticResource DateOnlyToDayOfWeekConverter}}"/>
+
+                    <ListView ItemsSource="{Binding Cells[10].PerformanceResults}" DisplayMemberPath="ArtistResult.Name"/>
+                </StackPanel>
             </Border>
-            <Border Grid.Row="3" Grid.Column="4">
-                <StackPanel />
+            <Border Grid.Row="4" Grid.Column="4" Style="{StaticResource CellBorder}">
+                <StackPanel>
+                    <TextBlock FontWeight="Bold" HorizontalAlignment="Right" Text="{Binding Cells[11].Date, Converter={StaticResource DateOnlyToDayOfWeekConverter}}"/>
+
+                    <ListView ItemsSource="{Binding Cells[11].PerformanceResults}" DisplayMemberPath="ArtistResult.Name"/>
+                </StackPanel>
             </Border>
-            <Border Grid.Row="3" Grid.Column="5">
-                <StackPanel />
+            <Border Grid.Row="4" Grid.Column="5" Style="{StaticResource CellBorder}">
+                <StackPanel>
+                    <TextBlock FontWeight="Bold" HorizontalAlignment="Right" Text="{Binding Cells[12].Date, Converter={StaticResource DateOnlyToDayOfWeekConverter}}"/>
+
+                    <ListView ItemsSource="{Binding Cells[12].PerformanceResults}" DisplayMemberPath="ArtistResult.Name"/>
+                </StackPanel>
             </Border>
-            <Border Grid.Row="3" Grid.Column="6">
-                <StackPanel />
+            <Border Grid.Row="4" Grid.Column="6" Style="{StaticResource CellBorder}">
+                <StackPanel>
+                    <TextBlock FontWeight="Bold" HorizontalAlignment="Right" Text="{Binding Cells[13].Date, Converter={StaticResource DateOnlyToDayOfWeekConverter}}"/>
+
+                    <ListView ItemsSource="{Binding Cells[13].PerformanceResults}" DisplayMemberPath="ArtistResult.Name"/>
+                </StackPanel>
             </Border>
 
-            <Border Grid.Row="4" Grid.Column="0">
-                <StackPanel />
+            <Border Grid.Row="5" Grid.Column="0"  Style="{StaticResource CellBorder}">
+                <StackPanel>
+                    <TextBlock FontWeight="Bold" HorizontalAlignment="Right" Text="{Binding Cells[14].Date, Converter={StaticResource DateOnlyToDayOfWeekConverter}}"/>
+
+                    <ListView ItemsSource="{Binding Cells[14].PerformanceResults}" DisplayMemberPath="ArtistResult.Name"/>
+                </StackPanel>
             </Border>
-            <Border Grid.Row="4" Grid.Column="1">
-                <StackPanel />
+            <Border Grid.Row="5" Grid.Column="1" Style="{StaticResource CellBorder}">
+                <StackPanel>
+                    <TextBlock FontWeight="Bold" HorizontalAlignment="Right" Text="{Binding Cells[15].Date, Converter={StaticResource DateOnlyToDayOfWeekConverter}}"/>
+
+                    <ListView ItemsSource="{Binding Cells[15].PerformanceResults}" DisplayMemberPath="ArtistResult.Name"/>
+                </StackPanel>
             </Border>
-            <Border Grid.Row="4" Grid.Column="2">
-                <StackPanel />
+            <Border Grid.Row="5" Grid.Column="2" Style="{StaticResource CellBorder}">
+                <StackPanel>
+                    <TextBlock FontWeight="Bold" HorizontalAlignment="Right" Text="{Binding Cells[16].Date, Converter={StaticResource DateOnlyToDayOfWeekConverter}}"/>
+
+                    <ListView ItemsSource="{Binding Cells[16].PerformanceResults}" DisplayMemberPath="ArtistResult.Name"/>
+                </StackPanel>
             </Border>
-            <Border Grid.Row="4" Grid.Column="3">
-                <StackPanel />
+            <Border Grid.Row="5" Grid.Column="3" Style="{StaticResource CellBorder}">
+                <StackPanel>
+                    <TextBlock FontWeight="Bold" HorizontalAlignment="Right" Text="{Binding Cells[17].Date, Converter={StaticResource DateOnlyToDayOfWeekConverter}}"/>
+
+                    <ListView ItemsSource="{Binding Cells[17].PerformanceResults}" DisplayMemberPath="ArtistResult.Name"/>
+                </StackPanel>
             </Border>
-            <Border Grid.Row="4" Grid.Column="4">
-                <StackPanel />
+            <Border Grid.Row="5" Grid.Column="4" Style="{StaticResource CellBorder}">
+                <StackPanel>
+                    <TextBlock FontWeight="Bold" HorizontalAlignment="Right" Text="{Binding Cells[18].Date, Converter={StaticResource DateOnlyToDayOfWeekConverter}}"/>
+
+                    <ListView ItemsSource="{Binding Cells[18].PerformanceResults}" DisplayMemberPath="ArtistResult.Name"/>
+                </StackPanel>
             </Border>
-            <Border Grid.Row="4" Grid.Column="5">
-                <StackPanel />
+            <Border Grid.Row="5" Grid.Column="5" Style="{StaticResource CellBorder}">
+                <StackPanel>
+                    <TextBlock FontWeight="Bold" HorizontalAlignment="Right" Text="{Binding Cells[19].Date, Converter={StaticResource DateOnlyToDayOfWeekConverter}}"/>
+
+                    <ListView ItemsSource="{Binding Cells[19].PerformanceResults}" DisplayMemberPath="ArtistResult.Name"/>
+                </StackPanel>
             </Border>
-            <Border Grid.Row="4" Grid.Column="6">
-                <StackPanel />
+            <Border Grid.Row="5" Grid.Column="6" Style="{StaticResource CellBorder}">
+                <StackPanel>
+                    <TextBlock FontWeight="Bold" HorizontalAlignment="Right" Text="{Binding Cells[20].Date, Converter={StaticResource DateOnlyToDayOfWeekConverter}}"/>
+
+                    <ListView ItemsSource="{Binding Cells[20].PerformanceResults}" DisplayMemberPath="ArtistResult.Name"/>
+                </StackPanel>
             </Border>
 
-            <Border Grid.Row="5" Grid.Column="0">
-                <StackPanel />
+            <Border Grid.Row="6" Grid.Column="0" Style="{StaticResource CellBorder}">
+                <StackPanel>
+                    <TextBlock FontWeight="Bold" HorizontalAlignment="Right" Text="{Binding Cells[21].Date, Converter={StaticResource DateOnlyToDayOfWeekConverter}}"/>
+
+                    <ListView ItemsSource="{Binding Cells[21].PerformanceResults}" DisplayMemberPath="ArtistResult.Name" />
+                </StackPanel>
             </Border>
-            <Border Grid.Row="5" Grid.Column="1">
-                <StackPanel />
+            <Border Grid.Row="6" Grid.Column="1" Style="{StaticResource CellBorder}">
+                <StackPanel>
+                    <TextBlock FontWeight="Bold" HorizontalAlignment="Right" Text="{Binding Cells[22].Date, Converter={StaticResource DateOnlyToDayOfWeekConverter}}"/>
+
+                    <ListView ItemsSource="{Binding Cells[22].PerformanceResults}" DisplayMemberPath="ArtistResult.Name"/>
+                </StackPanel>
             </Border>
-            <Border Grid.Row="5" Grid.Column="2">
-                <StackPanel />
+            <Border Grid.Row="6" Grid.Column="2" Style="{StaticResource CellBorder}">
+                <StackPanel>
+                    <TextBlock FontWeight="Bold" HorizontalAlignment="Right" Text="{Binding Cells[23].Date, Converter={StaticResource DateOnlyToDayOfWeekConverter}}"/>
+
+                    <ListView ItemsSource="{Binding Cells[23].PerformanceResults}" DisplayMemberPath="ArtistResult.Name"/>
+                </StackPanel>
             </Border>
-            <Border Grid.Row="5" Grid.Column="3">
-                <StackPanel />
+            <Border Grid.Row="6" Grid.Column="3" Style="{StaticResource CellBorder}">
+                <StackPanel>
+                    <TextBlock FontWeight="Bold" HorizontalAlignment="Right" Text="{Binding Cells[24].Date, Converter={StaticResource DateOnlyToDayOfWeekConverter}}"/>
+
+                    <ListView ItemsSource="{Binding Cells[24].PerformanceResults}" DisplayMemberPath="ArtistResult.Name"/>
+                </StackPanel>
             </Border>
-            <Border Grid.Row="5" Grid.Column="4">
-                <StackPanel />
+            <Border Grid.Row="6" Grid.Column="4" Style="{StaticResource CellBorder}">
+                <StackPanel>
+                    <TextBlock FontWeight="Bold" HorizontalAlignment="Right" Text="{Binding Cells[25].Date, Converter={StaticResource DateOnlyToDayOfWeekConverter}}"/>
+
+                    <ListView ItemsSource="{Binding Cells[25].PerformanceResults}" DisplayMemberPath="ArtistResult.Name"/>
+                </StackPanel>
             </Border>
-            <Border Grid.Row="5" Grid.Column="5">
-                <StackPanel />
+            <Border Grid.Row="6" Grid.Column="5" Style="{StaticResource CellBorder}">
+                <StackPanel>
+                    <TextBlock FontWeight="Bold" HorizontalAlignment="Right" Text="{Binding Cells[26].Date, Converter={StaticResource DateOnlyToDayOfWeekConverter}}"/>
+
+                    <ListView ItemsSource="{Binding Cells[26].PerformanceResults}" DisplayMemberPath="ArtistResult.Name"/>
+                </StackPanel>
             </Border>
-            <Border Grid.Row="5" Grid.Column="6">
-                <StackPanel />
+            <Border Grid.Row="6" Grid.Column="6" Style="{StaticResource CellBorder}">
+                <StackPanel>
+                    <TextBlock FontWeight="Bold" HorizontalAlignment="Right" Text="{Binding Cells[27].Date, Converter={StaticResource DateOnlyToDayOfWeekConverter}}"/>
+
+                    <ListView ItemsSource="{Binding Cells[27].PerformanceResults}" DisplayMemberPath="ArtistResult.Name"/>
+                </StackPanel>
             </Border>
 
-            <Border Grid.Row="6" Grid.Column="0">
-                <StackPanel />
+            <Border Grid.Row="7" Grid.Column="0" Style="{StaticResource CellBorder}">
+                <StackPanel>
+                    <TextBlock FontWeight="Bold" HorizontalAlignment="Right" Text="{Binding Cells[28].Date, Converter={StaticResource DateOnlyToDayOfWeekConverter}}"/>
+
+                    <ListView ItemsSource="{Binding Cells[28].PerformanceResults}" DisplayMemberPath="ArtistResult.Name"/>
+                </StackPanel>
             </Border>
-            <Border Grid.Row="6" Grid.Column="1">
-                <StackPanel />
+            <Border Grid.Row="7" Grid.Column="1" Style="{StaticResource CellBorder}">
+                <StackPanel>
+                    <TextBlock FontWeight="Bold" HorizontalAlignment="Right" Text="{Binding Cells[29].Date, Converter={StaticResource DateOnlyToDayOfWeekConverter}}"/>
+
+                    <ListView ItemsSource="{Binding Cells[29].PerformanceResults}" DisplayMemberPath="ArtistResult.Name"/>
+                </StackPanel>
             </Border>
-            <Border Grid.Row="6" Grid.Column="2">
-                <StackPanel />
+            <Border Grid.Row="7" Grid.Column="2"  Style="{StaticResource CellBorder}">
+                <StackPanel>
+                    <TextBlock FontWeight="Bold" HorizontalAlignment="Right" Text="{Binding Cells[30].Date, Converter={StaticResource DateOnlyToDayOfWeekConverter}}"/>
+
+                    <ListView ItemsSource="{Binding Cells[30].PerformanceResults}" DisplayMemberPath="ArtistResult.Name"/>
+                </StackPanel>
             </Border>
-            <Border Grid.Row="6" Grid.Column="3">
-                <StackPanel />
+            <Border Grid.Row="7" Grid.Column="3" Style="{StaticResource CellBorder}">
+                <StackPanel>
+                    <TextBlock FontWeight="Bold" HorizontalAlignment="Right" Text="{Binding Cells[31].Date, Converter={StaticResource DateOnlyToDayOfWeekConverter}}"/>
+                </StackPanel>
             </Border>
-            <Border Grid.Row="6" Grid.Column="4">
-                <StackPanel />
+            <Border Grid.Row="7" Grid.Column="4" Style="{StaticResource CellBorder}">
+                <StackPanel>
+                    <TextBlock FontWeight="Bold" HorizontalAlignment="Right" Text="{Binding Cells[32].Date, Converter={StaticResource DateOnlyToDayOfWeekConverter}}"/>
+                </StackPanel>
             </Border>
-            <Border Grid.Row="6" Grid.Column="5">
-                <StackPanel />
+            <Border Grid.Row="7" Grid.Column="5" Style="{StaticResource CellBorder}">
+                <StackPanel>
+                    <TextBlock FontWeight="Bold" HorizontalAlignment="Right" Text="{Binding Cells[33].Date, Converter={StaticResource DateOnlyToDayOfWeekConverter}}"/>
+                </StackPanel>
             </Border>
-            <Border Grid.Row="6" Grid.Column="6">
-                <StackPanel />
+            <Border Grid.Row="7" Grid.Column="6" Style="{StaticResource CellBorder}">
+                <StackPanel>
+                    <TextBlock FontWeight="Bold" HorizontalAlignment="Right" Text="{Binding Cells[34].Date, Converter={StaticResource DateOnlyToDayOfWeekConverter}}"/>
+                </StackPanel>
             </Border>
 
-            <Border Grid.Row="7" Grid.Column="0">
-                <StackPanel />
+            <Border Grid.Row="8" Grid.Column="0" Style="{StaticResource CellBorder}">
+                <StackPanel>
+                    <TextBlock FontWeight="Bold" HorizontalAlignment="Right" Text="{Binding Cells[35].Date, Converter={StaticResource DateOnlyToDayOfWeekConverter}}"/>
+                </StackPanel>
             </Border>
-            <Border Grid.Row="7" Grid.Column="1">
-                <StackPanel />
+            <Border Grid.Row="8" Grid.Column="1" Style="{StaticResource CellBorder}">
+                <StackPanel>
+                    <TextBlock FontWeight="Bold" HorizontalAlignment="Right" Text="{Binding Cells[36].Date, Converter={StaticResource DateOnlyToDayOfWeekConverter}}"/>
+                </StackPanel>
             </Border>
-            <Border Grid.Row="7" Grid.Column="2">
-                <StackPanel />
+            <Border Grid.Row="8" Grid.Column="2" Style="{StaticResource CellBorder}">
+                <StackPanel>
+                    <TextBlock FontWeight="Bold" HorizontalAlignment="Right" Text="{Binding Cells[37].Date, Converter={StaticResource DateOnlyToDayOfWeekConverter}}"/>
+                </StackPanel>
             </Border>
-            <Border Grid.Row="7" Grid.Column="3">
-                <StackPanel />
+            <Border Grid.Row="8" Grid.Column="3" Style="{StaticResource CellBorder}">
+                <StackPanel>
+                    <TextBlock FontWeight="Bold" HorizontalAlignment="Right" Text="{Binding Cells[38].Date, Converter={StaticResource DateOnlyToDayOfWeekConverter}}"/>
+                </StackPanel>
             </Border>
-            <Border Grid.Row="7" Grid.Column="4">
-                <StackPanel />
+            <Border Grid.Row="8" Grid.Column="4" Style="{StaticResource CellBorder}">
+                <StackPanel>
+                    <TextBlock FontWeight="Bold" HorizontalAlignment="Right" Text="{Binding Cells[39].Date, Converter={StaticResource DateOnlyToDayOfWeekConverter}}"/>
+                </StackPanel>
             </Border>
-            <Border Grid.Row="7" Grid.Column="5">
-                <StackPanel />
+            <Border Grid.Row="8" Grid.Column="5" Style="{StaticResource CellBorder}">
+                <StackPanel>
+                    <TextBlock FontWeight="Bold" HorizontalAlignment="Right" Text="{Binding Cells[40].Date, Converter={StaticResource DateOnlyToDayOfWeekConverter}}"/>
+                </StackPanel>
             </Border>
-            <Border Grid.Row="7" Grid.Column="6">
-                <StackPanel />
+            <Border Grid.Row="8" Grid.Column="6" Style="{StaticResource CellBorder}">
+                <StackPanel>
+                    <TextBlock FontWeight="Bold" HorizontalAlignment="Right" Text="{Binding Cells[41].Date, Converter={StaticResource DateOnlyToDayOfWeekConverter}}"/>
+                </StackPanel>
             </Border>
         </Grid>
     </Border>

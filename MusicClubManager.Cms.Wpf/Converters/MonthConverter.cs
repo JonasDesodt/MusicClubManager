@@ -3,21 +3,23 @@ using System.Windows.Data;
 
 namespace MusicClubManager.Cms.Wpf.Converters
 {
-    public class ImageConverter : IValueConverter
+    public class MonthConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if(value is not int id)
+            if(value is int month)
             {
-                return "https://localhost:7188/image/download/0"; //todo: have a fallback image
+                return CultureInfo.InvariantCulture.DateTimeFormat.GetMonthName(month);
+
+           //     return CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(month);
             }
 
-            return "https://localhost:7188/image/download/" + id; 
+            return "undefined";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return true;
+            throw new NotImplementedException();
         }
     }
 }

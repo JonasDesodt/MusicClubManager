@@ -3,21 +3,21 @@ using System.Windows.Data;
 
 namespace MusicClubManager.Cms.Wpf.Converters
 {
-    public class ImageConverter : IValueConverter
+    class DateOnlyToDayOfMonthConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if(value is not int id)
+            if(value is DateOnly dateOnly)
             {
-                return "https://localhost:7188/image/download/0"; //todo: have a fallback image
+                return dateOnly.Day;
             }
 
-            return "https://localhost:7188/image/download/" + id; 
+            return 0;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return true;
+            throw new NotImplementedException();
         }
     }
 }

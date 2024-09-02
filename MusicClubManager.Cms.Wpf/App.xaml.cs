@@ -35,9 +35,11 @@ namespace MusicClubManager.Cms.Wpf
 
             services.AddTransient<HomeView>();
             services.AddTransient<HomeViewModel>();
+            services.AddTransient<CalendarViewModel>();
 
             services.AddTransient<ArtistsView>();
             services.AddTransient<ArtistsViewModel>();
+                    
 
             services.AddScoped<IArtistService, ArtistApiService>();
             services.AddScoped<IPerformanceService, PerformanceApiService>();
