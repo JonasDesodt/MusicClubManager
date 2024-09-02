@@ -16,7 +16,9 @@
         <Button Command="{Binding PreviousPageCommand}" Margin="5" >Previous</Button>
 
         <TextBox
-            Margin="0 5 0 5">
+            Margin="0 5 0 5"
+            MinWidth="50"
+            HorizontalContentAlignment="Right">
             <i:Interaction.Behaviors>
                 <b:TextBoxOnEnterBehavior />
             </i:Interaction.Behaviors>
@@ -29,11 +31,9 @@
             </Binding>
         </TextBox>
 
-        <TextBlock Margin="0 5 0 5">
-            <Run>/</Run>
-            
-            <Run Text="{Binding TotalPages}"/>
-        </TextBlock>
+        <TextBlock Text="/" Margin="0 5 0 5"/>
+        <TextBlock Margin="0 5 0 5" MinWidth="50" Text="{Binding TotalPages}" />
+
 
         <Button Command="{Binding NextPageCommand}" Margin="5">Next</Button>
     </StackPanel>

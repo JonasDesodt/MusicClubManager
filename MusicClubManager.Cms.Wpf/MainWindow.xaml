@@ -12,7 +12,7 @@
         <DataTemplate DataType="{x:Type vms:HomeViewModel}">
             <views:HomeView />
         </DataTemplate>
-        
+
         <DataTemplate DataType="{x:Type vms:AgendaViewModel}" >
             <views:AgendaView />
         </DataTemplate>
@@ -24,14 +24,13 @@
         <Style TargetType="Button">
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="BorderThickness" Value="0" />
-            <!--<Setter Property="Foreground" Value="White" />-->
             <Setter Property="Cursor" Value="Hand" />
             <Setter Property="FontWeight" Value="Bold" />
             <Setter Property="Padding" Value="5" />
 
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                  
+
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -49,7 +48,7 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        
+
         <StackPanel Orientation="Horizontal" Grid.Row="0">
             <StackPanel.Style>
                 <Style TargetType="StackPanel">
@@ -64,8 +63,10 @@
             <Button Content="ARTISTS" Command="{Binding NavigateCommand}" CommandParameter="Artists" />
         </StackPanel>
 
-        <ContentControl 
-            Grid.Row="1"
-            Content="{Binding CurrentViewModel, UpdateSourceTrigger=PropertyChanged}" />
+        <ContentControl Grid.Row="1">
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                <ContentPresenter Content="{Binding CurrentViewModel, UpdateSourceTrigger=PropertyChanged}" />
+            </ScrollViewer>
+        </ContentControl>
     </Grid>
 </Window>

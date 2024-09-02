@@ -9,7 +9,6 @@ namespace MusicClubManager.Cms.Wpf.ViewModels
     {
         private readonly IPerformanceService _performanceApiService;
 
-
         private PagedServiceResult<IList<PerformanceResult>>? _pagedServiceResult;
         public PagedServiceResult<IList<PerformanceResult>>? PagedServiceResult
         {
@@ -30,12 +29,18 @@ namespace MusicClubManager.Cms.Wpf.ViewModels
         {
             _performanceApiService = performanceApiService;
 
-            Fetch(new PaginationRequest { Page = 1, PageSize = 1 });
+            Fetch(new PaginationRequest { Page = 1, PageSize = 1 });            
         }
 
         private async void Fetch(PaginationRequest paginationRequest)
         {
-            if (IsReady is true) IsReady = false;
+            var timer = new System.Timers.Timer(1000);
+            timer.Elapsed += (sender, args) =>
+            {
+                if (IsReady is true) IsReady = false;
+            };
+
+            timer.Start();
 
             PagedServiceResult = await _performanceApiService.GetAll(paginationRequest, new PerformanceFilter { });
 
@@ -44,6 +49,9 @@ namespace MusicClubManager.Cms.Wpf.ViewModels
                 OnFetchRequest = Fetch,
  
             };
+
+            timer.Stop();
+            timer.Dispose();
 
             IsReady = true;
         }

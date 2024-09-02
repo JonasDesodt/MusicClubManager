@@ -28,86 +28,90 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        
-        <TextBlock 
-            Background="Transparent"
-            Text="Loading..." 
-            VerticalAlignment="Center"
-            HorizontalAlignment="Center"
-            FontSize="24"
-            Visibility="{Binding IsReady, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=True}" Panel.ZIndex="1"
-            Grid.Row="0"
-            Padding="5"/>
-           
-        <StackPanel 
-            Visibility="{Binding IsReady, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=False}"
-            Orientation="Horizontal"
-            Grid.Row="0">
-            <StackPanel>
-                <ListView ItemsSource="{Binding Source={StaticResource Doors}}" x:Name="ListView" >
-                    <ListView.GroupStyle>
-                        <GroupStyle>
-                            <GroupStyle.ContainerStyle>
-                                <Style TargetType="{x:Type GroupItem}">
-                                    <Setter Property="Margin" Value="0,0,0,5"/>
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="{x:Type GroupItem}">
-                                                <Expander IsExpanded="True" >
-                                                    <Expander.Header>
-                                                        <TextBlock  FontWeight="Bold" FontSize="16">
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <uc:LoaderUserControl Visibility="{Binding IsReady, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=True}"/>
+
+        <!--Visibility="{Binding IsReady, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=False}"-->
+
+        <Grid Grid.Column="0" Grid.Row="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
+            
+            <ListView 
+                ItemsSource="{Binding Source={StaticResource Doors}}" 
+                x:Name="ListView" 
+                Grid.Row="0">
+                <ListView.GroupStyle>
+                    <GroupStyle>
+                        <GroupStyle.ContainerStyle>
+                            <Style TargetType="{x:Type GroupItem}">
+                                <Setter Property="Margin" Value="0,0,0,5"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type GroupItem}">
+                                            <Expander IsExpanded="True" >
+                                                <Expander.Header>
+                                                    <TextBlock  FontWeight="Bold" FontSize="16">
                                                         <Run Text="{Binding Path=Items[0].LineupResult.Doors, StringFormat=\{0:d\}}" />
                                                         <Run Text="{Binding Path=Items[0].LineupResult.Name}" />
-                                                        </TextBlock>
-                                                    </Expander.Header>
-                                                    <Expander.Content>
-                                                        <ItemsPresenter />
-                                                    </Expander.Content>
-                                                </Expander>
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </GroupStyle.ContainerStyle>
-                        </GroupStyle>
-                    </ListView.GroupStyle>
+                                                    </TextBlock>
+                                                </Expander.Header>
+                                                <Expander.Content>
+                                                    <ItemsPresenter />
+                                                </Expander.Content>
+                                            </Expander>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </GroupStyle.ContainerStyle>
+                    </GroupStyle>
+                </ListView.GroupStyle>
 
-                    <ListView.View>
-                        <GridView>
-                            <GridViewColumn Header="Date" DisplayMemberBinding="{Binding Start, StringFormat=\{0:dddd\}}" />
+                <ListView.View>
+                    <GridView >
+                        <GridViewColumn Header="Day" DisplayMemberBinding="{Binding Start, StringFormat=\{0:dddd\}}" Width="80"/>
 
-                            <GridViewColumn Header="Start" DisplayMemberBinding="{Binding Start, StringFormat=\{0:HH:mm\}}" />
+                        <GridViewColumn Header="Start" DisplayMemberBinding="{Binding Start, StringFormat=\{0:HH:mm\}}" Width="50"/>
 
-                            <GridViewColumn Header="End" >
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock>
-                                            <TextBlock.Text>
-                                                <MultiBinding Converter="{StaticResource PerformanceEndConverter }">
-                                                    <Binding Path="Start" />
-                                                    <Binding Path="Duration" />
-                                                </MultiBinding>
-                                            </TextBlock.Text>
-                                        </TextBlock>
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
+                        <GridViewColumn Header="End" Width="50">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock>
+                                        <TextBlock.Text>
+                                            <MultiBinding Converter="{StaticResource PerformanceEndConverter }">
+                                                <Binding Path="Start" />
+                                                <Binding Path="Duration" />
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
 
-                            <GridViewColumn Header="Artist" DisplayMemberBinding="{Binding ArtistResult.Name}"/>
-                        </GridView>
-                    </ListView.View>
-                </ListView>
+                        <GridViewColumn Header="Artist" DisplayMemberBinding="{Binding ArtistResult.Name}" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
 
-                <uc:PaginationUserControl DataContext="{Binding PaginationViewModel}"/>
-            </StackPanel>
+            <uc:PaginationUserControl DataContext="{Binding PaginationViewModel}" Grid.Row="1"/>
+        </Grid>
 
-            <StackPanel>
-                <TextBox Text="{Binding Path=SelectedItem.ArtistResult.Name, ElementName=ListView}" />
+        <StackPanel Grid.Column="1" Grid.Row="0">
+            <TextBox Text="{Binding Path=SelectedItem.ArtistResult.Name, ElementName=ListView}" />
 
-                <Image Source="{Binding Path=SelectedItem.ArtistResult.ImageResult.Id, ElementName=ListView, Converter={StaticResource ImageConverter}}" ></Image>
+            <Image Source="{Binding Path=SelectedItem.ArtistResult.ImageResult.Id, ElementName=ListView, Converter={StaticResource ImageConverter}}" ></Image>
 
-                <!--<Button Content="SAVE" Command="{Binding UpdateCommand}" CommandParameter="{Binding Path=SelectedItem, ElementName=ListView}" />-->
-            </StackPanel>
+            <!--<Button Content="SAVE" Command="{Binding UpdateCommand}" CommandParameter="{Binding Path=SelectedItem, ElementName=ListView}" />-->
         </StackPanel>
     </Grid>
 

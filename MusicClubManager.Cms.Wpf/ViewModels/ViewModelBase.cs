@@ -1,20 +1,11 @@
-﻿using MusicClubManager.Abstractions;
-using MusicClubManager.Dto.Filters;
-using MusicClubManager.Dto.Transfer;
-using MusicClubManager.Sdk;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MusicClubManager.Cms.Wpf.ViewModels
 {
     public abstract class ViewModelBase : INotifyPropertyChanged
     {
-        private bool _isReady = false;
+        private bool _isReady = true;
         public bool IsReady
         {
             get => _isReady;
