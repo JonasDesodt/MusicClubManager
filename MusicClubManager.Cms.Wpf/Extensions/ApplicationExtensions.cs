@@ -7,12 +7,22 @@ namespace MusicClubManager.Cms.Wpf.Extensions
     {
         public static CalendarViewModel? GetCalendarViewModel(this Application current)
         {
-            if (current.Windows.OfType<MainWindow>().FirstOrDefault()?.DataContext is not MainViewModel vm || vm.CurrentViewModel is not CalendarViewModel viewModel)
+            if (current.Windows.OfType<MainWindow>().FirstOrDefault()?.DataContext is not MainViewModel vm || vm.CurrentViewModel is not CalendarViewModel calendarViewModel)
             {
                 return null;
             }
 
-            return viewModel;
+            return calendarViewModel;
+        }
+
+        public static MainViewModel? GetMainViewModel(this Application current)
+        {
+            if(current.Windows.OfType<MainWindow>().FirstOrDefault()?.DataContext is not MainViewModel mainViewModel)
+            {
+                return null;
+            }
+
+            return mainViewModel;
         }
     }
 }

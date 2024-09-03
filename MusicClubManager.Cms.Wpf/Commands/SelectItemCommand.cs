@@ -1,9 +1,9 @@
-﻿using MusicClubManager.Cms.Wpf.Extensions;
-using System.Windows.Input;
+﻿using System.Windows.Input;
+
 
 namespace MusicClubManager.Cms.Wpf.Commands
 {
-    public class PreviousYearCommand : ICommand
+    public class SelectItemCommand : ICommand
     {
         public event EventHandler? CanExecuteChanged;
 
@@ -14,7 +14,7 @@ namespace MusicClubManager.Cms.Wpf.Commands
 
         public void Execute(object? parameter)
         {
-            App.Current.GetCalendarViewModel()?.SubtractYear().Update();
+        
         }
     }
 }

@@ -4,9 +4,12 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MusicClubManager.Cms.Wpf"
+        xmlns:models="clr-namespace:MusicClubManager.Cms.Wpf.Models"
         xmlns:vms="clr-namespace:MusicClubManager.Cms.Wpf.ViewModels"
+        xmlns:uc="clr-namespace:MusicClubManager.Cms.Wpf.UserControls"
         xmlns:views="clr-namespace:MusicClubManager.Cms.Wpf.Views"
         mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance Type=vms:MainViewModel}"
         Title="Music Club Manager" Height="450" Width="800">
     <Window.Resources>
         <DataTemplate DataType="{x:Type vms:CalendarViewModel}">
@@ -19,6 +22,10 @@
 
         <DataTemplate DataType="{x:Type vms:ArtistsViewModel}">
             <views:ArtistsView />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vms:PerformanceViewModel}">
+            <uc:PerformanceUserControl />
         </DataTemplate>
 
         <Style TargetType="Button">
@@ -47,6 +54,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
         <StackPanel Orientation="Horizontal" Grid.Row="0">
@@ -68,5 +76,29 @@
                 <ContentPresenter Content="{Binding CurrentViewModel, UpdateSourceTrigger=PropertyChanged}" />
             </ScrollViewer>
         </ContentControl>
+
+        <TabControl ItemsSource="{Binding Tabs}" Grid.Row="2" TabStripPlacement="Bottom" >
+            <TabControl.ItemTemplate>
+                <DataTemplate DataType="models:Tab">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding Header}" Padding="0"/>
+
+                        <Button Command="{Binding CloseTabCommand}" Content="x" Padding="0"/>
+                    </StackPanel>
+                </DataTemplate>
+            </TabControl.ItemTemplate>
+
+            <TabControl.ContentTemplate>
+                <DataTemplate DataType="models:Tab">
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                        <StackPanel>
+                            <Button Content="-" HorizontalAlignment="Right" />
+
+                            <ContentPresenter Content="{Binding ViewModel, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
+                    </ScrollViewer>
+                </DataTemplate>
+            </TabControl.ContentTemplate>
+        </TabControl>
     </Grid>
 </Window>

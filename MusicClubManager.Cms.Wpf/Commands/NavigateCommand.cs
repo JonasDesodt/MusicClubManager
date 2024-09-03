@@ -1,5 +1,4 @@
 ﻿using MusicClubManager.Cms.Wpf.Interfaces;
-using MusicClubManager.Cms.Wpf.ViewModels;
 using System.Windows.Input;
 
 namespace MusicClubManager.Cms.Wpf.Commands

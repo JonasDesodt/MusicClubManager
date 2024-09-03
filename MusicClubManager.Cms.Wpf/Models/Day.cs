@@ -1,4 +1,5 @@
-﻿using MusicClubManager.Dto.Result;
+﻿using MusicClubManager.Cms.Wpf.Commands;
+using MusicClubManager.Dto.Result;
 using System.Collections.ObjectModel;
 
 namespace MusicClubManager.Cms.Wpf.Models

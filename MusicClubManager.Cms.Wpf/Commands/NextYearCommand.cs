@@ -3,7 +3,7 @@ using System.Windows.Input;
 
 namespace MusicClubManager.Cms.Wpf.Commands
 {
-    public class PreviousYearCommand : ICommand
+    public class NextYearCommand : ICommand
     {
         public event EventHandler? CanExecuteChanged;
 
@@ -14,7 +14,7 @@ namespace MusicClubManager.Cms.Wpf.Commands
 
         public void Execute(object? parameter)
         {
-            App.Current.GetCalendarViewModel()?.SubtractYear().Update();
+            App.Current.GetCalendarViewModel()?.AddYear().Update();
         }
     }
 }

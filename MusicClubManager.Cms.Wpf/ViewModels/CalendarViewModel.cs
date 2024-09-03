@@ -1,7 +1,9 @@
 ﻿using MusicClubManager.Abstractions;
 using MusicClubManager.Cms.Wpf.Commands;
+using MusicClubManager.Cms.Wpf.Extensions;
 using MusicClubManager.Cms.Wpf.Models;
 using MusicClubManager.Dto.Filters;
+using MusicClubManager.Dto.Result;
 using MusicClubManager.Dto.Transfer;
 
 namespace MusicClubManager.Cms.Wpf.ViewModels
@@ -32,13 +34,30 @@ namespace MusicClubManager.Cms.Wpf.ViewModels
         }
 
         public PreviousYearCommand PreviousYearCommand { get; set; }
+        public NextYearCommand NextYearCommand { get; set; }
 
         public PreviousMonthCommand PreviousMonthCommand { get; set; }
         public NextMonthCommand NextMonthCommand { get; set; }
 
+
+        private PerformanceResult? _selectedPerformanceResult;
+        public PerformanceResult? SelectedPerformanceResult
+        {
+            get => _selectedPerformanceResult;
+            set
+            {
+                _selectedPerformanceResult = value;
+
+                // TODO, TEMP HACK, USE A COMMAND OR A BEHAVIOR
+                App.Current.GetMainViewModel()?.AddTab(value);
+            }
+        }
+
+
         public CalendarViewModel(IPerformanceService performanceApiService)
         {
             PreviousYearCommand = new PreviousYearCommand();
+            NextYearCommand = new NextYearCommand();
 
             PreviousMonthCommand = new PreviousMonthCommand();
             NextMonthCommand = new NextMonthCommand();
@@ -101,11 +120,6 @@ namespace MusicClubManager.Cms.Wpf.ViewModels
             {
                 foreach (var cell in Cells)
                 {
-
-                    //TODO: TEMP HACK, this should be done when the viewmodel is disposed of 
-                    cell?.PerformanceResults.Clear();
-
-
                     if (cell?.Date is DateOnly dateOnly)
                     {
                         foreach (var performanceResult in pagedServiceResult.Data.Where(x => x.Start != null && x.Start.Value.Day == dateOnly.Day))

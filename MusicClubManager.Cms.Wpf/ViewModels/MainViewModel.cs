@@ -1,6 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using MusicClubManager.Cms.Wpf.Commands;
 using MusicClubManager.Cms.Wpf.Interfaces;
+using MusicClubManager.Cms.Wpf.Models;
+using MusicClubManager.Dto.Result;
+using System.Collections.ObjectModel;
 
 namespace MusicClubManager.Cms.Wpf.ViewModels
 {
@@ -15,6 +18,8 @@ namespace MusicClubManager.Cms.Wpf.ViewModels
             _currentViewModel = _serviceProvider.GetRequiredService<HomeViewModel>();
 
             NavigateCommand = new NavigateCommand(this);
+
+            Tabs = new ObservableCollection<Tab> { new Tab(_serviceProvider.GetRequiredService<ArtistsViewModel>()) { Header = "Tab 1" }, new Tab(_serviceProvider.GetRequiredService<ArtistsViewModel>()) { Header = "Tab 2" } };     
         }
 
         private object? _currentViewModel;
@@ -43,6 +48,24 @@ namespace MusicClubManager.Cms.Wpf.ViewModels
                     CurrentViewModel = _serviceProvider.GetRequiredService<HomeViewModel>();
                     break;
             }           
+        }
+
+        public ObservableCollection<Tab> Tabs { get; set; }
+
+        public Tab? AddTab(object? item)
+        {
+            if(item is PerformanceResult performanceResult)
+            {
+                var performanceViewModel = new PerformanceViewModel { ArtistName = performanceResult.ArtistResult.Name };              
+
+                var tab = new Tab(performanceViewModel) { Header = performanceResult.ArtistResult.Name };
+
+                Tabs.Add(tab);
+
+                return tab;
+            }
+
+            return null;
         }
     }
 }
