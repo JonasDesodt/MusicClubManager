@@ -10,7 +10,12 @@ namespace MusicClubManager.Cms.Wpf.ViewModels
     {
         private readonly IPerformanceService _performanceApiService;
 
-        public int Year { get; set; } = DateTime.UtcNow.Year;
+        private int _year = DateTime.UtcNow.Year;
+        public int Year
+        {
+            get => _year;
+            set => SetProperty(ref _year, value);
+        }
 
         private int _month = DateTime.UtcNow.Month;
         public int Month
@@ -19,24 +24,33 @@ namespace MusicClubManager.Cms.Wpf.ViewModels
             set => SetProperty(ref _month, value);
         }
 
-        public Day[] Cells { get; private set; }
+        private Day[] _cells;
+        public Day[] Cells
+        {
+            get => _cells;
+            set => SetProperty(ref _cells, value);
+        }
 
         public PreviousYearCommand PreviousYearCommand { get; set; }
+
         public PreviousMonthCommand PreviousMonthCommand { get; set; }
+        public NextMonthCommand NextMonthCommand { get; set; }
 
         public CalendarViewModel(IPerformanceService performanceApiService)
         {
-            PreviousYearCommand = new PreviousYearCommand(this);
-            PreviousMonthCommand = new PreviousMonthCommand(this);
+            PreviousYearCommand = new PreviousYearCommand();
 
-            Cells = GetCells();
+            PreviousMonthCommand = new PreviousMonthCommand();
+            NextMonthCommand = new NextMonthCommand();
+
+            _cells = GetCells();
 
             _performanceApiService = performanceApiService;
 
             Fetch(new PaginationRequest { Page = 1, PageSize = 24 }, new PerformanceFilter { Year = Year, Month = Month });
         }
 
-        private Day[] GetCells()
+        public Day[] GetCells()
         {
             var cells = new Day[42];
 
@@ -62,7 +76,7 @@ namespace MusicClubManager.Cms.Wpf.ViewModels
         }
 
         public async void Fetch(PaginationRequest paginationRequest, PerformanceFilter performanceFilter)
-        {          
+        {
 
             var timer = new System.Timers.Timer(1000);
             timer.Elapsed += (sender, args) =>

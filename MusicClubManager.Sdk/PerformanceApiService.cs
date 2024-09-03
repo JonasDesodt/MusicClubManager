@@ -66,7 +66,7 @@ namespace MusicClubManager.Sdk
         {
             var httpClient = httpClientFactory.CreateClient("MusicClubManagerApi");
 
-            var httpResponseMessage = await httpClient.GetAsync("Performance?" + paginationRequest.ToQueryString() + '&' +  performanceFilter.ToQueryString());
+            var httpResponseMessage = await httpClient.GetAsync("Performance?" + paginationRequest.ToQueryString() + '&' + performanceFilter.ToQueryString());
 
             if (!httpResponseMessage.IsSuccessStatusCode || await httpResponseMessage.Content.ReadFromJsonAsync<PagedServiceResult<IList<PerformanceResult>>>() is not { } result)
             {

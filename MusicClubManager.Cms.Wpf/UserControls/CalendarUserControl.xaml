@@ -63,7 +63,7 @@
                 <DockPanel>
                     <Button Command="{Binding PreviousYearCommand}" HorizontalAlignment="Left">Previous</Button>
                     
-                    <TextBlock Text="{Binding Year}" Background="Orange" HorizontalAlignment="Center"  FontWeight="Bold"/>
+                    <TextBlock Text="{Binding Year}" HorizontalAlignment="Center"  FontWeight="Bold"/>
 
                     <Button HorizontalAlignment="Right">Next</Button>
                 </DockPanel>
@@ -76,7 +76,7 @@
                     
                     <TextBlock Text="{Binding Month, Converter={StaticResource MonthConverter}}" HorizontalAlignment="Center" FontWeight="Bold"/>
                    
-                    <Button HorizontalAlignment="Right">Next</Button>
+                    <Button Command="{Binding NextMonthCommand}" HorizontalAlignment="Right">Next</Button>
                 </StackPanel>
             </Border>
 
