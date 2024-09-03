@@ -1,4 +1,5 @@
 ﻿using MusicClubManager.Abstractions;
+using MusicClubManager.Cms.Wpf.Commands;
 using MusicClubManager.Cms.Wpf.Models;
 using MusicClubManager.Dto.Filters;
 using MusicClubManager.Dto.Transfer;
@@ -9,19 +10,30 @@ namespace MusicClubManager.Cms.Wpf.ViewModels
     {
         private readonly IPerformanceService _performanceApiService;
 
-        public int Year { get; set; } = 2024;
+        public int Year { get; set; } = DateTime.UtcNow.Year;
 
-        public int Month { get; set; } = 8;
+        private int _month = DateTime.UtcNow.Month;
+        public int Month
+        {
+            get => _month;
+            set => SetProperty(ref _month, value);
+        }
 
-        public Day[] Cells { get; private set; }           
+        public Day[] Cells { get; private set; }
+
+        public PreviousYearCommand PreviousYearCommand { get; set; }
+        public PreviousMonthCommand PreviousMonthCommand { get; set; }
 
         public CalendarViewModel(IPerformanceService performanceApiService)
         {
+            PreviousYearCommand = new PreviousYearCommand(this);
+            PreviousMonthCommand = new PreviousMonthCommand(this);
+
             Cells = GetCells();
 
             _performanceApiService = performanceApiService;
 
-            Fetch(new PaginationRequest { Page = 1, PageSize = 24 });
+            Fetch(new PaginationRequest { Page = 1, PageSize = 24 }, new PerformanceFilter { Year = Year, Month = Month });
         }
 
         private Day[] GetCells()
@@ -41,7 +53,7 @@ namespace MusicClubManager.Cms.Wpf.ViewModels
 
             var daysInMonth = DateTime.DaysInMonth(Year, Month);
 
-            for(int i = start, day = 1; day <= daysInMonth; i++, day++)
+            for (int i = start, day = 1; day <= daysInMonth; i++, day++)
             {
                 cells[i] = new Day { Date = new DateOnly(Year, Month, day) };
             }
@@ -49,8 +61,9 @@ namespace MusicClubManager.Cms.Wpf.ViewModels
             return cells;
         }
 
-        private async void Fetch(PaginationRequest paginationRequest)
-        {
+        public async void Fetch(PaginationRequest paginationRequest, PerformanceFilter performanceFilter)
+        {          
+
             var timer = new System.Timers.Timer(1000);
             timer.Elapsed += (sender, args) =>
             {
@@ -59,7 +72,7 @@ namespace MusicClubManager.Cms.Wpf.ViewModels
 
             timer.Start();
 
-            var pagedServiceResult = await _performanceApiService.GetAll(paginationRequest, new PerformanceFilter { });
+            var pagedServiceResult = await _performanceApiService.GetAll(paginationRequest, performanceFilter);
 
             var paginationViewModel = new PaginationViewModel((int)pagedServiceResult.Page, (int)pagedServiceResult.PageSize, (int)pagedServiceResult.TotalCount)
             {
@@ -70,13 +83,19 @@ namespace MusicClubManager.Cms.Wpf.ViewModels
             timer.Stop();
             timer.Dispose();
 
-            if(pagedServiceResult.Data is not null)
+            if (pagedServiceResult.Data is not null)
             {
                 foreach (var cell in Cells)
                 {
-                    if(cell?.Date is DateOnly dateOnly)
+
+                    //TODO: TEMP HACK, this should be done when the viewmodel is disposed of 
+                    cell?.PerformanceResults.Clear();
+
+
+                    if (cell?.Date is DateOnly dateOnly)
                     {
-                        foreach(var performanceResult in pagedServiceResult.Data.Where(x => x.Start != null && x.Start.Value.Day == dateOnly.Day)){
+                        foreach (var performanceResult in pagedServiceResult.Data.Where(x => x.Start != null && x.Start.Value.Day == dateOnly.Day))
+                        {
                             cell.PerformanceResults.Add(performanceResult);
                         }
 

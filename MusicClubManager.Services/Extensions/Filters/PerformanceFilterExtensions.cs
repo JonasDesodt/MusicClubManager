@@ -19,6 +19,16 @@ namespace MusicClubManager.Services.Extensions.Filters
             //    performances = performances.Where(a => a.Name.ToLower().Contains(filter.Name.Trim().ToLower()));
             //}
 
+            if(performanceFilter.Year is not null)
+            {
+                performances = performances.Where(p => p.Start != null && p.Start.Value.Year == performanceFilter.Year);
+            }
+
+            if(performanceFilter.Month is not null)
+            {
+                performances = performances.Where(p => p.Start != null && p.Start.Value.Month == performanceFilter.Month);
+            }
+
             if (!string.IsNullOrWhiteSpace(performanceFilter.SortProperty))
             {
                 if (performanceFilter.SortDirection is SortDirection.Descending)
@@ -48,6 +58,16 @@ namespace MusicClubManager.Services.Extensions.Filters
             //{
             //    performances = performances.Where(a => a.Name.ToLower().Contains(filter.Name.Trim().ToLower()));
             //}
+
+            if (performanceFilter.Year is not null)
+            {
+                performances = performances.Where(p => p.Start != null && p.Start.Value.Year == performanceFilter.Year);
+            }
+
+            if (performanceFilter.Month is not null)
+            {
+                performances = performances.Where(p => p.Start != null && p.Start.Value.Month == performanceFilter.Month);
+            }
 
             if (!string.IsNullOrWhiteSpace(performanceFilter.SortProperty))
             {

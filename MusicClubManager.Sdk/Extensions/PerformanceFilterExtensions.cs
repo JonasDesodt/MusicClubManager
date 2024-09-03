@@ -25,6 +25,16 @@ namespace MusicClubManager.Sdk.Extensions
                 }
             }
 
+            if(performanceFilter.Year is not null)
+            {
+                builder.Append($"year={performanceFilter.Year}&");
+            }
+
+            if (performanceFilter.Month is not null)
+            {
+                builder.Append($"month={performanceFilter.Month}&");
+            }
+
             return builder.ToString();
         }
     }

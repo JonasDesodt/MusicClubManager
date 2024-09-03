@@ -1,4 +1,5 @@
 ﻿using MusicClubManager.Cms.Wpf.Commands;
+using MusicClubManager.Dto.Filters;
 using MusicClubManager.Dto.Transfer;
 
 namespace MusicClubManager.Cms.Wpf.ViewModels
@@ -15,7 +16,7 @@ namespace MusicClubManager.Cms.Wpf.ViewModels
                 {
                     _page = value;
 
-                    OnFetchRequest(new PaginationRequest { Page = (uint)Page, PageSize = (uint)PageSize });
+                    OnFetchRequest(new PaginationRequest { Page = (uint)Page, PageSize = (uint)PageSize }, new PerformanceFilter { });
                 }
             }
         }
@@ -44,6 +45,6 @@ namespace MusicClubManager.Cms.Wpf.ViewModels
             NextPageCommand = new NextPageCommand(this);
         }
 
-        public required Action<PaginationRequest> OnFetchRequest { get; set; }
+        public required Action<PaginationRequest, PerformanceFilter> OnFetchRequest { get; set; }
     }
 }
