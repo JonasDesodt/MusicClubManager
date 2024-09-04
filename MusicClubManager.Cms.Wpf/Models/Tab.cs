@@ -1,4 +1,5 @@
 ﻿using MusicClubManager.Cms.Wpf.Commands;
+using MusicClubManager.Cms.Wpf.Interfaces;
 
 namespace MusicClubManager.Cms.Wpf.Models
 {
@@ -8,11 +9,14 @@ namespace MusicClubManager.Cms.Wpf.Models
 
         public CloseTabCommand CloseTabCommand { get; set; }
 
-        public object ViewModel { get; set; }
+        public ShowTabContentCommand ShowTabContentCommand { get; set; }
 
-        public Tab(object viewModel)
+        public ITabContent ViewModel { get; set; }
+
+        public Tab(ITabContent viewModel)
         {
             CloseTabCommand = new CloseTabCommand(this);
+            ShowTabContentCommand = new ShowTabContentCommand(this);
 
             ViewModel = viewModel;
         }

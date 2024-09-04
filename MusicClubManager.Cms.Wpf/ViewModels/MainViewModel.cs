@@ -20,6 +20,8 @@ namespace MusicClubManager.Cms.Wpf.ViewModels
             NavigateCommand = new NavigateCommand(this);
 
             SelectItemCommand = new SelectItemCommand();
+
+            HideCurrentTabContentCommand = new HideCurrentTabContentCommand();
         }
 
         private object? _currentViewModel;
@@ -56,21 +58,41 @@ namespace MusicClubManager.Cms.Wpf.ViewModels
         {
             if (item is PerformanceResult performanceResult)
             {
-                var performanceViewModel = new PerformanceViewModel (performanceResult, performanceResult.ArtistResult.Name);
-
-                var tab = new Tab(performanceViewModel) { Header = performanceResult.ArtistResult.Name };
-
-                if(!Tabs.Any(t => ((ISelectable)t.ViewModel).Source == performanceResult))
+                if (Tabs.FirstOrDefault(t => t.ViewModel is PerformanceViewModel pvm && pvm.Id == performanceResult.Id) is { } tab)
                 {
-                    Tabs.Add(tab);
+                    CurrentTabContent = tab.ViewModel;
 
                     return tab;
                 }
+
+
+                var performanceViewModel = new PerformanceViewModel(performanceResult.Id, performanceResult, performanceResult.ArtistResult.Name);
+
+                tab = new Tab(performanceViewModel) { Header = performanceResult.ArtistResult.Name };
+
+                CurrentTabContent = tab.ViewModel;
+
+                //if (!Tabs.Any(t => ((ITabContent)t.ViewModel).Source == performanceResult))
+                //{
+                Tabs.Add(tab);
+
+                return tab;
+                //}
             }
 
             return null;
         }
 
         public SelectItemCommand SelectItemCommand { get; set; }
+
+        private ITabContent? _currentTabContent;
+        public ITabContent? CurrentTabContent
+        {
+            get => _currentTabContent;
+            set { _currentTabContent = value; OnPropertyChanged(nameof(CurrentTabContent)); }
+            //set => SetProperty(ref _currentTabContent, value);
+        }
+
+        public HideCurrentTabContentCommand HideCurrentTabContentCommand { get; set; }
     }
 }

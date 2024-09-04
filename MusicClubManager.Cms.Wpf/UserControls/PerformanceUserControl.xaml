@@ -9,6 +9,6 @@
              d:DataContext="{d:DesignInstance Type=vm:PerformanceViewModel}"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <TextBlock Text="{Binding ArtistName}"/>
+        <TextBlock Text="{Binding ArtistName}" Foreground="White" />
     </Grid>
 </UserControl>

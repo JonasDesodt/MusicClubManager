@@ -1,8 +1,9 @@
-﻿using System.Windows.Input;
+﻿using MusicClubManager.Cms.Wpf.Extensions;
+using System.Windows.Input;
 
 namespace MusicClubManager.Cms.Wpf.Commands
 {
-    public class HideTabCommand : ICommand
+    public class HideCurrentTabContentCommand : ICommand
     {
         public event EventHandler? CanExecuteChanged;
 
@@ -13,7 +14,7 @@ namespace MusicClubManager.Cms.Wpf.Commands
 
         public void Execute(object? parameter)
         {
-            throw new NotImplementedException();
+            App.Current.GetMainViewModel()?.HideCurrentTabContent();
         }
     }
 }

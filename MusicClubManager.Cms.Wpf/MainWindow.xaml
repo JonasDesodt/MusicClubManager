@@ -8,6 +8,7 @@
         xmlns:vms="clr-namespace:MusicClubManager.Cms.Wpf.ViewModels"
         xmlns:uc="clr-namespace:MusicClubManager.Cms.Wpf.UserControls"
         xmlns:views="clr-namespace:MusicClubManager.Cms.Wpf.Views"
+        xmlns:c="clr-namespace:MusicClubManager.Cms.Wpf.Converters"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=vms:MainViewModel}"
         Title="Music Club Manager" Height="450" Width="800">
@@ -27,6 +28,11 @@
         <DataTemplate DataType="{x:Type vms:PerformanceViewModel}">
             <uc:PerformanceUserControl />
         </DataTemplate>
+
+        <c:ITabContentToVisibilityConverter x:Key="ITabContentToVisibilityConverter"/>
+
+        <c:ITabContentToBackgroundConverter x:Key="ITabContentToBackgroundConverter"/>
+        <c:ITabContentToForegroundConverter x:Key="ITabContentToForegroundConverter"/>
 
         <Style TargetType="Button">
             <Setter Property="Background" Value="Transparent" />
@@ -77,7 +83,75 @@
             </ScrollViewer>
         </ContentControl>
 
-        <TabControl ItemsSource="{Binding Tabs}" Grid.Row="2" TabStripPlacement="Bottom" >
+        <Border BorderThickness="1" BorderBrush="DarkBlue" Grid.Row="2" Margin="5">
+            <StackPanel Orientation="Vertical" >
+                <ContentControl Visibility="{Binding CurrentTabContent, Converter={StaticResource ITabContentToVisibilityConverter}}" >
+                    <Border BorderThickness="1" BorderBrush="DarkBlue">
+                        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" >
+                            <StackPanel Orientation="Vertical" Background="DarkBlue" >
+                                <Button Content="-" Command="{Binding HideCurrentTabContentCommand}" HorizontalAlignment="Right" Foreground="White"/>
+
+                                <ContentPresenter Content="{Binding CurrentTabContent, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Border>
+                        
+                    
+
+                </ContentControl>
+
+                <Border BorderThickness="1 0 1 1" BorderBrush="DarkBlue">
+                    <ItemsControl ItemsSource="{Binding Tabs}" Grid.Row="3">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Horizontal" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="{x:Type models:Tab}">
+                                <Border BorderThickness="1 0 1 1" BorderBrush="DarkBlue" Margin="5 0 5 5" >
+                                    <Border.Background>
+                                        <MultiBinding Converter="{StaticResource ITabContentToBackgroundConverter}" >
+                                            <Binding RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}" Path="DataContext.CurrentTabContent" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay"/>
+
+                                            <Binding Path="ViewModel" />
+                                        </MultiBinding>
+                                    </Border.Background>
+
+                                    <StackPanel Orientation="Horizontal">
+                                        <Button Content="{Binding Header}" Command="{Binding ShowTabContentCommand}" Padding="5">
+                                            <Button.Foreground>
+                                                <MultiBinding Converter="{StaticResource ITabContentToForegroundConverter}" >
+                                                    <Binding RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}" Path="DataContext.CurrentTabContent" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay"/>
+
+                                                    <Binding Path="ViewModel" />
+                                                </MultiBinding>
+                                            </Button.Foreground>
+                                        </Button>
+
+                                        <Button Command="{Binding CloseTabCommand}" Content="x" Padding="5">
+                                            <Button.Foreground>
+                                                <MultiBinding Converter="{StaticResource ITabContentToForegroundConverter}" >
+                                                    <Binding RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}" Path="DataContext.CurrentTabContent" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay"/>
+
+                                                    <Binding Path="ViewModel" />
+                                                </MultiBinding>
+                                            </Button.Foreground>
+                                        </Button>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Border>
+
+            </StackPanel>
+        </Border>
+
+              
+        
+        <!--<TabControl ItemsSource="{Binding Tabs}" Grid.Row="2" TabStripPlacement="Bottom" x:Name="TabControl">
             <TabControl.ItemTemplate>
                 <DataTemplate DataType="models:Tab">
                     <StackPanel Orientation="Horizontal">
@@ -92,13 +166,13 @@
                 <DataTemplate DataType="models:Tab">
                     <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                         <StackPanel>
-                            <Button Content="-" HorizontalAlignment="Right" />
+                            <Button Content="-" HorizontalAlignment="Right" Click="Button_Click"/>
 
                             <ContentPresenter Content="{Binding ViewModel, UpdateSourceTrigger=PropertyChanged}" />
                         </StackPanel>
                     </ScrollViewer>
                 </DataTemplate>
             </TabControl.ContentTemplate>
-        </TabControl>
+        </TabControl>-->
     </Grid>
 </Window>

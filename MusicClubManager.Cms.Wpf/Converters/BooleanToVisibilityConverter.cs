@@ -1,5 +1,4 @@
-﻿
-using System.Windows.Data;
+﻿using System.Windows.Data;
 using System.Windows;
 
 namespace MusicClubManager.Cms.Wpf.Converters
