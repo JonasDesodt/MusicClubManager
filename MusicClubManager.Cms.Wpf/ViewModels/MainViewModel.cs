@@ -19,14 +19,14 @@ namespace MusicClubManager.Cms.Wpf.ViewModels
 
             NavigateCommand = new NavigateCommand(this);
 
-            Tabs = new ObservableCollection<Tab> { new Tab(_serviceProvider.GetRequiredService<ArtistsViewModel>()) { Header = "Tab 1" }, new Tab(_serviceProvider.GetRequiredService<ArtistsViewModel>()) { Header = "Tab 2" } };     
+            SelectItemCommand = new SelectItemCommand();
         }
 
         private object? _currentViewModel;
         public object? CurrentViewModel
         {
             get => _currentViewModel;
-            set => SetProperty(ref _currentViewModel, value); 
+            set => SetProperty(ref _currentViewModel, value);
         }
 
         public NavigateCommand NavigateCommand { get; set; }
@@ -47,25 +47,30 @@ namespace MusicClubManager.Cms.Wpf.ViewModels
                 default:
                     CurrentViewModel = _serviceProvider.GetRequiredService<HomeViewModel>();
                     break;
-            }           
+            }
         }
 
-        public ObservableCollection<Tab> Tabs { get; set; }
+        public ObservableCollection<Tab> Tabs { get; set; } = [];
 
         public Tab? AddTab(object? item)
         {
-            if(item is PerformanceResult performanceResult)
+            if (item is PerformanceResult performanceResult)
             {
-                var performanceViewModel = new PerformanceViewModel { ArtistName = performanceResult.ArtistResult.Name };              
+                var performanceViewModel = new PerformanceViewModel (performanceResult, performanceResult.ArtistResult.Name);
 
                 var tab = new Tab(performanceViewModel) { Header = performanceResult.ArtistResult.Name };
 
-                Tabs.Add(tab);
+                if(!Tabs.Any(t => ((ISelectable)t.ViewModel).Source == performanceResult))
+                {
+                    Tabs.Add(tab);
 
-                return tab;
+                    return tab;
+                }
             }
 
             return null;
         }
+
+        public SelectItemCommand SelectItemCommand { get; set; }
     }
 }

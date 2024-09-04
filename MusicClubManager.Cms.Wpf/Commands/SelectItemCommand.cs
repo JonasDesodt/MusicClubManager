@@ -1,4 +1,5 @@
-﻿using System.Windows.Input;
+﻿using MusicClubManager.Cms.Wpf.Extensions;
+using System.Windows.Input;
 
 
 namespace MusicClubManager.Cms.Wpf.Commands
@@ -14,7 +15,7 @@ namespace MusicClubManager.Cms.Wpf.Commands
 
         public void Execute(object? parameter)
         {
-        
+            App.Current.GetMainViewModel()?.AddTab(parameter);      
         }
     }
 }

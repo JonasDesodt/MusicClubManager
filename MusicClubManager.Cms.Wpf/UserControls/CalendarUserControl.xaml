@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MusicClubManager.Cms.Wpf.UserControls"
              xmlns:vm="clr-namespace:MusicClubManager.Cms.Wpf.ViewModels"
+             xmlns:r="clr-namespace:MusicClubManager.Dto.Result;assembly=MusicClubManager.Dto"
              xmlns:c="clr-namespace:MusicClubManager.Cms.Wpf.Converters"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance Type=vm:CalendarViewModel}"
@@ -13,7 +14,7 @@
         <c:DateOnlyToDayOfMonthConverter x:Key="DateOnlyToDayOfWeekConverter"/>
 
         <c:MonthConverter x:Key="MonthConverter"/>
-               
+
         <Style TargetType="Border" x:Key="CellBorder">
             <Setter Property="BorderThickness" Value="0 0 1 1" />
             <Setter Property="Padding" Value="5" />
@@ -33,6 +34,13 @@
         <Style TargetType="ListView">
             <Setter Property="BorderThickness" Value="0" />
         </Style>
+
+        <DataTemplate DataType="{x:Type r:PerformanceResult}" x:Key="Performance">
+            <Button 
+                Content="{Binding ArtistResult.Name}" 
+                Command="{Binding DataContext.SelectItemCommand,  RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" 
+                CommandParameter="{Binding}"/>
+        </DataTemplate>
     </UserControl.Resources>
 
     <Border Margin="5" x:Name="Calendar" BorderThickness="2 2 1 1" BorderBrush="Gray">
@@ -62,7 +70,7 @@
             <Border Grid.Row="0" Grid.ColumnSpan="7" Style="{StaticResource HeaderBorder}">
                 <DockPanel>
                     <Button Command="{Binding PreviousYearCommand}" HorizontalAlignment="Left">Previous</Button>
-                    
+
                     <TextBlock Text="{Binding Year}" HorizontalAlignment="Center"  FontWeight="Bold"/>
 
                     <Button Command="{Binding NextYearCommand}"  HorizontalAlignment="Right">Next</Button>
@@ -73,9 +81,9 @@
             <Border Grid.Row="1" Grid.ColumnSpan="7" Style="{StaticResource HeaderBorder}">
                 <StackPanel Orientation="Horizontal">
                     <Button Command="{Binding PreviousMonthCommand}" HorizontalAlignment="Left">Previous</Button>
-                    
+
                     <TextBlock Text="{Binding Month, Converter={StaticResource MonthConverter}}" HorizontalAlignment="Center" FontWeight="Bold"/>
-                   
+
                     <Button Command="{Binding NextMonthCommand}" HorizontalAlignment="Right">Next</Button>
                 </StackPanel>
             </Border>
@@ -163,26 +171,30 @@
                 <StackPanel>
                     <TextBlock FontWeight="Bold" HorizontalAlignment="Right" Text="{Binding Cells[8].Date, Converter={StaticResource DateOnlyToDayOfWeekConverter}}"/>
 
-                    <ListView ItemsSource="{Binding Cells[8].PerformanceResults}" DisplayMemberPath="ArtistResult.Name" SelectedItem="{Binding SelectedPerformanceResult}"/>
+                    <ItemsControl ItemsSource="{Binding Cells[8].PerformanceResults}" ItemTemplate="{StaticResource Performance}" />
                 </StackPanel>
             </Border>
             <Border Grid.Row="4" Grid.Column="2" Style="{StaticResource CellBorder}">
                 <StackPanel>
                     <TextBlock FontWeight="Bold" HorizontalAlignment="Right" Text="{Binding Cells[9].Date, Converter={StaticResource DateOnlyToDayOfWeekConverter}}"/>
 
-                    <ListView ItemsSource="{Binding Cells[9].PerformanceResults}" DisplayMemberPath="ArtistResult.Name" SelectedItem="{Binding SelectedPerformanceResult}"/>
+                    <ItemsControl ItemsSource="{Binding Cells[9].PerformanceResults}" ItemTemplate="{StaticResource Performance}" />
                 </StackPanel>
             </Border>
             <Border Grid.Row="4" Grid.Column="3" Style="{StaticResource CellBorder}">
                 <StackPanel>
                     <TextBlock FontWeight="Bold" HorizontalAlignment="Right" Text="{Binding Cells[10].Date, Converter={StaticResource DateOnlyToDayOfWeekConverter}}"/>
 
-                    <ListView ItemsSource="{Binding Cells[10].PerformanceResults}" DisplayMemberPath="ArtistResult.Name" SelectedItem="{Binding SelectedPerformanceResult}"/>
+                    <ItemsControl ItemsSource="{Binding Cells[10].PerformanceResults}" ItemTemplate="{StaticResource Performance}" />
                 </StackPanel>
             </Border>
             <Border Grid.Row="4" Grid.Column="4" Style="{StaticResource CellBorder}">
                 <StackPanel>
                     <TextBlock FontWeight="Bold" HorizontalAlignment="Right" Text="{Binding Cells[11].Date, Converter={StaticResource DateOnlyToDayOfWeekConverter}}"/>
+
+                    <ItemsControl ItemsSource="{Binding Cells[11].PerformanceResults}" DisplayMemberPath="ArtistResult.Name">
+
+                    </ItemsControl>
 
                     <ListView ItemsSource="{Binding Cells[11].PerformanceResults}" DisplayMemberPath="ArtistResult.Name" SelectedItem="{Binding SelectedPerformanceResult}"/>
                 </StackPanel>

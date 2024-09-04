@@ -8,9 +8,9 @@ namespace MusicClubManager.Cms.Wpf.Models
 
         public CloseTabCommand CloseTabCommand { get; set; }
 
-        public object? ViewModel { get; set; }
+        public object ViewModel { get; set; }
 
-        public Tab(object? viewModel)
+        public Tab(object viewModel)
         {
             CloseTabCommand = new CloseTabCommand(this);
 

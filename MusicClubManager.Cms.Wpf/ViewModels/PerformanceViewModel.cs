@@ -1,7 +1,12 @@
-﻿namespace MusicClubManager.Cms.Wpf.ViewModels
+﻿using MusicClubManager.Cms.Wpf.Interfaces;
+using MusicClubManager.Dto.Result;
+
+namespace MusicClubManager.Cms.Wpf.ViewModels
 {
-    public class PerformanceViewModel
+    public class PerformanceViewModel(PerformanceResult source, string artistName) : ISelectable
     {
-        public required string ArtistName { get; set; }
+        public object Source { get; } = source;
+
+        public string ArtistName { get; set; } = artistName;
     }
 }
